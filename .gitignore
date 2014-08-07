@@ -1,0 +1,33 @@
+*.log
+*.pot
+*.pyc
+*.xls
+*.xlsx
+*.sql
+settings.py
+local_settings.py
+db.sqlite3
+.DS_Store
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+
+# Distribution / packaging
+.Python
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.coverage
+.cache
+nosetests.xml
+coverage.xml
+
+# Translations
+*.mo
+
