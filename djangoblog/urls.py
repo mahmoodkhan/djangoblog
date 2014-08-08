@@ -7,5 +7,5 @@ urlpatterns = patterns('',
     url(r'^$', 'blog.views.index', name='home'),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^(?P<slug>[\w\-]+)/$', 'blog.views.post'),
-    url(r'^static/$', 'blog.views.index'),
+    url(r'^login/$', 'django.contrib.auth.views.login', name='login'),
 )
