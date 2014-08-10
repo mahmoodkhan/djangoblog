@@ -13,14 +13,18 @@ class LoginForm(AuthenticationForm):
     """
     def __init__(self, *args, **kwargs):
         self.helper = FormHelper()
+        self.helper.form_class = 'form-horizontal'
+        self.helper.label_class = 'col-lg-2'
+        self.helper.field_class = 'col-lg-8'
         self.helper.form_tag = False
         self.helper.form_method = 'post'
         self.helper.form_action = '/login/'
+        self.helper.form_show_labels = False
         self.helper.layout = Layout(
-            Field('username', placeholder="username"),
-            Field('password', placeholder="password"),
+            Field('username', placeholder="Username"),
+            Field('password', placeholder="Password"),
             FormActions(
-                Submit('submit', 'Login', css_class='btn-submit'),
+                Submit('submit', 'Sign in', css_class='btn-submit'),
             )
         )
         super(LoginForm, self).__init__(*args, **kwargs)
