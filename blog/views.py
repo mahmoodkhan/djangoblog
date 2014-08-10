@@ -27,27 +27,25 @@ def about(request):
     
 
 def mylogin(request):
-    form = LoginForm(request.POST or None)
-    #print(request.GET['next'])
+    form = LoginForm(data=request.POST or None)
+    next = request.GET.get("next", "/")
     if form.is_valid():
+        print(form.cleaned_data)
         username = form.cleaned_data['username']
         password = form.cleaned_data['password']
-        nextpage = form.cleaned_data['next']
-        print(nextpage)
         user = authenticate(username=username, password=password)
         if user is not None:
             if user.is_active:
                 login(request, user)
-                return HttpResponseRedirect('/')
+                return HttpResponseRedirect(request.POST['next'])
             else:
                 return HttpResponse('Account is disabled')
         else:
             return HttpResponse("Invalid Credentials")
     params = {
-        'form': form
+        'form': form,
+        'next': next
     }
-    #if request.user.is_authenticated():
-    #    return HttpResponseRedirect('/')
     return render_to_response(
                     'login.html', 
                     params, 

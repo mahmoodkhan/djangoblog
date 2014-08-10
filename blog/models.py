@@ -14,6 +14,12 @@ class Category(models.Model):
     def __unicode__(self):
         return unicode("%s (%s)" % (self.name, self.description))
 
+    def get_absolute_url(self):
+        """
+        Used when we need to link to a specific category
+        """
+        return reverse('blog.views.post', args=[str(self.id)])
+
 
 class Tag(models.Model):
     name = models.CharField(max_length=64)
@@ -23,6 +29,12 @@ class Tag(models.Model):
     
     def __unicode__(self):
         return unicode("%s (%s)" % (self.name, self.owner))
+
+    def get_absolute_url(self):
+        """
+        Used when we need to link to a specific Tag.
+        """
+        return reverse('blog.views.post', args=[str(self.id)])
 
 
 class Post(models.Model):
@@ -66,6 +78,12 @@ class Attachment(models.Model):
     post = models.ForeignKey(Post, related_name = 'attachments')
     created = models.DateTimeField(auto_now=False, auto_now_add=True)
     updated = models.DateTimeField(auto_now=True, auto_now_add=False)
+
+    def get_absolute_url(self):
+        """
+        Used when we need to link to a specific blog post.
+        """
+        return reverse('blog.views.post', args=[str(self.id)])
     
 
 class Comment(models.Model):
