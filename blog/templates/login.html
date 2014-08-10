@@ -11,7 +11,7 @@
             </p>
         {% endif %}
         <h3>Sign in to continue</h3>
-        <form class="form-horizontal" method="post" action="{% url 'blog.views.mylogin' %}" >
+        <form class="form-horizontal" method="post" action="{% url 'login' %}" >
             <input type="hidden" name="next" value="{{ next }}" />
             {% crispy form form.helper %}
         </form>

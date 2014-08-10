@@ -8,7 +8,7 @@ admin.autodiscover()
 urlpatterns = patterns('',
     url(r'^$', TemplateView.as_view(template_name="blog/index.html")),
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^login/$', 'blog.views.mylogin', name='login'),
+    url(r'^login/$', LoginView.as_view(), name='login'),
     url(r'^logout/$', LogoutView.as_view()),
     url(r'^about/$', TemplateView.as_view(template_name='blog/about.html')),
     #url(r'^$', 'blog.views.index', name='home'),

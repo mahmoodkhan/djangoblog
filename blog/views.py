@@ -3,7 +3,7 @@ from django.http import HttpResponseBadRequest, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, HttpResponse, render_to_response
 from django.template import Context, loader, RequestContext
 from django.contrib.auth import authenticate, login, logout
-from django.views.generic import RedirectView
+from django.views.generic import RedirectView, FormView, View
 from .models import *
 from .forms import *
 
@@ -25,32 +25,58 @@ def post(request, slug):
 def about(request):
     return HttpResponse("OK")
     
+class LoginView(FormView):
+    template_name = 'login.html'
+    form_class = LoginForm
+    
+    def get(self, request, *args, **kwargs):
+        """
+        This method is not necessarily needed for FormView but I need it because I need to
+        set initial value for the field, next, which is only defined in the template not 
+        in the form object.
+        If the field 'next' was defined in the form object, then I could have set its
+        value in the get_initial function like I do for username
+        """
+        
+        """ create an instance of the form with initial data """
+        form = self.form_class(initial=self.get_initial())
+        
+        """data passed to the template"""
+        params = {
+            'form': form,
+            'next': request.GET.get('next', '/')
+        }
+        
+        return render(request, self.template_name, params)
+    
+    def get_success_url(self):
+        """ 
+        Instead of setting a static "success_url" attribute at the class level above,
+        I overworte this method to determine where user should be redirected to based on
+        the "next" parameter sent from the login form.
+        """
+        return self.request.POST.get("next", "/")
 
-def mylogin(request):
-    form = LoginForm(data=request.POST or None)
-    next = request.GET.get("next", "/")
-    if form.is_valid():
-        print(form.cleaned_data)
-        username = form.cleaned_data['username']
-        password = form.cleaned_data['password']
-        user = authenticate(username=username, password=password)
-        if user is not None:
-            if user.is_active:
-                login(request, user)
-                return HttpResponseRedirect(request.POST['next'])
-            else:
-                return HttpResponse('Account is disabled')
-        else:
-            return HttpResponse("Invalid Credentials")
-    params = {
-        'form': form,
-        'next': next
-    }
-    return render_to_response(
-                    'login.html', 
-                    params, 
-                    context_instance=RequestContext(request)
-    )
+    def get_initial(self, **kwargs):
+        """
+        Returns the initial data to use for forms on this view.
+        """
+        initial = super(LoginView, self).get_initial()
+        initial['username'] = self.request.GET.get('username', '')
+        return initial
+    
+    def form_valid(self, form):
+        """
+        This method is called after successful submission of the form
+        """
+        return super(LoginView, self).form_valid(form)
+    
+    def form_invalid(self, form):
+        """
+        This method is called after the form submission has failed
+        """
+        return super(LoginView, self).form_invalid(form)
+
 
 class LogoutView(RedirectView):
     """
