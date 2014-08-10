@@ -1,4 +1,5 @@
 import datetime
+from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils import timezone
 from django.contrib import admin
@@ -58,7 +59,7 @@ class Post(models.Model):
         """
         Used when we need to link to a specific blog post.
         """
-        return reverse('blog.views.post', args=[self.slug])
+        return reverse('blog.views.post', args=[str(self.slug)])
 
 class Attachment(models.Model):
     attachment = models.FileField(upload_to='attachments')
@@ -85,3 +86,9 @@ class Comment(models.Model):
 
     def __unicode__(self):
         return unicode("%s: %s" % (self.post, self.body[:64]))
+
+    def get_absolute_url(self):
+        """
+        Used when we need to link to a specific blog post.
+        """
+        return reverse('blog.views.comment', args=[str(self.id)])

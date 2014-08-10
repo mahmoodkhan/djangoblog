@@ -28,11 +28,12 @@ def about(request):
 
 def mylogin(request):
     form = LoginForm(request.POST or None)
-    print(request.POST)
+    #print(request.GET['next'])
     if form.is_valid():
         username = form.cleaned_data['username']
         password = form.cleaned_data['password']
         nextpage = form.cleaned_data['next']
+        print(nextpage)
         user = authenticate(username=username, password=password)
         if user is not None:
             if user.is_active:
