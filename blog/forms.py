@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm
+from django.utils.translation import ugettext_lazy as _
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import *
@@ -36,4 +37,4 @@ class LoginForm(AuthenticationForm):
         access to who can actually login.
         """
         if not user.is_active:
-            raise forms.ValidationError("This account is inactive.", code='inactive',)
+            raise forms.ValidationError(_(u"This account is inactive."), code='inactive',)
