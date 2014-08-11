@@ -25,7 +25,7 @@
                 </div>
                 <div class="navbar-collapse collapse" role="navigation">
                     <ul class="nav navbar-nav">
-                        <li class="{{ home_tab }}"><a href="#"><span class="glyphicon glyphicon-home"></span> Home</a></li>
+                        <li class="{{ home_tab }}"><a href="{% url 'home' %}"><span class="glyphicon glyphicon-home"></span> Home</a></li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Posts By Category<b class="caret"></b></a>
                             <ul class="dropdown-menu">
@@ -73,7 +73,7 @@
                     Copyright ©  {% now "Y" %} All rights reserved
                 </span>
                 <span style="float:right;" class="text-muted">
-                    <a href="#" class="text-muted">About</a> | 
+                    <a href="{% url 'about' %}" class="text-muted">About</a> | 
                     <a href="{% url 'contact' %}" class="text-muted">Contact</a>
                 </span>
             </div>
