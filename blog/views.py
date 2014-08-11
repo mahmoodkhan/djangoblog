@@ -88,6 +88,16 @@ class LogoutView(RedirectView):
     """
     A view that logout user and redirect to homepage
     """
+    
+    """ Whether the redirect should be permanent. If True, the HTTP status code returned. """
+    permanent = False
+    
+    """ If True, then the GET query string is appended to the URL of new location. """
+    query_string = True
+    
+    """ The name of the URL pattern to redirect to """
+    pattern_name = 'home'
+    
     def get_redirect_url(self, *args, **kwargs):
         """
         Logout user and redirect to target url
@@ -95,7 +105,3 @@ class LogoutView(RedirectView):
         if self.request.user.is_authenticated():
             logout(self.request)
         return super(LogoutView, self).get_redirect_url(*args, **kwargs)
-
-def mylogout(request):
-    logout(request)
-    return HttpResponseRedirect('/login/')
