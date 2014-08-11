@@ -12,6 +12,7 @@ urlpatterns = patterns('',
     url(r'^logout/$', LogoutView.as_view(), name='logout'),
     url(r'^about/$', TemplateView.as_view(template_name='blog/about.html')),
     url(r'^contact/$', ContactView.as_view(), name='contact'),
+    url(r'^newpost/$', BlogPostCreate.as_view(), name='newblogpost'),
     #url(r'^$', 'blog.views.index', name='home'),
     #url(r'^(?P<slug>[\w\-]+)/$', 'blog.views.post'),
 )

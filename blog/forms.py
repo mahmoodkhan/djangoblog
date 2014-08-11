@@ -8,6 +8,18 @@ from crispy_forms.bootstrap import *
 
 from captcha.fields import ReCaptchaField
 
+from .models import *
+
+class BlogPostForm(forms.ModelForm):
+    
+    class Meta:
+        model = BlogPost
+    
+    def __init__(self, *args, **kwargs):
+        self.helper = FormHelper()
+        self.helper.add_input(Submit('submit', 'Submit'))
+        super(BlogPostForm, self).__init__(*args, **kwargs)
+
 class ContactForm(forms.Form):
     name =  forms.CharField(max_length=64, required=True)
     email = forms.EmailField(required=True)

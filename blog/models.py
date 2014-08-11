@@ -18,7 +18,7 @@ class Category(models.Model):
         """
         Used when we need to link to a specific category
         """
-        return reverse('blog.views.post', args=[str(self.id)])
+        return reverse('blog.views.blogpost', args=[str(self.id)])
 
 
 class Tag(models.Model):
@@ -34,14 +34,14 @@ class Tag(models.Model):
         """
         Used when we need to link to a specific Tag.
         """
-        return reverse('blog.views.post', args=[str(self.id)])
+        return reverse('blog.views.blogpost', args=[str(self.id)])
 
 
-class Post(models.Model):
+class BlogPost(models.Model):
     """
-        A post is the building block of a Blog; post cannot be cross-posted to multiple blogs
-        A post can only be in one blog
-        A post could have zero or many comments
+        A blogpost is the building block of a Blog; blogpost cannot be cross-blogposted to multiple blogs
+        A blogpost can only be in one blog
+        A blogpost could have zero or many comments
     """
     title = models.CharField(max_length=64)
     slug = models.SlugField(unique=True, max_length=254)
@@ -50,16 +50,16 @@ class Post(models.Model):
     published = models.BooleanField(default=False)
     pub_date = models.DateTimeField(null=True, blank=True)
     private = models.BooleanField(default=True)
-    category = models.ForeignKey(Category, related_name='posts')
-    tags = models.ManyToManyField(Tag, related_name='posts')
-    owner = models.ForeignKey(User, related_name = 'posts')
+    category = models.ForeignKey(Category, related_name='blogposts')
+    tags = models.ManyToManyField(Tag, related_name='blogposts')
+    owner = models.ForeignKey(User, related_name = 'blogposts')
     created = models.DateTimeField(auto_now=False, auto_now_add=True)
     updated = models.DateTimeField(auto_now=True, auto_now_add=False)
 
     class Meta:
         ordering = ['-created',]
-        verbose_name = 'Post'
-        verbose_name_plural = 'Posts'
+        verbose_name = 'BlogPost'
+        verbose_name_plural = 'BlogPosts'
 
     def was_published_recently(self):
         return self.pub_date >= timezone.now() - datetime.timedelta(days=1)
@@ -71,11 +71,11 @@ class Post(models.Model):
         """
         Used when we need to link to a specific blog post.
         """
-        return reverse('blog.views.post', args=[str(self.slug)])
+        return reverse('blog.views.blogpost', args=[str(self.slug)])
 
 class Attachment(models.Model):
     attachment = models.FileField(upload_to='attachments')
-    post = models.ForeignKey(Post, related_name = 'attachments')
+    blogpost = models.ForeignKey(BlogPost, related_name = 'attachments')
     created = models.DateTimeField(auto_now=False, auto_now_add=True)
     updated = models.DateTimeField(auto_now=True, auto_now_add=False)
 
@@ -83,17 +83,17 @@ class Attachment(models.Model):
         """
         Used when we need to link to a specific blog post.
         """
-        return reverse('blog.views.post', args=[str(self.id)])
+        return reverse('blog.views.blogpost', args=[str(self.id)])
     
 
 class Comment(models.Model):
     """
         A comment has an owner
-        A comment belongs to a single post
+        A comment belongs to a single blogpost
     """
     author = models.TextField(max_length=64)
     body = models.TextField()
-    post = models.ForeignKey(Post, related_name='comments')
+    blogpost = models.ForeignKey(BlogPost, related_name='comments')
     created = models.DateTimeField(auto_now=False, auto_now_add=True)
     updated = models.DateTimeField(auto_now=True, auto_now_add=False)
 
@@ -103,7 +103,7 @@ class Comment(models.Model):
         verbose_name_plural = 'Comments'
 
     def __unicode__(self):
-        return unicode("%s: %s" % (self.post, self.body[:64]))
+        return unicode("%s: %s" % (self.author, self.body[:64]))
 
     def get_absolute_url(self):
         """

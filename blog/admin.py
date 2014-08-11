@@ -10,7 +10,7 @@ class CategoryAdmin(admin.ModelAdmin):
 class TagAdmin(admin.ModelAdmin):
     display_fields = ["name", "created",]
 
-class PostAdmin(admin.ModelAdmin):
+class BlogPostAdmin(admin.ModelAdmin):
     # fields display on change list
     list_display = ['title', 'category',]
     
@@ -35,9 +35,9 @@ class AttachmentAdmin(admin.ModelAdmin):
     pass
 
 class CommentAdmin(admin.ModelAdmin):
-    display_fields = ["author", "post", "pub_date",]
+    display_fields = ["author", "blogpost", "pub_date",]
 
-admin.site.register(Post, PostAdmin)
+admin.site.register(BlogPost, BlogPostAdmin)
 admin.site.register(Comment, CommentAdmin)
 admin.site.register(Attachment, AttachmentAdmin)
 admin.site.register(Category, CategoryAdmin)

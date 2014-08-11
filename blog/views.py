@@ -1,10 +1,11 @@
 from django.core.urlresolvers import reverse
 from django.core.mail import send_mail
-from django.http import HttpResponseBadRequest, HttpResponseRedirect
+#from django.http import HttpResponseBadRequest, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, HttpResponse, render_to_response
 from django.template import Context, loader, RequestContext
-from django.contrib.auth import authenticate, login, logout
 from django.views.generic import RedirectView, FormView, View
+from django.views.generic.edit import CreateView
+from django.contrib.auth import authenticate, login, logout
 from .models import *
 from .forms import *
 
@@ -26,7 +27,23 @@ def post(request, slug):
 def about(request):
     return HttpResponse("OK")
 
+
+class BlogPostCreate(CreateView):
+    form_class = BlogPostForm
+    model = BlogPost
+    
+    def form_valid(self, form):
+        return super(BlogPostCreate, self).form_valid(form)
+    
+    def form_invalid(self, form):
+        return super(BlogPostCreate, self).form_invalid(form)
+
+
 class ContactView(FormView):
+    """ 
+    A class based view that inherits from FormView, a generic view in Django, to provide
+    a Contact form for site visitors to use to get contact the site owner
+    """
     form_class = ContactForm
     template_name = 'contact.html'
     success_url = '/'
@@ -45,6 +62,9 @@ class ContactView(FormView):
         return super(ContactFormView, self).form_valid(form)
 
 class LoginView(FormView):
+    """
+    Provides a Login View so users can login
+    """
     template_name = 'login.html'
     form_class = LoginForm
     
@@ -77,17 +97,13 @@ class LoginView(FormView):
         return self.request.POST.get("next", "/")
 
     def get_initial(self, **kwargs):
-        """
-        Returns the initial data to use for forms on this view.
-        """
+        """ Returns the initial data to use for forms on this view.  """
         initial = super(LoginView, self).get_initial()
         initial['username'] = self.request.GET.get('username', '')
         return initial
     
     def form_valid(self, form):
-        """
-        This method is called after successful submission of the form
-        """
+        """ This method is called after successful submission of the form """
         username = form.cleaned_data['username']
         password = form.cleaned_data['password']
         user = authenticate(username=username, password=password)
@@ -97,9 +113,7 @@ class LoginView(FormView):
         return super(LoginView, self).form_valid(form)
     
     def form_invalid(self, form):
-        """
-        This method is called after the form submission has failed
-        """
+        """  This method is called after the form submission has failed  """
         return super(LoginView, self).form_invalid(form)
 
 
