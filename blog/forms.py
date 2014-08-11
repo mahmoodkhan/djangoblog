@@ -6,6 +6,20 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import *
 from crispy_forms.bootstrap import *
 
+from captcha.fields import ReCaptchaField
+
+class ContactForm(forms.Form):
+    name =  forms.CharField(max_length=64, required=True)
+    email = forms.EmailField(required=True)
+    subject = forms.CharField(max_length=64, required=True)
+    message = forms.CharField(required=True, widget=forms.Textarea)
+    captcha = ReCaptchaField() 
+    
+    def __init__(self, *args, **kwargs):
+        self.helper = FormHelper()
+        self.helper.add_input(Submit('submit', 'Submit'))
+        super(ContactForm, self).__init__(*args, **kwargs)
+
 class LoginForm(AuthenticationForm):
     """
     A login form that inherits from Django's builtin AuthenticationForm, which has

@@ -11,7 +11,7 @@ urlpatterns = patterns('',
     url(r'^login/$', LoginView.as_view(), name='login'),
     url(r'^logout/$', LogoutView.as_view(), name='logout'),
     url(r'^about/$', TemplateView.as_view(template_name='blog/about.html')),
+    url(r'^contact/$', ContactView.as_view(), name='contact'),
     #url(r'^$', 'blog.views.index', name='home'),
-    #url(r'^login/$', 'django.contrib.auth.views.login', name='login'),
     #url(r'^(?P<slug>[\w\-]+)/$', 'blog.views.post'),
 )

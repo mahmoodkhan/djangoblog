@@ -1,4 +1,5 @@
 from django.core.urlresolvers import reverse
+from django.core.mail import send_mail
 from django.http import HttpResponseBadRequest, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, HttpResponse, render_to_response
 from django.template import Context, loader, RequestContext
@@ -24,7 +25,25 @@ def post(request, slug):
 
 def about(request):
     return HttpResponse("OK")
+
+class ContactView(FormView):
+    form_class = ContactForm
+    template_name = 'contact.html'
+    success_url = '/'
     
+    def form_valid(self, form):
+        message = "{name} / {email} said: " .format(
+            name = form.cleaned_data.get('name'),
+            email = form.cleaned_data.get('email'))
+        message += "\n\n{0}".format(form.cleaned_data.get('message'))
+        send_mail(
+            subject=form.cleaned_data.get('subject').strip(),
+            message = message,
+            from_email = 'me@example.com',
+            recipient_list = ['mkhan@mercycorps.org',],
+        )
+        return super(ContactFormView, self).form_valid(form)
+
 class LoginView(FormView):
     template_name = 'login.html'
     form_class = LoginForm
