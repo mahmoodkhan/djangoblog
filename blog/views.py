@@ -69,6 +69,12 @@ class LoginView(FormView):
         """
         This method is called after successful submission of the form
         """
+        username = form.cleaned_data['username']
+        password = form.cleaned_data['password']
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            if user.is_active:
+                login(self.request, user)
         return super(LoginView, self).form_valid(form)
     
     def form_invalid(self, form):
