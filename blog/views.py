@@ -24,11 +24,12 @@ def post(request, slug):
     # now return the rendered template
     return render(request, 'blog/post.html', {'post': post})
 
-def about(request):
-    return HttpResponse("OK")
 
 
 class BlogPostCreate(CreateView):
+    """
+    For creating new blogposts by inheriting Django builtin Class-Based-View, CreateView
+    """
     form_class = BlogPostForm
     model = BlogPost
     

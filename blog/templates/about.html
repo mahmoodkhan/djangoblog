@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block content %}
+    <div class="jumbotron">
+    <h2>About My Blog</h2>
+    <p class="lead">
+        ePro-Aggregator is a web-app that collects data from the ePro completed
+        PR Masterlists from field offices and then consolidate them to enable PALM managers to run
+        aggregate reports on the consolidated data.
+    </p>
+    <p>
+        ePro-Aggregator does not require field teams to re-enter the data; instead, it
+        plugs into their existing workflows to get the data automatically. ePro-Aggregator
+        integrates with Google Drive and Dropbox so when field teams store their PR masterlists
+        on these platforms, they make their data accessible to ePro-Aggregator via backend API calls.
+        However, an initial authorization needs to be granted for this process to work.
+    </p>
+    <p>
+        <a class="btn btn-lg btn-primary" href="{% url 'home' %}" role="button">Learn more »</a>
+    </p>
+    </div>
+{% endblock %}
