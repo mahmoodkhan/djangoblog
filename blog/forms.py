@@ -1,6 +1,7 @@
 from django import forms
-from django.contrib.auth.forms import AuthenticationForm
 from django.utils.translation import ugettext_lazy as _
+
+from django.contrib.auth.forms import AuthenticationForm
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import *
@@ -11,16 +12,22 @@ from captcha.fields import ReCaptchaField
 from .models import *
 
 class BlogPostForm(forms.ModelForm):
-    
+    """
+    A Model Form for BlogPost model to be used for creating new blogposts
+    """
     class Meta:
         model = BlogPost
     
     def __init__(self, *args, **kwargs):
         self.helper = FormHelper()
         self.helper.add_input(Submit('submit', 'Submit'))
+        self.helper.add_input(Reset('rest', 'Reset', css_class='btn-warning'))
         super(BlogPostForm, self).__init__(*args, **kwargs)
 
 class ContactForm(forms.Form):
+    """
+    Generic Contact Form that uses Google ReCaptcha to prevent bots from spamming
+    """
     name =  forms.CharField(max_length=64, required=True)
     email = forms.EmailField(required=True)
     subject = forms.CharField(max_length=64, required=True)

@@ -1,14 +1,16 @@
 from django.core.urlresolvers import reverse
 from django.core.mail import send_mail
-#from django.http import HttpResponseBadRequest, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, HttpResponse, render_to_response
 from django.template import Context, loader, RequestContext
+from django.utils.decorators import method_decorator
 from django.views.generic import RedirectView, FormView, View
 from django.views.generic.edit import CreateView
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+
+
 from .models import *
 from .forms import *
-
 
 def index(request):
     #get the blog posts that are published
@@ -24,14 +26,16 @@ def post(request, slug):
     # now return the rendered template
     return render(request, 'blog/post.html', {'post': post})
 
-
-
 class BlogPostCreate(CreateView):
     """
     For creating new blogposts by inheriting Django builtin Class-Based-View, CreateView
     """
     form_class = BlogPostForm
     model = BlogPost
+    
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(BlogPostCreate, self).dispatch(*args, **kwargs)
     
     def form_valid(self, form):
         return super(BlogPostCreate, self).form_valid(form)
