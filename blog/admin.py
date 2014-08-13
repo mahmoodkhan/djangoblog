@@ -15,7 +15,7 @@ class BlogPostAdmin(admin.ModelAdmin):
     list_display = ['title', 'category',]
     
     # fields to filter the change list with
-    list_filter = ['published', 'created']
+    list_filter = ['title', 'published', 'created']
     
     # fields to search in change list
     search_fields = ['title', 'content']

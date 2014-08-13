@@ -24,6 +24,7 @@ class BlogPostForm(forms.ModelForm):
         self.helper.form_class = 'form-horizontal'
         self.helper.label_class = 'col-lg-2'
         self.helper.field_class = 'col-lg-10'
+        self.helper.html5_required = True
         self.helper.add_input(Submit('submit', 'Submit'))
         self.helper.add_input(Reset('rest', 'Reset', css_class='btn-warning'))
         super(BlogPostForm, self).__init__(*args, **kwargs)
@@ -62,6 +63,7 @@ class LoginForm(AuthenticationForm):
         self.helper.form_method = 'post'
         self.helper.form_action = '/login/'
         self.helper.form_show_labels = False
+        self.helper.html5_required = True
         self.helper.layout = Layout(
             Field('username', placeholder="Username"),
             Field('password', placeholder="Password"),
