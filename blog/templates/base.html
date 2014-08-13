@@ -13,6 +13,7 @@
         <link href="{% static 'blog/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css" />
         <link href="{% static 'blog/css/jquery-ui-1.10.4.custom.min.css' %}" rel="stylesheet" type="text/css" />
         <link href="{% static 'blog/css/app.css' %}" rel="stylesheet" type="text/css">
+        <link href="{% static 'blog/css/pygments.css' %}" rel="stylesheet" type="text/css">
         {% block extra_js_in_header %}{% endblock %}
     </head>
     <body>
@@ -44,8 +45,8 @@
                             </a>
                             <ul class="dropdown-menu">
                                 <li class="dropdown-header">Profile</li>
-                                <li><a href="{% url 'logout' %}"><span class="glyphicon glyphicon-cloud"></span> Logout </a></li>
-                                <li><a href="#"><span class="glyphicon glyphicon-list"></span> Shared PRMasterlists</a></li>
+                                <li><a href="{%  url 'newblogpost' %}"> New BlogPost </a></li>
+                                <li><a href="{% url 'logout' %}"> Logout </a></li>
                             </ul>
                         </li><!-- .dropdown collapse -->
                     </ul>

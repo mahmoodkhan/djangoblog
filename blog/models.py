@@ -1,5 +1,6 @@
 import datetime
 from django.core.urlresolvers import reverse
+from django.template.defaultfilters import slugify
 from django.db import models
 from django.utils import timezone
 from django.contrib import admin
@@ -10,10 +11,10 @@ class Category(models.Model):
     description = models.CharField(max_length=254, null=True, blank=True)
     created = models.DateTimeField(auto_now=False, auto_now_add=True)
     updated = models.DateTimeField(auto_now=True, auto_now_add=False)
-    
-    def __unicode__(self):
-        return unicode("%s (%s)" % (self.name, self.description))
 
+    def __str__(self):
+        return self.name
+    
     def get_absolute_url(self):
         """
         Used when we need to link to a specific category
@@ -27,15 +28,14 @@ class Tag(models.Model):
     created = models.DateTimeField(auto_now=False, auto_now_add=True)
     updated = models.DateTimeField(auto_now=True, auto_now_add=False)
     
-    def __unicode__(self):
-        return unicode("%s (%s)" % (self.name, self.owner))
-
+    def __str__(self):
+        return self.name
+    
     def get_absolute_url(self):
         """
         Used when we need to link to a specific Tag.
         """
         return reverse('blog.views.blogpost', args=[str(self.id)])
-
 
 class BlogPost(models.Model):
     """
@@ -43,8 +43,8 @@ class BlogPost(models.Model):
         A blogpost can only be in one blog
         A blogpost could have zero or many comments
     """
-    title = models.CharField(max_length=64)
-    slug = models.SlugField(unique=True, max_length=254)
+    title = models.CharField(max_length=64, db_index=True)
+    slug = models.SlugField(unique=True, max_length=64)
     content = models.TextField()
     annotation = models.TextField(null=True, blank=True)
     published = models.BooleanField(default=False)
@@ -53,6 +53,7 @@ class BlogPost(models.Model):
     category = models.ForeignKey(Category, related_name='blogposts')
     tags = models.ManyToManyField(Tag, related_name='blogposts')
     owner = models.ForeignKey(User, related_name = 'blogposts')
+    lastaccessed = models.DateTimeField(auto_now=False, auto_now_add=False)
     created = models.DateTimeField(auto_now=False, auto_now_add=True)
     updated = models.DateTimeField(auto_now=True, auto_now_add=False)
 
@@ -64,14 +65,21 @@ class BlogPost(models.Model):
     def was_published_recently(self):
         return self.pub_date >= timezone.now() - datetime.timedelta(days=1)
 
-    def __unicode__(self):
-        return unicode("%s (%s)" % (self.title, self.owner))
-
+    def __str__(self):
+        return ("%s (%s)" % (self.title, self.owner))
+    
     def get_absolute_url(self):
         """
         Used when we need to link to a specific blog post.
         """
-        return reverse('blog.views.blogpost', args=[str(self.slug)])
+        return reverse('detailpost', args=[str(self.id)])
+    
+    def save(self, *args, **kwargs):
+        if self.pk is None:        
+            """ To automatically create the slug """
+            #self.slug = '%i-%s' % (self.id, slugify(self.title))
+            self.slug = slugify(self.title)
+        super(BlogPost, self).save(*args, **kwargs)
 
 class Attachment(models.Model):
     attachment = models.FileField(upload_to='attachments')
@@ -102,9 +110,9 @@ class Comment(models.Model):
         verbose_name = 'Comment'
         verbose_name_plural = 'Comments'
 
-    def __unicode__(self):
-        return unicode("%s: %s" % (self.author, self.body[:64]))
-
+    def __str__(self):
+        return ("%s (%s)" % (self.name, self.owner))
+    
     def get_absolute_url(self):
         """
         Used when we need to link to a specific blog post.

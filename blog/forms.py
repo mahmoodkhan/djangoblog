@@ -12,6 +12,7 @@ from captcha.fields import ReCaptchaField
 from .models import *
 
 class BlogPostForm(forms.ModelForm):
+    exclude = ['slug',]
     """
     A Model Form for BlogPost model to be used for creating new blogposts
     """
@@ -36,6 +37,7 @@ class ContactForm(forms.Form):
     
     def __init__(self, *args, **kwargs):
         self.helper = FormHelper()
+        self.helper.html5_required = True
         self.helper.add_input(Submit('submit', 'Submit'))
         super(ContactForm, self).__init__(*args, **kwargs)
 

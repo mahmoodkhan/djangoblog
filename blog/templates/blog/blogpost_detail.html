@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+
+{% block title %} Create a new blog-post{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-sm-10 col-md-8 col-md-offset-2">
+            <h2> {{ object.title}}</h2>
+            <p>
+            {{ object.content }}
+            </p>
+            <p>
+                {% for a in attachments %}
+                    <li>{{ a.attachment }}</li>
+                {% empty %}
+                    <li>No Attachments.</li>
+                {% endfor %}
+            </p>
+        </div>
+    </div>
+{% endblock %}

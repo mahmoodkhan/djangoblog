@@ -1,5 +1,25 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
-<link rel="stylesheet" type="text/css" href="{% static 'blog/app.css' %}" />
-<a href="{{ object.get_absolute_url }}">{{ object.name }}</a>
-<!-- https://docs.djangoproject.com/en/1.7/ref/models/instances/ -->
+{% load crispy_forms_tags %}
+{% load myfilters %}
+
+{% block title %}Home{% endblock %}
+{% block content %}
+    <div class="row">
+        <center> <h3> Recent Blog Posts</h3></center>
+        <div class="col-sm-10 col-md-8 col-md-offset-2">
+            <ul>
+                {% for blogpost in blogposts %}
+                    <li>{{ blogpost.pub_date|date }} - <a href="{{ blogpost.get_absolute_url }}">{{ blogpost.title }}</a> </li>
+                {% empty %}
+                    <li>No articles yet.</li>
+                {% endfor %}
+            </ul>
+        
+        </div>
+        
+    </div>
+    <div>
+        {{ code|pygmentize|safe }}
+        </div>
+{% endblock %}

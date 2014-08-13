@@ -5,6 +5,7 @@
 *.xlsx
 *.sql
 settings.py
+media
 local_settings.py
 db.sqlite3
 .DS_Store

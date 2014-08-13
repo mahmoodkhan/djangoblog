@@ -3,28 +3,65 @@ from django.core.mail import send_mail
 from django.shortcuts import render, get_object_or_404, HttpResponse, render_to_response
 from django.template import Context, loader, RequestContext
 from django.utils.decorators import method_decorator
-from django.views.generic import RedirectView, FormView, View
+from django.utils import timezone
+from django.views.generic import RedirectView, FormView, View, DetailView, CreateView
 from django.views.generic.edit import CreateView
+from django.views.generic.list import ListView
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-
 
 from .models import *
 from .forms import *
 
-def index(request):
-    #get the blog posts that are published
-    posts = Post.objects.filter(published=True)
+class HomeView(ListView):
     
-    # now return the rendered template
-    return render(request, 'blog/index.html', {'posts': posts})
+    model = BlogPost
+    template_name="blog/index.html"
+    context_object_name = 'blogposts'
+    queryset = BlogPost.objects.filter(published=True).filter(private=False)
+    
+    def get_context_data(self, **kwargs):
+        context = super(HomeView, self).get_context_data(**kwargs)
+        context['now'] = timezone.now()
+        context['code'] = """
+        <code class="python">
+            @register.filter(name='cut')
+            def cut(value, arg):
+                return value.replace(arg, '')
 
-def post(request, slug):
-    # get the Post object
-    post = get_object_or_404(Post, slug=slug)
+            @register.filter
+            def lower(value):
+                return value.lower()
+        </code>
+        """
+        return context
+
+class BlogPostDetail(DetailView):
+    model = BlogPost
     
-    # now return the rendered template
-    return render(request, 'blog/post.html', {'post': post})
+    def get_context_data(self, **kwargs):
+        """
+        This method is used to provide additional context to be passed to the template.
+        """
+        # Call the base implementation first to get a context
+        context = super(BlogPostDetail, self).get_context_data(**kwargs)
+        # Add in the attachments linked to this blogpost
+        context['attachments'] = Attachment.objects.filter(blogpost=self.object.pk)
+        # return the modified context to be passed onto the template
+        return context
+    
+    def get_object(self):
+        """ 
+        The method that retrieves the object, so I override it to update 
+        the lastaccessed datetime field 
+        """ 
+        # Call the superclass
+        object = super(BlogPostDetail, self).get_object()
+        # Record the last accessed date
+        object.lastaccessed = timezone.now()
+        object.save()
+        # Return the object
+        return object
 
 class BlogPostCreate(CreateView):
     """
