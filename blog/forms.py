@@ -21,6 +21,9 @@ class BlogPostForm(forms.ModelForm):
     
     def __init__(self, *args, **kwargs):
         self.helper = FormHelper()
+        self.helper.form_class = 'form-horizontal'
+        self.helper.label_class = 'col-lg-2'
+        self.helper.field_class = 'col-lg-10'
         self.helper.add_input(Submit('submit', 'Submit'))
         self.helper.add_input(Reset('rest', 'Reset', css_class='btn-warning'))
         super(BlogPostForm, self).__init__(*args, **kwargs)
@@ -37,6 +40,9 @@ class ContactForm(forms.Form):
     
     def __init__(self, *args, **kwargs):
         self.helper = FormHelper()
+        self.helper.form_class = 'form-horizontal'
+        self.helper.label_class = 'col-lg-2'
+        self.helper.field_class = 'col-lg-8'
         self.helper.html5_required = True
         self.helper.add_input(Submit('submit', 'Submit'))
         super(ContactForm, self).__init__(*args, **kwargs)
