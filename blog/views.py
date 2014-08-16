@@ -5,7 +5,7 @@ from django.template import Context, loader, RequestContext
 from django.utils.decorators import method_decorator
 from django.utils import timezone
 from django.views.generic import RedirectView, FormView, View, DetailView, CreateView
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic.list import ListView
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -35,6 +35,11 @@ class HomeView(ListView):
         </code>
         """
         return context
+
+class BlogPostUpdate(UpdateView):
+    model = BlogPost
+    template_name_suffix = '_update_form'
+    form_class = BlogPostForm
 
 class BlogPostDetail(DetailView):
     model = BlogPost

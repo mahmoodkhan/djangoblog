@@ -19,4 +19,5 @@ urlpatterns = patterns('',
     
     # to view a blog post by pk in the url
     url(r'^detailpost/(?P<pk>\d+)/$', BlogPostDetail.as_view(), name='detailpost'),
+    url(r'^updatepost/(?P<pk>\d+)/$', BlogPostUpdate.as_view(), name='updatepost'),
 )
