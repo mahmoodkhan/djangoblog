@@ -53,7 +53,7 @@ class BlogPost(models.Model):
     category = models.ForeignKey(Category, related_name='blogposts')
     tags = models.ManyToManyField(Tag, related_name='blogposts')
     owner = models.ForeignKey(User, related_name = 'blogposts')
-    lastaccessed = models.DateTimeField(auto_now=False, auto_now_add=False)
+    lastaccessed = models.DateTimeField(null=True, blank=True)
     created = models.DateTimeField(auto_now=False, auto_now_add=True)
     updated = models.DateTimeField(auto_now=True, auto_now_add=False)
 
