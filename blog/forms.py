@@ -12,12 +12,12 @@ from captcha.fields import ReCaptchaField
 from .models import *
 
 class BlogPostForm(forms.ModelForm):
-    exclude = ['slug',]
     """
     A Model Form for BlogPost model to be used for creating new blogposts
     """
     class Meta:
         model = BlogPost
+        exclude = ['slug', 'owner',]
     
     def __init__(self, *args, **kwargs):
         self.helper = FormHelper()
