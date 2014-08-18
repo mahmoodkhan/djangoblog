@@ -8,7 +8,15 @@
     <div class="row">
         <div class="col-sm-10 col-md-8 col-md-offset-2">
             <h2> Create a new blog-post entry</h2>
+            <form class="form-horizontal" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
             {% crispy form form.helper %}
+            {% crispy attachments attachments.helper %}
+            <div class="form-actions">
+                <input name="submit" value="Submit" class="btn btn-primary" id="submit-id-submit" type="submit">
+                <input name="rest" value="Reset" class="btn btn-inverse btn-warning" id="reset-id-rest" type="reset">
+            </div>
+            </form>
         </div>
     </div>
 {% endblock %}

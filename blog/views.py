@@ -13,8 +13,12 @@ from django.contrib.auth.decorators import login_required
 from .models import *
 from .forms import *
 
+
 class HomeView(ListView):
-    
+    """
+    This is the home view, which subclasses ListView,a built-in view, for listing
+    the 5 most recent blog-posts.
+    """
     model = BlogPost
     template_name="blog/index.html"
     context_object_name = 'blogposts'
@@ -37,6 +41,9 @@ class HomeView(ListView):
         return context
 
 class BlogPostUpdate(UpdateView):
+    """
+    A view that updates a given BlogPost
+    """
     model = BlogPost
     template_name_suffix = '_update_form'
     form_class = BlogPostForm
@@ -72,8 +79,9 @@ class BlogPostCreate(CreateView):
     """
     For creating new blogposts by inheriting Django builtin Class-Based-View, CreateView
     """
-    form_class = BlogPostForm
     model = BlogPost
+    form_class = BlogPostForm
+    #second_form_class = AttachmentForm
     
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
@@ -84,6 +92,27 @@ class BlogPostCreate(CreateView):
     
     def form_invalid(self, form):
         return super(BlogPostCreate, self).form_invalid(form)
+    
+    def post(self, request, *args, **kwargs):
+        blogpostform = BlogPostForm(self.request.POST or None)
+        blogpostinstance = blogpostform.save(commit=False)
+        blogpostinstance.owner = request.user
+        blogpostinstance.lastaccessed = timezone.now()
+        blogpostform.save(commit=True)
+        
+        attachment_file = Attachment(attachment = request.FILES['attachment'])
+        attachment_file.blogpost = blogpostinstance
+        attachment_file.save()
+        return self.form_valid(blogpostform)
+        
+    def get_context_data(self, **kwargs):
+        context = super(BlogPostCreate, self).get_context_data(**kwargs)
+        if 'form' not in context:
+            context['form'] = self.form_class(initial=self.get_initial())
+        if 'attachments' not in context:
+            context['attachments'] = AttachmentForm(initial=self.get_initial())
+        return context
+
 
 
 class ContactView(FormView):

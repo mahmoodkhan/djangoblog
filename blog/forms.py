@@ -1,6 +1,5 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-
 from django.contrib.auth.forms import AuthenticationForm
 
 from crispy_forms.helper import FormHelper
@@ -13,10 +12,12 @@ from .models import *
 
 class AttachmentForm(forms.ModelForm):
     """
+    Used to upload attachments to a BlogPost
     """
 
     class Meta:
         model = Attachment
+        exclude = ['created', 'updated',]
 
     def __init__(self, *args, **kwargs):
         self.helper = FormHelper()
@@ -26,7 +27,6 @@ class AttachmentForm(forms.ModelForm):
         self.helper.html5_required = True
         self.helper.form_tag = False
         super(AttachmentForm, self).__init__(*args, **kwargs)
-
 
 class BlogPostForm(forms.ModelForm):
     """
@@ -42,8 +42,9 @@ class BlogPostForm(forms.ModelForm):
         self.helper.label_class = 'col-lg-2'
         self.helper.field_class = 'col-lg-10'
         self.helper.html5_required = True
-        self.helper.add_input(Submit('submit', 'Submit'))
-        self.helper.add_input(Reset('rest', 'Reset', css_class='btn-warning'))
+        self.helper.form_tag = False
+        #self.helper.add_input(Submit('submit', 'Submit'))
+        #self.helper.add_input(Reset('rest', 'Reset', css_class='btn-warning'))
         super(BlogPostForm, self).__init__(*args, **kwargs)
 
 class ContactForm(forms.Form):

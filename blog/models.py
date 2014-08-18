@@ -82,17 +82,16 @@ class BlogPost(models.Model):
         super(BlogPost, self).save(*args, **kwargs)
 
 class Attachment(models.Model):
-    attachment = models.FileField(upload_to='attachments')
+    attachment = models.FileField(upload_to='attachments', null=True, blank=True)
     blogpost = models.ForeignKey(BlogPost, related_name = 'attachments')
-    created = models.DateTimeField(auto_now=False, auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True, auto_now_add=False)
-
+    created = models.DateTimeField(auto_now=False, auto_now_add=True, null=True, blank=True)
+    updated = models.DateTimeField(auto_now=True, auto_now_add=False, null=True, blank=True)
+    
     def get_absolute_url(self):
         """
         Used when we need to link to a specific blog post.
         """
-        return reverse('blog.views.blogpost', args=[str(self.id)])
-    
+        return reverse('detailpost', args=[str(self.id)])
 
 class Comment(models.Model):
     """
