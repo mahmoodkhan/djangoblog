@@ -102,10 +102,7 @@ class BlogPostCreate(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super(BlogPostCreate, self).get_context_data(**kwargs)
-        if self.request.POST:
-            context['attachment_form'] = AttachmentFormset(self.request.POST, self.request.FILES, initial=self.get_initial())
-        else:
-            context['attachment_form'] = AttachmentFormset(initial=self.get_initial())
+        context['attachment_form'] = AttachmentFormset(initial=self.get_initial())
         context['attachment_helper'] = AttachmentFormsetHelper()
         return context
 
