@@ -85,12 +85,20 @@ class BlogPostCreate(CreateView):
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
+        """ this is fired up first regardless of what http method is used """
         return super(BlogPostCreate, self).dispatch(*args, **kwargs)
         
     def form_valid(self, form):
+        # The current logged in user is the blogpost owner 
         form.instance.owner = self.request.user
+        
+        # do not yet commit the blogpost
         blogpost = form.save(commit=False)
+        
+        # get all of the attachments that are uploaded for the blogpost
         attachments_formset = AttachmentFormset(self.request.POST, self.request.FILES, instance=blogpost)
+        
+        # If the attachments formset is valid then save the blogpost followed by attachments
         if attachments_formset.is_valid():
             blogpost.save()
             attachments_formset.save()
@@ -101,6 +109,7 @@ class BlogPostCreate(CreateView):
         return self.render_to_response(self.get_context_data(form=form))
 
     def get_context_data(self, **kwargs):
+        """ Add the attachments formset and crispy helper to the template file """
         context = super(BlogPostCreate, self).get_context_data(**kwargs)
         context['attachment_form'] = AttachmentFormset(initial=self.get_initial())
         context['attachment_helper'] = AttachmentFormsetHelper()
