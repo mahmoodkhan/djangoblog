@@ -1,5 +1,7 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
+from django.forms.models import inlineformset_factory
+
 from django.contrib.auth.forms import AuthenticationForm
 
 from crispy_forms.helper import FormHelper
@@ -10,6 +12,26 @@ from captcha.fields import ReCaptchaField
 
 from .models import *
 
+AttachmentFormset = inlineformset_factory(BlogPost, 
+    Attachment, 
+    can_delete=False, 
+    extra=2)
+
+class AttachmentFormsetHelper(FormHelper):
+    def __init__(self, *args, **kwargs):
+        super(AttachmentFormsetHelper, self).__init__(*args, **kwargs)
+        self.html5_required = True
+        self.form_class = 'form-horizontal'
+        self.label_class = 'col-lg-2'
+        self.field_class = 'col-lg-8'
+        self.form_tag = False
+        self.render_required_fields = True
+        self.disable_csrf = True
+        self.form_show_labels = False
+        self.layout = Layout(
+            'attachment',
+        )
+
 class AttachmentForm(forms.ModelForm):
     """
     Used to upload attachments to a BlogPost
@@ -17,7 +39,7 @@ class AttachmentForm(forms.ModelForm):
 
     class Meta:
         model = Attachment
-        exclude = ['created', 'updated',]
+        exclude = ['blogpost', 'created', 'updated',]
 
     def __init__(self, *args, **kwargs):
         self.helper = FormHelper()

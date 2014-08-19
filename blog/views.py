@@ -75,45 +75,39 @@ class BlogPostDetail(DetailView):
         # Return the object
         return object
 
+
 class BlogPostCreate(CreateView):
     """
     For creating new blogposts by inheriting Django builtin Class-Based-View, CreateView
     """
     model = BlogPost
     form_class = BlogPostForm
-    #second_form_class = AttachmentForm
-    
+
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
         return super(BlogPostCreate, self).dispatch(*args, **kwargs)
-    
+        
     def form_valid(self, form):
+        form.instance.owner = self.request.user
+        blogpost = form.save(commit=False)
+        attachments_formset = AttachmentFormset(self.request.POST, self.request.FILES, instance=blogpost)
+        if attachments_formset.is_valid():
+            blogpost.save()
+            attachments_formset.save()
         return super(BlogPostCreate, self).form_valid(form)
     
     def form_invalid(self, form):
-        return super(BlogPostCreate, self).form_invalid(form)
-    
-    def post(self, request, *args, **kwargs):
-        blogpostform = BlogPostForm(self.request.POST or None)
-        blogpostinstance = blogpostform.save(commit=False)
-        blogpostinstance.owner = request.user
-        blogpostinstance.lastaccessed = timezone.now()
-        blogpostform.save(commit=True)
-        
-        attachment_file = Attachment(attachment = request.FILES['attachment'])
-        attachment_file.blogpost = blogpostinstance
-        attachment_file.save()
-        return self.form_valid(blogpostform)
-        
+        #return super(BlogPostCreate, self).form_invalid(form)
+        return self.render_to_response(self.get_context_data(form=form))
+
     def get_context_data(self, **kwargs):
         context = super(BlogPostCreate, self).get_context_data(**kwargs)
-        if 'form' not in context:
-            context['form'] = self.form_class(initial=self.get_initial())
-        if 'attachments' not in context:
-            context['attachments'] = AttachmentForm(initial=self.get_initial())
+        if self.request.POST:
+            context['attachment_form'] = AttachmentFormset(self.request.POST, self.request.FILES, initial=self.get_initial())
+        else:
+            context['attachment_form'] = AttachmentFormset(initial=self.get_initial())
+        context['attachment_helper'] = AttachmentFormsetHelper()
         return context
-
-
 
 class ContactView(FormView):
     """ 
