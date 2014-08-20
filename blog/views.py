@@ -14,6 +14,7 @@ from django.views.generic.list import ListView
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.contrib.messages.views import SuccessMessageMixin
 
 from .models import *
 from .forms import *
@@ -35,7 +36,7 @@ class HomeView(ListView):
         messages.info(self.request, 'Info world.')
         messages.success(self.request, 'Success world.')
         messages.warning(self.request, 'Warning world.')
-        messages.error(self.request, 'Error world.')
+        messages.error(self.request, 'Error <a href="#">world.</a>', extra_tags="safe")
         context = super(HomeView, self).get_context_data(**kwargs)
         context['now'] = timezone.now()
         context['code'] = """
@@ -118,13 +119,14 @@ class BlogPostDetail(DetailView):
         return object
 
 
-class BlogPostCreate(CreateView):
+class BlogPostCreate(SuccessMessageMixin, CreateView):
     """
     For creating new blogposts by inheriting Django builtin Class-Based-View, CreateView
     """
     model = BlogPost
     form_class = BlogPostForm
-
+    success_message = "%(title)s was created successfully"
+    
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
         """ this is fired up first regardless of what http method is used """
@@ -156,6 +158,13 @@ class BlogPostCreate(CreateView):
         context['attachment_form'] = AttachmentFormset(initial=self.get_initial())
         context['attachment_helper'] = AttachmentFormsetHelper()
         return context
+
+        def get_success_message(self, cleaned_data):
+        """
+        For ModelForms, to access fields from the saved object this method is overriden
+        """
+            return self.success_message % dict(cleaned_data,
+                                           title=self.object.title)
 
 class ContactView(FormView):
     """ 

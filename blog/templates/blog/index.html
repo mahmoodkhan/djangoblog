@@ -6,19 +6,6 @@
 {% block title %}Home{% endblock %}
 {% block content %}
     <div class="row">
-{% if messages %}
-    {% for message in messages %}
-            {% if 'safe' in message.tags %}
-                <div class="=alert alert-{{message.tags}} alert-dismissible" role="alert">
-                <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                {{ message|safe }}</div>
-            {% else %} 
-                <div class="alert alert-{{message.tags}} alert-dismissible" role="alert">
-                <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                {{ message }}</div>
-            {% endif %}
-    {% endfor %}
-{% endif %}
         <center> <h3> Recent Blog Posts</h3></center>
         <div class="col-sm-10 col-md-8 col-md-offset-2">
             <ul>

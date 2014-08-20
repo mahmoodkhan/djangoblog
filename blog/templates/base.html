@@ -67,11 +67,29 @@
             </div><!-- .container collapse -->
         </div><!-- .navbar collapse -->
 
+        
         <div class="container">
-            {% block content %}{% endblock %}
-        </div><!-- .container collapse -->
+            <div id = "messages">
+                {% if messages %}
+                    {% for message in messages %}
+                            {% if 'safe' in message.tags %}
+                                <div class="alert alert-{{message.level_tag}} alert-dismissible" role="alert">
+                                <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                {{ message|safe }}</div>
+                            {% else %} 
+                                <div class="alert alert-{{message.level_tag}} alert-dismissible" role="alert">
+                                <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                {{ message }}</div>
+                            {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </div><!-- .messages div collapse -->
 
-        <div id = "loading" class="modal"> </div>
+            {% block content %}
+                <!-- Content from individual pages go here -->
+            {% endblock %}
+
+        </div><!-- .container div collapse -->
 
         <!--http://getbootstrap.com/examples/sticky-footer-navbar/-->
         <div id="footer"><!-- Sticky Footer -->
@@ -84,7 +102,7 @@
                     <a href="{% url 'contact' %}" class="text-muted">Contact</a>
                 </span>
             </div>
-        </div><!-- .footer collapse -->
+        </div><!-- .footer div collapse -->
 
         <script type="text/javascript" src="{% static 'blog/js/app.js' %}"></script>
 
