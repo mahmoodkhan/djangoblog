@@ -1,7 +1,7 @@
 from django.core.urlresolvers import reverse
 from django.core.mail import send_mail
 
-from django.shortcuts import render, get_object_or_404, HttpResponse, render_to_response
+from django.shortcuts import render, get_object_or_404, HttpResponse, render_to_response, HttpResponseRedirect
 from django.template import Context, loader, RequestContext
 
 from django.utils.decorators import method_decorator
@@ -52,6 +52,54 @@ class HomeView(ListView):
         """
         return context
 
+class BlogPostCreateUpdateView(View):
+    form_class = BlogPostForm
+    template_name = 'blog/blogpost_form.html'
+    
+    def get(self, request, *args, **kwargs):
+        blogpost = self.get_object()
+        form = BlogPostForm(instance=blogpost)
+        return render_to_response(self.template_name,
+            {'form': form},
+            context_instance=self.get_context_data() )
+
+    def post(self, request, *args, **kwargs):
+        blogpost = self.get_object()
+        form = BlogPostForm(request.POST, instance=blogpost)
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def form_valid(self, form):
+        form.instance.owner = self.request.user
+        blogpost = form.save(commit=False)
+        attachments_formset = AttachmentFormset(self.request.POST, self.request.FILES, instance=blogpost)
+        if attachments_formset.is_valid():
+            blogpost.save()
+            attachments_formset.save()
+        #return HttpResponseRedirect(reverse("detailpost", kwargs={"pk": blogpost.pk}))
+        return HttpResponseRedirect(blogpost.get_absolute_url())
+
+    def form_invalid(self, form):
+        return render_to_response(self.template_name, 
+            {'form': form },
+            context_instance=self.get_context_data() )
+
+    def get_object(self):
+        try:
+            blogpost = BlogPost.objects.get(pk=self.kwargs['pk'])
+        except Exception as e:
+            blogpost = None
+        return blogpost
+
+    def get_context_data(self, **kwargs):
+        """ Add the attachments formset and crispy helper to the template file """
+        context = RequestContext(self.request)
+        context['attachment_form'] = AttachmentFormset()
+        context['attachment_helper'] = AttachmentFormsetHelper()
+        return context
+
 class BlogPostUpdate(UpdateView):
     """
     A view that updates a given BlogPost
@@ -64,7 +112,7 @@ class BlogPostUpdate(UpdateView):
     def dispatch(self, *args, **kwargs):
         """ this is fired up first regardless of what http method is used """
         return super(BlogPostUpdate, self).dispatch(*args, **kwargs)
-
+    
     def form_valid(self, form):
         # The current logged in user is the blogpost owner 
         form.instance.owner = self.request.user
@@ -91,8 +139,6 @@ class BlogPostUpdate(UpdateView):
         context['attachment_form'] = AttachmentFormset(initial=self.get_initial())
         context['attachment_helper'] = AttachmentFormsetHelper()
         return context
-
-
 
 class BlogPostDetail(DetailView):
     model = BlogPost
