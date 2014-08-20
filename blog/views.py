@@ -1,14 +1,19 @@
 from django.core.urlresolvers import reverse
 from django.core.mail import send_mail
+
 from django.shortcuts import render, get_object_or_404, HttpResponse, render_to_response
 from django.template import Context, loader, RequestContext
+
 from django.utils.decorators import method_decorator
 from django.utils import timezone
+
 from django.views.generic import RedirectView, FormView, View, DetailView, CreateView
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic.list import ListView
+
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 from .models import *
 from .forms import *
@@ -25,6 +30,12 @@ class HomeView(ListView):
     queryset = BlogPost.objects.filter(published=True).filter(private=False)
     
     def get_context_data(self, **kwargs):
+        messages.set_level(self.request, messages.DEBUG)
+        messages.debug(self.request, 'Debug world.')
+        messages.info(self.request, 'Info world.')
+        messages.success(self.request, 'Success world.')
+        messages.warning(self.request, 'Warning world.')
+        messages.error(self.request, 'Error world.')
         context = super(HomeView, self).get_context_data(**kwargs)
         context['now'] = timezone.now()
         context['code'] = """

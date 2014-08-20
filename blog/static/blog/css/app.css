@@ -33,3 +33,12 @@ body > .container {
   padding-right: 15px;
   padding-left: 15px;
 }
+
+/*
+Alert
+*/
+.alert-debug {
+    color: #828293;
+    background-color: #F5EBFF;
+    border-color: #DFDBE4;
+}
