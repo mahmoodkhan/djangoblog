@@ -159,12 +159,12 @@ class BlogPostCreate(SuccessMessageMixin, CreateView):
         context['attachment_helper'] = AttachmentFormsetHelper()
         return context
 
-        def get_success_message(self, cleaned_data):
+    def get_success_message(self, cleaned_data):
         """
         For ModelForms, to access fields from the saved object this method is overriden
         """
-            return self.success_message % dict(cleaned_data,
-                                           title=self.object.title)
+        return self.success_message % dict(cleaned_data,
+                                       title=self.object.title)
 
 class ContactView(FormView):
     """ 
