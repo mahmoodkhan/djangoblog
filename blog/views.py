@@ -55,6 +55,11 @@ class HomeView(ListView):
 class BlogPostCreateUpdateView(View):
     form_class = BlogPostForm
     template_name = 'blog/blogpost_form.html'
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        """ this is fired up first regardless of what http method is used """
+        return super(BlogPostCreateUpdateView, self).dispatch(*args, **kwargs)
     
     def get(self, request, *args, **kwargs):
         blogpost = self.get_object()
