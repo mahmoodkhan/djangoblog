@@ -12,6 +12,10 @@ from captcha.fields import ReCaptchaField
 
 from .models import *
 
+"""
+This is a formset that will be passed to the template together with the 
+BlogPostForm so that a user can upload multiple files to blogpost.
+"""
 AttachmentFormset = inlineformset_factory(BlogPost, 
     Attachment, 
     can_delete=True, 
