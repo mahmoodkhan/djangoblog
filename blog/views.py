@@ -78,8 +78,7 @@ class BlogPostCreateView(SuccessMessageMixin, BlogPostMixin, CreateView):
         """
         For ModelForms, to access fields from the saved object this method is overriden
         """
-        return self.success_message % dict(cleaned_data,
-                                       title=self.object.title)
+        return self.success_message % dict(cleaned_data, title=self.object.title)
 
 class BlogPostDetail(DetailView):
     model = BlogPost
