@@ -18,7 +18,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 
 from .models import *
 from .forms import *
-
+from .mixins import *
 
 class HomeView(ListView):
     """
@@ -51,6 +51,75 @@ class HomeView(ListView):
         </code>
         """
         return context
+
+class BlogPostUpdateView(BlogPostMixin, UpdateView):
+    model = BlogPost
+    form_class = BlogPostForm
+    template_name = 'blog/blogpost_form.html'
+    
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super(BlogPostUpdateView, self).get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super(BlogPostUpdateView, self).post(request, *args, **kwargs)
+
+        
+class BlogPostCreateView(BlogPostMixin, CreateView):
+    model = BlogPost
+    form_class = BlogPostForm
+    template_name = 'blog/blogpost_form.html'
+    
+    def get(self, request, *args, **kwargs):
+        self.object = None
+        return super(BlogPostCreateView, self).get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        self.object = None
+        return super(BlogPostCreateView, self).post(request, *args, **kwargs)
+
+
+class BlogPostUpdate(UpdateView):
+    """
+    A view that updates a given BlogPost
+    """
+    model = BlogPost
+    template_name_suffix = '_update_form'
+    form_class = BlogPostForm
+    
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        """ this is fired up first regardless of what http method is used """
+        return super(BlogPostUpdate, self).dispatch(*args, **kwargs)
+    
+    def form_valid(self, form):
+        # The current logged in user is the blogpost owner 
+        form.instance.owner = self.request.user
+        
+        # do not yet commit the blogpost
+        blogpost = form.save(commit=False)
+        
+        # get all of the attachments that are uploaded for the blogpost
+        attachments_formset = AttachmentFormset(self.request.POST, self.request.FILES, instance=blogpost)
+        
+        # If the attachments formset is valid then save the blogpost followed by attachments
+        if attachments_formset.is_valid():
+            blogpost.save()
+            attachments_formset.save()
+        return super(BlogPostUpdate, self).form_valid(form)
+
+    def form_invalid(self, form):
+        #return super(BlogPostCreate, self).form_invalid(form)
+        return self.render_to_response(self.get_context_data(form=form))
+    
+    def get_context_data(self, **kwargs):
+        """ Add the attachments formset and crispy helper to the template file """
+        context = super(BlogPostUpdate, self).get_context_data(**kwargs)
+        context['attachment_form'] = AttachmentFormset(initial=self.get_initial())
+        context['attachment_helper'] = AttachmentFormsetHelper()
+        return context
+
 
 class BlogPostCreateUpdateView(View):
     form_class = BlogPostForm
@@ -102,46 +171,6 @@ class BlogPostCreateUpdateView(View):
         """ Add the attachments formset and crispy helper to the template file """
         context = RequestContext(self.request)
         context['attachment_form'] = AttachmentFormset()
-        context['attachment_helper'] = AttachmentFormsetHelper()
-        return context
-
-class BlogPostUpdate(UpdateView):
-    """
-    A view that updates a given BlogPost
-    """
-    model = BlogPost
-    template_name_suffix = '_update_form'
-    form_class = BlogPostForm
-    
-    @method_decorator(login_required)
-    def dispatch(self, *args, **kwargs):
-        """ this is fired up first regardless of what http method is used """
-        return super(BlogPostUpdate, self).dispatch(*args, **kwargs)
-    
-    def form_valid(self, form):
-        # The current logged in user is the blogpost owner 
-        form.instance.owner = self.request.user
-        
-        # do not yet commit the blogpost
-        blogpost = form.save(commit=False)
-        
-        # get all of the attachments that are uploaded for the blogpost
-        attachments_formset = AttachmentFormset(self.request.POST, self.request.FILES, instance=blogpost)
-        
-        # If the attachments formset is valid then save the blogpost followed by attachments
-        if attachments_formset.is_valid():
-            blogpost.save()
-            attachments_formset.save()
-        return super(BlogPostUpdate, self).form_valid(form)
-
-    def form_invalid(self, form):
-        #return super(BlogPostCreate, self).form_invalid(form)
-        return self.render_to_response(self.get_context_data(form=form))
-    
-    def get_context_data(self, **kwargs):
-        """ Add the attachments formset and crispy helper to the template file """
-        context = super(BlogPostUpdate, self).get_context_data(**kwargs)
-        context['attachment_form'] = AttachmentFormset(initial=self.get_initial())
         context['attachment_helper'] = AttachmentFormsetHelper()
         return context
 

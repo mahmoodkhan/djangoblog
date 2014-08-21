@@ -48,7 +48,7 @@ class BlogPostForm(forms.ModelForm):
         self.helper.form_class = 'form-horizontal'
         self.helper.label_class = 'col-lg-2'
         self.helper.field_class = 'col-lg-10'
-        self.helper.html5_required = True
+        self.helper.html5_required = False
         self.helper.form_tag = False
         #self.helper.add_input(Submit('submit', 'Submit'))
         #self.helper.add_input(Reset('rest', 'Reset', css_class='btn-warning'))
