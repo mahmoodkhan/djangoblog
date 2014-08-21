@@ -47,6 +47,11 @@ class HomeView(ListView):
         return context
 
 class BlogPostUpdateView(BlogPostMixin, UpdateView):
+    """
+    A view that updates existing blogposts. The form_valid and form_invalid methods
+    are handled in in BlogPostMixin because that code is shared between this view and 
+    the CreateView for blogpost.
+    """
     model = BlogPost
     form_class = BlogPostForm
     template_name = 'blog/blogpost_form.html'
@@ -61,6 +66,11 @@ class BlogPostUpdateView(BlogPostMixin, UpdateView):
 
         
 class BlogPostCreateView(SuccessMessageMixin, BlogPostMixin, CreateView):
+    """
+    A view that creates new blogposts. the form_valid and form_invalid is 
+    handled in the BlogPostMixin because the code in those methods is the
+    same in this view and in the UpdateView.
+    """ 
     model = BlogPost
     form_class = BlogPostForm
     template_name = 'blog/blogpost_form.html'
@@ -81,6 +91,9 @@ class BlogPostCreateView(SuccessMessageMixin, BlogPostMixin, CreateView):
         return self.success_message % dict(cleaned_data, title=self.object.title)
 
 class BlogPostDetail(DetailView):
+    """
+    Show a read-only detailed view of the blogpost object with all its attributes.
+    """
     model = BlogPost
     
     def get_context_data(self, **kwargs):
