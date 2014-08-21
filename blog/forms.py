@@ -14,7 +14,8 @@ from .models import *
 
 AttachmentFormset = inlineformset_factory(BlogPost, 
     Attachment, 
-    can_delete=False, 
+    can_delete=True, 
+    exclude=('created', 'updated',),
     extra=2)
 
 class AttachmentFormsetHelper(FormHelper):
