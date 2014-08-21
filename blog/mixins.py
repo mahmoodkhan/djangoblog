@@ -3,6 +3,9 @@ import json
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.generic import View
+from django.utils.decorators import method_decorator
+
+from django.contrib.auth.decorators import login_required
 
 from .models import *
 from .forms import *
@@ -11,6 +14,12 @@ class BlogPostMixin(View):
     """
     A mixin that renders BlogPost form on GET request and processes it on POST request.
     """
+    
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        """ this is fired up first regardless of what http method is used """
+        return super(BlogPostMixin, self).dispatch(*args, **kwargs)
+
     def get(self, request, *args, **kwargs):
         """
         Handles GET requests and instantiates either a blank form when called from a view 

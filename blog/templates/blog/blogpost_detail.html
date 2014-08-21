@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
 {% load crispy_forms_tags %}
+{% load myfilters %}
 
 {% block title %} Create a new blog-post{% endblock %}
 
@@ -9,7 +10,7 @@
         <div class="col-sm-10 col-md-8 col-md-offset-2">
             <h2> {{ object.title}}</h2>
             <p>
-            {{ object.content | safe }}
+            {{ object.content | pygmentize|safe }}
             </p>
             <p>
                 {% for a in attachments %}
