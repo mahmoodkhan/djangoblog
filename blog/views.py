@@ -26,11 +26,11 @@ class HomeView(ListView):
     
     def get_context_data(self, **kwargs):
         messages.set_level(self.request, messages.DEBUG)
-        messages.debug(self.request, 'Debug world.')
-        messages.info(self.request, 'Info world.')
-        messages.success(self.request, 'Success world.')
-        messages.warning(self.request, 'Warning world.')
-        messages.error(self.request, 'Error <a href="#">world.</a>', extra_tags="safe")
+        #messages.debug(self.request, 'Debug world.')
+        #messages.info(self.request, 'Info world.')
+        #messages.success(self.request, 'Success world.')
+        #messages.warning(self.request, 'Warning world.')
+        #messages.error(self.request, 'Error <a href="#">world.</a>', extra_tags="safe")
         context = super(HomeView, self).get_context_data(**kwargs)
         context['now'] = timezone.now()
         context['code'] = """
