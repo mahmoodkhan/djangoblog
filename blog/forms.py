@@ -19,7 +19,8 @@ BlogPostForm so that a user can upload multiple files to blogpost.
 AttachmentFormset = inlineformset_factory(BlogPost, 
     Attachment, 
     can_delete=True, 
-    exclude=('created', 'updated',),
+    #exclude=('created', 'updated',),
+    fields=('attachment', 'blogpost',),
     extra=2)
 
 class AttachmentFormsetHelper(FormHelper):
