@@ -59,6 +59,7 @@ class BlogPostForm(forms.ModelForm):
         #self.helper.add_input(Submit('submit', 'Submit'))
         #self.helper.add_input(Reset('rest', 'Reset', css_class='btn-warning'))
         super(BlogPostForm, self).__init__(*args, **kwargs)
+        self.fields['category'].empty_label = ""
 
 class ContactForm(forms.Form):
     """
