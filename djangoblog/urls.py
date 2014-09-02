@@ -1,4 +1,5 @@
 from django.views.generic import TemplateView
+from django.views.generic.dates import ArchiveIndexView
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from blog.views import *
@@ -13,6 +14,7 @@ urlpatterns = patterns('',
     url(r'^about/$', TemplateView.as_view(template_name='about.html'), name='about'),
     url(r'^contact/$', ContactView.as_view(), name='contact'),
     url(r'^newpost/$', BlogPostCreateView.as_view(), name='newblogpost'),
+    url(r'^archive/$', ArchiveIndexView.as_view(model=BlogPost, date_field="pub_date"), name='blogpost_archive'),
     
     # To view a blog-post by slug in the url
     #url(r'^detailpost/(?P<slug>[\w\-]+)/$', BlogPostDetail.as_view(), name='detailpost'),

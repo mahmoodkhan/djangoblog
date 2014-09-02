@@ -72,7 +72,7 @@ class BlogPost(models.Model):
         """
         Used when we need to link to a specific blog post.
         """
-        return reverse('detailpost', args=[str(self.id)])
+        return reverse('detailpost', kwargs={'pk': self.pk}) #args=[str(self.id)])
     
     def save(self, *args, **kwargs):
         if self.pk is None:        
