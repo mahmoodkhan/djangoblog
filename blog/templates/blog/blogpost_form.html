@@ -4,10 +4,16 @@
 
 {% block title %} Create a new blog-post{% endblock %}
 
+{% block page_title %}
+    New Post
+{% endblock %}
+{% block description %}
+    Create a new blog post
+{% endblock %}
+
 {% block content %}
     <div class="row">
-        <div class="col-sm-10 col-md-8 col-md-offset-2">
-            <h2> Create a new blog-post entry</h2>
+        <div class="col-md-12">
             <form class="form-horizontal" method="post" enctype="multipart/form-data">
                 {% crispy form form.helper %}
                 {% crispy attachment_form attachment_helper %}

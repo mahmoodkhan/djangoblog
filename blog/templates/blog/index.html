@@ -4,9 +4,16 @@
 {% load myfilters %}
 
 {% block title %}Home{% endblock %}
+
+{% block page_title %}
+    Recent Blog Posts
+{% endblock %}
+{% block description %}
+    This a reverse chronological order of the top 10 posts
+{% endblock %}
+
 {% block content %}
     <div class="row">
-        <center> <h3> Recent Blog Posts</h3></center>
         <div class="col-sm-10 col-md-8 col-md-offset-2">
             <ul>
                 {% for blogpost in blogposts %}

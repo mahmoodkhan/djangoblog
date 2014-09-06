@@ -5,10 +5,16 @@
 
 {% block title %} Create a new blog-post{% endblock %}
 
+{% block page_title %}
+    {{ object.title}}
+{% endblock %}
+{% block description %}
+    Published on {{ object.pub_date}} and last updated on {{ object.updated }}
+{% endblock %}
+
 {% block content %}
     <div class="row">
-        <div class="col-sm-10 col-md-8 col-md-offset-2">
-            <h2> {{ object.title}}</h2>
+        <div class="col-md-12 col-md-offset-0">
             <p>
             {{ object.content | pygmentize|safe }}
             </p>

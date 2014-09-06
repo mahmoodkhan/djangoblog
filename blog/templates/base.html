@@ -70,26 +70,45 @@
 
         
         <div class="container">
-            <div id = "messages">
-                {% if messages %}
-                    {% for message in messages %}
-                            {% if 'safe' in message.tags %}
-                                <div class="alert alert-{{message.level_tag}} alert-dismissible" role="alert">
-                                <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                                {{ message|safe }}</div>
-                            {% else %} 
-                                <div class="alert alert-{{message.level_tag}} alert-dismissible" role="alert">
-                                <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                                {{ message }}</div>
-                            {% endif %}
-                    {% endfor %}
-                {% endif %}
-            </div><!-- .messages div collapse -->
+            <div class="row">
+                <div class = "col-md-9" style="border-right:1px solid #ccc">
+                    <div id = "messages">
+                        {% if messages %}
+                            {% for message in messages %}
+                                    {% if 'safe' in message.tags %}
+                                        <div class="alert alert-{{message.level_tag}} alert-dismissible" role="alert">
+                                        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                        {{ message|safe }}</div>
+                                    {% else %} 
+                                        <div class="alert alert-{{message.level_tag}} alert-dismissible" role="alert">
+                                        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                        {{ message }}</div>
+                                    {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    </div><!-- .messages div collapse -->
 
-            {% block content %}
-                <!-- Content from individual pages go here -->
-            {% endblock %}
 
+                    <div class="page-header" align = "center">
+                        <h4>
+                            {% block page_title %} {% endblock %} 
+                            <small><p>{% block description %} {% endblock %}</p></small>
+                        </h4>
+                    </div>
+
+
+                    {% block content %}
+
+                    {% endblock %}
+
+                </div> <!-- col-xs-9 div collapse -->
+
+                <div class = "col-md-3">
+                    <div class="page-header">
+                        <h4>A Trove of Knowledge <small><p>Previous blogposts</p></small></h4>
+                    </div>
+                </div> <!--  col-md-3 div collapse -->
+            </div>
         </div><!-- .container div collapse -->
 
         <!--http://getbootstrap.com/examples/sticky-footer-navbar/-->
