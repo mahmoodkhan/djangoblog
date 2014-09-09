@@ -14,6 +14,21 @@ from .models import *
 from .forms import *
 from .mixins import *
 
+class ArchiveView(View):
+    posts = BlogPost.objects.datetimes("pub_date", "month")
+    prev_year = None
+    years = {}
+    months = []
+    for p in posts:
+        if p.year == prev_year:
+            #add to the list o same set_level
+            months.append(p.month)
+        else:
+            # extend the set and start a new list for it.
+            years[p.year] = months
+            m = []
+        prev_year = p.year
+
 class HomeView(ListView):
     """
     This is the home view, which subclasses ListView,a built-in view, for listing

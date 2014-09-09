@@ -14,7 +14,7 @@
 
 {% block content %}
     <div class="row">
-        <div class="col-sm-10 col-md-8 col-md-offset-2">
+        <div class="col-md-12 col-md-offset-0">
             <ul>
                 {% for blogpost in blogposts %}
                     <li>{{ blogpost.pub_date|date }} - <a href="{{ blogpost.get_absolute_url }}">{{ blogpost.title }}</a> </li>
