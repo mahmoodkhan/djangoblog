@@ -19,15 +19,18 @@ class ArchiveView(View):
     prev_year = None
     years = {}
     months = []
+    x = 0
     for p in posts:
-        if p.year == prev_year:
+        months.append(p.month)
+        if p.year == prev_year and x > 0:
             #add to the list o same set_level
-            months.append(p.month)
+            pass
         else:
             # extend the set and start a new list for it.
             years[p.year] = months
-            m = []
+            months = []
         prev_year = p.year
+        x += 1
 
 class HomeView(ListView):
     """
