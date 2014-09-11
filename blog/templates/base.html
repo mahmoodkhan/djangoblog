@@ -107,8 +107,20 @@
                     <div class="page-header">
                         <h4>A Trove of Knowledge <small><p>Previous blogposts</p></small></h4>
                     </div>
-                    {% block archive_data %}
-                    {% endblock %}
+                    <div>
+                        <ul>
+                            {% for year, months in archive_data.items %}
+                            <li>  
+                                {{ year }}
+                                <ul>
+                                    {% for month in months %}
+                                        <li> <a href="{% url 'monthly' year month %}"> {{month}}</a> </li>
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
                 </div> <!--  col-md-3 div collapse -->
             </div>
         </div><!-- .container div collapse -->

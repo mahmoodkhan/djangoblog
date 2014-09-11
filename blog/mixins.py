@@ -10,6 +10,39 @@ from django.contrib.auth.decorators import login_required
 from .models import *
 from .forms import *
 
+class BlogPostArchiveHierarchyMixin(View):
+    """
+    A mixin that creates a structure shown below based on pub_date of blogposts
+    2011
+        Jan
+        Feb
+    2012
+        Sep
+        Oct
+    etc.
+    This mixin is available in almost all views in order to maintain that right side
+    hierarchical view of previous blogposts in all views
+    """
+    def get_blogposts_archive_info(self):
+        posts = BlogPost.objects.datetimes("pub_date", "month").filter(published=True).filter(private=False)
+        prev_year = None
+        years = {}
+        months = []
+        for p in posts:
+            if prev_year != None and prev_year != p.year:
+                years[prev_year] = months
+                months = []
+            months.append(p.strftime("%b"))
+            prev_year = p.year
+        years[prev_year] = months
+        return years
+
+    def get_context_data(self, **kwargs):
+        context = super(BlogPostArchiveHierarchyMixin, self).get_context_data(**kwargs)
+        context['archive_data'] = self.get_blogposts_archive_info()
+        return context
+
+
 class BlogPostMixin(View):
     """
     A mixin that renders BlogPost form on GET request and processes it on POST request.

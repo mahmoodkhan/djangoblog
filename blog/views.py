@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.utils import timezone
 
 from django.views.generic import RedirectView, FormView, DetailView, CreateView
+from django.views.generic.dates import ArchiveIndexView, MonthArchiveView, YearArchiveView
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic.list import ListView
 
@@ -14,7 +15,7 @@ from .models import *
 from .forms import *
 from .mixins import *
 
-class HomeView(ListView):
+class HomeView(BlogPostArchiveHierarchyMixin, ListView):
     """
     This is the home view, which subclasses ListView,a built-in view, for listing
     the 5 most recent blog-posts.
@@ -23,20 +24,6 @@ class HomeView(ListView):
     template_name="blog/index.html"
     context_object_name = 'blogposts'
     queryset = BlogPost.objects.filter(published=True).filter(private=False)
-    
-    def get_blogposts_archive_info(self):
-        posts = BlogPost.objects.datetimes("pub_date", "month")
-        prev_year = None
-        years = {}
-        months = []
-        for p in posts:
-            if prev_year != None and prev_year != p.year:
-                years[prev_year] = months
-                months = []
-            months.append(p.strftime("%b"))
-            prev_year = p.year
-        years[prev_year] = months
-        return years
 
     def get_context_data(self, **kwargs):
         messages.set_level(self.request, messages.DEBUG)
@@ -58,10 +45,10 @@ class HomeView(ListView):
                 return value.lower()
         </code>
         """
-        context['archive_data'] = self.get_blogposts_archive_info()
+        #context['archive_data'] = self.get_blogposts_archive_info()
         return context
 
-class BlogPostUpdateView(BlogPostMixin, UpdateView):
+class BlogPostUpdateView(BlogPostMixin, BlogPostArchiveHierarchyMixin, UpdateView):
     """
     A view that updates existing blogposts. The form_valid and form_invalid methods
     are handled in in BlogPostMixin because that code is shared between this view and 
@@ -80,7 +67,7 @@ class BlogPostUpdateView(BlogPostMixin, UpdateView):
         return super(BlogPostUpdateView, self).post(request, *args, **kwargs)
 
         
-class BlogPostCreateView(SuccessMessageMixin, BlogPostMixin, CreateView):
+class BlogPostCreateView(SuccessMessageMixin, BlogPostMixin, BlogPostArchiveHierarchyMixin, CreateView):
     """
     A view that creates new blogposts. the form_valid and form_invalid is 
     handled in the BlogPostMixin because the code in those methods is the
@@ -105,7 +92,7 @@ class BlogPostCreateView(SuccessMessageMixin, BlogPostMixin, CreateView):
         """
         return self.success_message % dict(cleaned_data, title=self.object.title)
 
-class BlogPostDetail(DetailView):
+class BlogPostDetail(BlogPostArchiveHierarchyMixin, DetailView):
     """
     Show a read-only detailed view of the blogpost object with all its attributes.
     """
@@ -132,7 +119,27 @@ class BlogPostDetail(DetailView):
         object.save()
         return object
 
-class ContactView(FormView):
+class BlogPostYearArchiveView(YearArchiveView):
+    """
+    Annual View of BlogPosts by pub_date.
+    """
+    queryset = BlogPost.objects.filter(published=True).filter(private=False)
+    date_field = "pub_date"
+    make_object_list = True
+    allow_future = True
+
+class BlogPostMonthArchiveView(MonthArchiveView):
+    """
+    Monthly view of Blogposts by pub_date
+    """
+    queryset = BlogPost.objects.filter(published=True).filter(private=False)
+    date_field = "pub_date"
+    make_object_list = True
+    allow_future = True
+    paginate_by=12
+    #month_format='%m' # month number
+
+class ContactView(BlogPostArchiveHierarchyMixin, FormView):
     """ 
     A class based view that inherits from FormView, a generic view in Django, to provide
     a Contact form for site visitors to use to get contact the site owner
