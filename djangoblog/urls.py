@@ -1,5 +1,4 @@
 from django.views.generic import TemplateView
-from django.views.generic.dates import ArchiveIndexView
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from blog.views import *
@@ -14,7 +13,7 @@ urlpatterns = patterns('',
     url(r'^about/$', TemplateView.as_view(template_name='about.html'), name='about'),
     url(r'^contact/$', ContactView.as_view(), name='contact'),
 
-    url(r'^archive/index/$', ArchiveIndexView.as_view(model=BlogPost, date_field="pub_date"), name='blogpost_archive'),
+    url(r'^archive/recent/$', BlogPostArchiveIndexView.as_view(), name='archive_recent'),
     url(r'^archive/monthly/(?P<year>\d{4})/(?P<month>[a-z, A-Z]{3})/$', BlogPostMonthArchiveView.as_view(), name="monthly"),
     url(r'^archive/yearly/(?P<year>\d{4})/$', BlogPostYearArchiveView.as_view(), name="yearly"),
 

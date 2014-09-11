@@ -119,7 +119,15 @@ class BlogPostDetail(BlogPostArchiveHierarchyMixin, DetailView):
         object.save()
         return object
 
-class BlogPostYearArchiveView(YearArchiveView):
+class BlogPostArchiveIndexView(BlogPostArchiveHierarchyMixin, ArchiveIndexView):
+    """
+    A top-level index page showing the “latest” objects, by date.
+    """
+    queryset = BlogPost.objects.filter(published=True).filter(private=False)
+    date_field = "pub_date"
+    allow_future = True
+    
+class BlogPostYearArchiveView(BlogPostArchiveHierarchyMixin, YearArchiveView):
     """
     Annual View of BlogPosts by pub_date.
     """
@@ -128,13 +136,12 @@ class BlogPostYearArchiveView(YearArchiveView):
     make_object_list = True
     allow_future = True
 
-class BlogPostMonthArchiveView(MonthArchiveView):
+class BlogPostMonthArchiveView(BlogPostArchiveHierarchyMixin, MonthArchiveView):
     """
     Monthly view of Blogposts by pub_date
     """
     queryset = BlogPost.objects.filter(published=True).filter(private=False)
     date_field = "pub_date"
-    make_object_list = True
     allow_future = True
     paginate_by=12
     #month_format='%m' # month number
