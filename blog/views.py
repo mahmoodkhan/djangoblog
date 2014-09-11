@@ -14,24 +14,6 @@ from .models import *
 from .forms import *
 from .mixins import *
 
-class ArchiveView(View):
-    posts = BlogPost.objects.datetimes("pub_date", "month")
-    prev_year = None
-    years = {}
-    months = []
-    x = 0
-    for p in posts:
-        months.append(p.month)
-        if p.year == prev_year and x > 0:
-            #add to the list o same set_level
-            pass
-        else:
-            # extend the set and start a new list for it.
-            years[p.year] = months
-            months = []
-        prev_year = p.year
-        x += 1
-
 class HomeView(ListView):
     """
     This is the home view, which subclasses ListView,a built-in view, for listing
@@ -42,6 +24,20 @@ class HomeView(ListView):
     context_object_name = 'blogposts'
     queryset = BlogPost.objects.filter(published=True).filter(private=False)
     
+    def get_blogposts_archive_info(self):
+        posts = BlogPost.objects.datetimes("pub_date", "month")
+        prev_year = None
+        years = {}
+        months = []
+        for p in posts:
+            if prev_year != None and prev_year != p.year:
+                years[prev_year] = months
+                months = []
+            months.append(p.strftime("%b"))
+            prev_year = p.year
+        years[prev_year] = months
+        return years
+
     def get_context_data(self, **kwargs):
         messages.set_level(self.request, messages.DEBUG)
         #messages.debug(self.request, 'Debug world.')
@@ -62,6 +58,7 @@ class HomeView(ListView):
                 return value.lower()
         </code>
         """
+        context['archive_data'] = self.get_blogposts_archive_info()
         return context
 
 class BlogPostUpdateView(BlogPostMixin, UpdateView):

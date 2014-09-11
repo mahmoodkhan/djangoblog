@@ -29,4 +29,23 @@
     <div>
         {{ code|pygmentize|safe }}
         </div>
+
+{% endblock %}
+
+{% block archive_data %}
+    <div>
+        {{ archive_data }}
+        <ul>
+        {% for key,value in archive_data.items %}
+          <li>
+          {{ key }} : {{ value }}
+          <ul>
+          {% for i in value %}
+            <li> <a href="{% url 'monthly' %}?year={{key}}&month={{i}}"> {{i}}</a> </li>
+          {% endfor %}
+          </ul>
+          </li>
+        {% endfor %}
+        </ul>
+    </div>
 {% endblock %}

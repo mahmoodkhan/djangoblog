@@ -107,6 +107,8 @@
                     <div class="page-header">
                         <h4>A Trove of Knowledge <small><p>Previous blogposts</p></small></h4>
                     </div>
+                    {% block archive_data %}
+                    {% endblock %}
                 </div> <!--  col-md-3 div collapse -->
             </div>
         </div><!-- .container div collapse -->
@@ -123,8 +125,6 @@
                 </span>
             </div>
         </div><!-- .footer div collapse -->
-
-        
 
         <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
         <script type="text/javascript" src="{% static 'blog/js/jquery-1.11.0.min.js' %}"></script>
