@@ -95,24 +95,19 @@
                             <small><p>{% block description %} {% endblock %}</p></small>
                         </h4>
                     </div>
-
-
-                    {% block content %}
-
-                    {% endblock %}
-
+                    {% block content %} {% endblock %}
                 </div> <!-- col-xs-9 div collapse -->
 
+                <!-- RIGHT SIDEBAR -->
                 <div class = "col-md-3">
                     <div class="page-header">
                         <h4>A Trove of Knowledge <small><p>Previous blogposts</p></small></h4>
                     </div>
                     <div>
-                        <ul>
+                        <ul class="nav nav-list">
                             {% for year, months in archive_data.items %}
-                            <li>  
-                                {{ year }}
-                                <ul>
+                            <li><label class="tree-toggler nav-header"><span class="glyphicon glyphicon-chevron-down"></span> <a href="{% url 'yearly' year %}">  {{ year }}</a></label>
+                                <ul class = "tree">
                                     {% for month in months %}
                                         <li> <a href="{% url 'monthly' year month %}"> {{month}}</a> </li>
                                     {% endfor %}
@@ -121,8 +116,8 @@
                             {% endfor %}
                         </ul>
                     </div>
-                </div> <!--  col-md-3 div collapse -->
-            </div>
+                </div> <!--  col-md-3 div collapse END RIGHT SIDEBAR-->
+            </div> <!-- div row collapse -->
         </div><!-- .container div collapse -->
 
         <!--http://getbootstrap.com/examples/sticky-footer-navbar/-->
@@ -146,5 +141,13 @@
         <!-- Bootstrap compiled javascript plugins -->
         <script type="text/javascript" src="{% static 'blog/js/bootstrap.min.js' %}"></script>
         <script type="text/javascript" src="{% static 'blog/js/app.js' %}"></script>
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $('label.tree-toggler').click(function () {
+                    $(this).parent().children('ul.tree').toggle(100);
+                    $(this).children('span').toggleClass( "glyphicon glyphicon-chevron-down glyphicon glyphicon-chevron-right");
+                });
+            });
+        </script>
     </body>
 </html>
