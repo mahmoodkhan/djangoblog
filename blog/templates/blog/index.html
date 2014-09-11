@@ -41,7 +41,7 @@
           {{ key }} : {{ value }}
           <ul>
           {% for i in value %}
-            <li> <a href="{% url 'monthly' %}?year={{key}}&month={{i}}"> {{i}}</a> </li>
+            <li> <a href="{% url 'monthly' key i %}"> {{i}}</a> </li>
           {% endfor %}
           </ul>
           </li>

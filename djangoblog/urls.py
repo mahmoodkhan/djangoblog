@@ -17,8 +17,8 @@ urlpatterns = patterns('',
     url(r'^archive/index/$', ArchiveIndexView.as_view(model=BlogPost, date_field="pub_date"), name='blogpost_archive'),
     
     #http://localhost:8000/archive/monthly/?year=2013&month=feb
-    url(r'^archive/monthly/$', MonthArchiveView.as_view(model=BlogPost, date_field="pub_date", paginate_by=12), name='monthly'),
-    url(r'^archive/monthly/(?P<year>\d{4})/(?P<month>\d+)/$', MonthArchiveView.as_view(model=BlogPost, date_field="pub_date", month_format='%m'), name="monthly2"),
+    url(r'^archive/monthly/$', MonthArchiveView.as_view(model=BlogPost, date_field="pub_date", paginate_by=12), name='monthly2'),
+    url(r'^archive/monthly/(?P<year>\d{4})/(?P<month>[a-z, A-Z]{3})/$', MonthArchiveView.as_view(model=BlogPost, date_field="pub_date"), name="monthly"),
     
     #http://localhost:8000/archive/yearly/?year=2013
     url(r'^archive/yearly/$', YearArchiveView.as_view(model=BlogPost, date_field="pub_date", make_object_list = True), name='yearly'),
