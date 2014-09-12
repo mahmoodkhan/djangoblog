@@ -4,6 +4,14 @@
 
 {% block title %} Create a new blog-post{% endblock %}
 
+{% block page_title %}
+    Archive for {{ month|date:"F" }} {{ month.year }}
+{% endblock %}
+{% block description %}
+    A list of all articles that were published during the month of {{ month|date:"F" }}, {{ month.year }}
+{% endblock %}
+
+
 {% block content %}
     <div class="row">
         <div class="col-sm-10 col-md-8 col-md-offset-2">

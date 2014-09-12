@@ -2,7 +2,14 @@
 {% load staticfiles %}
 {% load crispy_forms_tags %}
 
-{% block title %} Create a new blog-post{% endblock %}
+{% block title %} Annual View of BlogPosts{% endblock %}
+
+{% block page_title %}
+    Archive for {{ year|date:"Y" }}
+{% endblock %}
+{% block description %}
+    A list of all articles that were published during the calendar year {{ year|date:"Y" }}
+{% endblock %}
 
 {% block content %}
     <div class="row">
@@ -15,7 +22,6 @@
             </ul>
             
             <div>
-                <h1>All Articles for {{ year|date:"Y" }}</h1>
                 {% for obj in object_list %}
                     <p>
                         {{ obj.title }} - {{ obj.pub_date|date:"F j, Y" }}
