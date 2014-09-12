@@ -71,7 +71,7 @@
         
         <div class="container">
             <div class="row">
-                <div class = "col-md-9" style="border-right:1px solid #ccc">
+                <div class = "col-md-10" style="border-right:0.5px solid #ccc">
                     <div id = "messages">
                         {% if messages %}
                             {% for message in messages %}
@@ -99,14 +99,18 @@
                 </div> <!-- col-xs-9 div collapse -->
 
                 <!-- RIGHT SIDEBAR -->
-                <div class = "col-md-3">
+                <div class = "col-md-2" style="border-left:0.5px solid #ccc">
                     <div class="page-header">
-                        <h4>A Trove of Knowledge <small><p>Previous blogposts</p></small></h4>
+                        <h4>Articles Trove<small><p>Previous blogposts</p></small></h4>
                     </div>
                     <div>
                         <ul class="nav nav-list">
                             {% for year, months in archive_data.items %}
-                            <li><label class="tree-toggler nav-header"><span class="glyphicon glyphicon-chevron-down"></span> <a href="{% url 'yearly' year %}">  {{ year }}</a></label>
+                            <li>
+                                <label class="tree-toggler nav-header">
+                                    <span class="glyphicon glyphicon-chevron-down"></span> 
+                                    <a href="{% url 'yearly' year %}">  {{ year }}</a>
+                                </label>
                                 <ul class = "tree">
                                     {% for month in months %}
                                         <li> <a href="{% url 'monthly' year month %}"> {{month}}</a> </li>
