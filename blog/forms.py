@@ -75,7 +75,7 @@ class ContactForm(forms.Form):
         self.helper = FormHelper()
         self.helper.form_class = 'form-horizontal'
         self.helper.label_class = 'col-lg-2'
-        self.helper.field_class = 'col-lg-8'
+        self.helper.field_class = 'col-lg-10'
         self.helper.html5_required = True
         self.helper.add_input(Submit('submit', 'Submit'))
         super(ContactForm, self).__init__(*args, **kwargs)

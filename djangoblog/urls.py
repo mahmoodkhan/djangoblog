@@ -1,4 +1,3 @@
-from django.views.generic import TemplateView
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from blog.views import *
@@ -10,7 +9,7 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^login/$', LoginView.as_view(), name='login'),
     url(r'^logout/$', LogoutView.as_view(), name='logout'),
-    url(r'^about/$', TemplateView.as_view(template_name='about.html'), name='about'),
+    url(r'^about/$', AboutView.as_view(), name='about'),
     url(r'^contact/$', ContactView.as_view(), name='contact'),
 
     url(r'^archive/recent/$', BlogPostArchiveIndexView.as_view(), name='archive_recent'),

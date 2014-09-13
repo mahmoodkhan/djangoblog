@@ -2,7 +2,7 @@ from django.core.mail import send_mail
 from django.shortcuts import render
 from django.utils import timezone
 
-from django.views.generic import RedirectView, FormView, DetailView, CreateView
+from django.views.generic import RedirectView, FormView, DetailView, CreateView, TemplateView
 from django.views.generic.dates import ArchiveIndexView, MonthArchiveView, YearArchiveView
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic.list import ListView
@@ -167,6 +167,9 @@ class ContactView(BlogPostArchiveHierarchyMixin, FormView):
             recipient_list = ['mkhan@mercycorps.org',],
         )
         return super(ContactFormView, self).form_valid(form)
+
+class AboutView(BlogPostArchiveHierarchyMixin, TemplateView):
+    template_name='about.html'
 
 class LoginView(FormView):
     """
