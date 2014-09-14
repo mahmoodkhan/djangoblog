@@ -19,7 +19,7 @@
     </head>
     <body>
         <div class="navbar navbar-default navbar-fixed-top" role="navigation">
-            <div class="container">
+            <div class="container-fluid">
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                         <span class="sr-only">Toggle navigation</span>
@@ -69,9 +69,9 @@
         </div><!-- .navbar collapse -->
 
         
-        <div class="container">
+        <div class="container-fluid">
             <div class="row">
-                <div class = "col-md-10" style="border-right:0.5px solid #ccc">
+                <div class = "col-sm-10" style="border-right:0.5px solid #ccc">
                     <div id = "messages">
                         {% if messages %}
                             {% for message in messages %}
@@ -88,18 +88,19 @@
                         {% endif %}
                     </div><!-- .messages div collapse -->
 
-
                     <div class="page-header" align = "center">
                         <h4>
                             {% block page_title %} {% endblock %} 
                             <small><p>{% block description %} {% endblock %}</p></small>
                         </h4>
                     </div>
-                    {% block content %} {% endblock %}
+                    <div>
+                        {% block content %} {% endblock %}
+                    </div>
                 </div> <!-- col-xs-9 div collapse -->
 
                 <!-- RIGHT SIDEBAR -->
-                <div class = "col-md-2" style="border-left:0.5px solid #ccc">
+                <div class = "col-sm-2" style="border-left:0.5px solid #ccc">
                     <div class="page-header">
                         <h4>Articles Trove<small><p>Previous blogposts</p></small></h4>
                     </div>
@@ -126,7 +127,7 @@
 
         <!--http://getbootstrap.com/examples/sticky-footer-navbar/-->
         <div id="footer"><!-- Sticky Footer -->
-            <div class="container">
+            <div class="container-fluid">
                 <span style="float: left;" class="text-muted">
                     Copyright ©  {% now "Y" %} All rights reserved
                 </span>

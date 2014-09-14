@@ -78,6 +78,7 @@ class ContactForm(forms.Form):
         self.helper.field_class = 'col-lg-10'
         self.helper.html5_required = True
         self.helper.add_input(Submit('submit', 'Submit'))
+        self.helper.add_input(Reset('rest', 'Reset', css_class='btn-warning'))
         super(ContactForm, self).__init__(*args, **kwargs)
 
 class LoginForm(AuthenticationForm):

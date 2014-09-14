@@ -13,18 +13,16 @@
 {% endblock %}
 
 {% block content %}
-    <div class="row">
-        <div class="col-md-12 col-md-offset-0">
-            <p>
-            {{ object.content | pygmentize|safe }}
-            </p>
-            <p>
-                {% for a in attachments %}
-                    <li>{{ a.attachment }}</li>
-                {% empty %}
-                    <li>No Attachments.</li>
-                {% endfor %}
-            </p>
-        </div>
+    <div class="col-sm-12 col-md-offset-0">
+        <p>
+        {{ object.content | pygmentize|safe }}
+        </p>
+        <p>
+            {% for a in attachments %}
+                <li>{{ a.attachment }}</li>
+            {% empty %}
+                <li>No Attachments.</li>
+            {% endfor %}
+        </p>
     </div>
 {% endblock %}
