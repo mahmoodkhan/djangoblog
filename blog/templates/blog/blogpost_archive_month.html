@@ -14,59 +14,41 @@
 
 {% block content %}
     <div class="row">
-        <div class="col-sm-10 col-md-8 col-md-offset-2">
-    Archive for {{ month|date:"F" }} {{ month.year }}<br />
-    <div class="pagination pull-left">
-        <ul>
-            {% if previous_month %}
-                <li class="prev">
-                    <a href="{% url 'monthly' previous_month|date:"Y" previous_month|date:"b" %}?year={{ previous_month|date:"Y"  }}&month={{ previous_month|date:"b" }}">
-                        &larr; {{ previous_month|date:"M Y" }}
-                    </a>
-                </li>
-            {% endif %}
-            {% if next_month %}
-                <li class="next">
-                    <a href="{% url 'monthly' next_month|date:"Y" next_month|date:"b" %}?year={{ next_month|date:"Y"  }}&month={{ next_month|date:"b" }}">
-                        {{ next_month|date:"M Y" }} &rarr;</a>
-                </li>
-            {% endif %}
-        </ul>
-    </div>
-    <table class="zebra-striped" width="100%">
-    <thead>
-    <tr>
-        <th>#</th>
-        <th>Title</th>
-        <th>Author</th>
-        <th>Published On</th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for obj in object_list %}
-        <tr>
-            <th>{{ forloop.counter }}</th>
-            <td>{{ obj.title }}</td>
-            <td>{{ obj.author }}</td>
-            <td>{{ obj.publish_date|date:"d/m/Y" }}</td>
-        </tr>
-    {% endfor %}
-    </tbody>
-</table>
-{% if is_paginated %}
-    <div class="pagination pull-right">
-        <ul>
-            <li class="{% if page_obj.has_previous %}prev {% else %} prev disabled {% endif %}">
-                <a href="{% if page_obj.has_previous %}?page={{ page_obj.previous_page_number }}&year={{ month|date:"Y" }}&month={{ month|date:"b" }}{% else %}#{% endif %}">&larr;</a></li>
-            <li class="disabled"><a href="#"><strong>{{ page_obj.number }} of {{ paginator.num_pages }}</strong></a></li>
-
-            <li class="{% if page_obj.has_next %}next{% else %} next disabled {% endif %}">
-                <a href="{% if page_obj.has_next %}?page={{ page_obj.next_page_number }}&year={{ month|date:"Y" }}&month={{ month|date:"b" }}{% else %}#{% endif %}">&rarr;</a>
-            </li>
-
-        </ul>
-    </div>
-{% endif %}
+        <div class="col-md-12">
+            <div class="pagination pull-left">
+                <ul>
+                    {% if previous_month %}
+                        <li class="prev">
+                            <a href="{% url 'monthly' previous_month|date:"Y" previous_month|date:"b" %}"> &larr; {{ previous_month|date:"M Y" }}</a>
+                        </li>
+                    {% endif %}
+                    {% if next_month %}
+                        <li class="next">
+                            <a href="{% url 'monthly' next_month|date:"Y" next_month|date:"b" %}"> {{ next_month|date:"M Y" }} &rarr;</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+            <table class="zebra-striped" width="100%">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Published On</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for obj in object_list %}
+                    <tr>
+                        <th>{{ forloop.counter }}</th>
+                        <td>{{ obj.title }}</td>
+                        <td>{{ obj.author }}</td>
+                        <td>{{ obj.publish_date|date:"d/m/Y" }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 {% endblock %}
