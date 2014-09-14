@@ -60,8 +60,9 @@
                     {% endif %}
                     <form class="navbar-form navbar-right" role="form" method="post" action="#">
                         {% csrf_token %}
-                        <div class="form-group">
-                            <input type="search" name="search" placeholder="Search" class="form-control">
+                        <div class="input-group">
+                            <input type="search" name="search" placeholder="Search" class="form-control"></input>
+                            <span class="input-group-addon" style="background-color: #428BCA; color: white;"><i class="glyphicon glyphicon-search"></i></span>
                         </div>
                     </form>
                 </div><!-- .navbar-header collapse -->
