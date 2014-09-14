@@ -1,8 +1,17 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
 {% load crispy_forms_tags %}
-{% block content %}
 
+
+{% block page_title %}
+    Login Form
+{% endblock %}
+{% block description %}
+    If you are experiencing problems, report the problem to 
+    <a href="http://www.google.com/recaptcha/mailhide/d?k=012SLh7Lz6yAEIcciHtUzzpg==&amp;c=E23XgzY0I2HyLimFK-7HyMQY6g2orZ6kuoh_uC9hPGY=" onclick="window.open('http://www.google.com/recaptcha/mailhide/d?k\075012SLh7Lz6yAEIcciHtUzzpg\75\75\46c\75E23XgzY0I2HyLimFK-7HyMQY6g2orZ6kuoh_uC9hPGY\075', '', 'toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=0,width=500,height=300'); return false;" title="Reveal this e-mail address">m...</a>@gmail.com
+{% endblock %}
+
+{% block content %}
 <div class="row">
     <div class="col-sm-6 col-md-4 col-md-offset-4">
         {% if form.errors %}
@@ -10,15 +19,11 @@
                 Please correct the error{{ form.errors|pluralize }} below.
             </p>
         {% endif %}
-        <h3>Sign in to continue</h3>
+
         <form class="form-horizontal" method="post" action="{% url 'login' %}" >
             <input type="hidden" name="next" value="{{ next }}" />
             {% crispy form form.helper %}
         </form>
-
-        <p>If you are experiencing problems, report the problem to 
-            <a href="http://www.google.com/recaptcha/mailhide/d?k=012SLh7Lz6yAEIcciHtUzzpg==&amp;c=E23XgzY0I2HyLimFK-7HyMQY6g2orZ6kuoh_uC9hPGY=" onclick="window.open('http://www.google.com/recaptcha/mailhide/d?k\075012SLh7Lz6yAEIcciHtUzzpg\75\75\46c\75E23XgzY0I2HyLimFK-7HyMQY6g2orZ6kuoh_uC9hPGY\075', '', 'toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=0,width=500,height=300'); return false;" title="Reveal this e-mail address">m...</a>@gmail.com
-        </p>
     </div>
 </div>
 {% endblock %}
