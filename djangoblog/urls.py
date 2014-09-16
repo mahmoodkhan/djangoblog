@@ -22,4 +22,5 @@ urlpatterns = patterns('',
     url(r'^detailpost/(?P<pk>\d+)/$', BlogPostDetail.as_view(), name='detailpost'),
     # To view a blog-post by slug in the url
     #url(r'^detailpost/(?P<slug>[\w\-]+)/$', BlogPostDetail.as_view(), name='detailpost'),
+    url(r'^search/', include('haystack.urls')),
 )

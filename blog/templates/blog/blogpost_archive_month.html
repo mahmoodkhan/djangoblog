@@ -15,6 +15,28 @@
 {% block content %}
     <div class="row">
         <div class="col-md-12">
+            <table class="table table-bordered table-hover" width="100%">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Title</th>
+                    <th>Summary</th>
+                    <th>Author</th>
+                    <th>Published</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for obj in object_list %}
+                    <tr>
+                        <th><a href="/updatepost/{{ obj.pk }}">{{ forloop.counter }}</a></th>
+                        <td><a href="{{ obj.get_absolute_url }}"> {{ obj.title }}</a></td>
+                        <td>{{ obj.content|slice:"100"|safe}}</td>
+                        <td>{{ obj.owner }}</td>
+                        <td>{{ obj.pub_date|date:"d/m/Y" }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
             <div class="pagination pull-left">
                 <ul>
                     {% if previous_month %}
@@ -29,26 +51,6 @@
                     {% endif %}
                 </ul>
             </div>
-            <table class="zebra-striped" width="100%">
-                <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Title</th>
-                    <th>Author</th>
-                    <th>Published On</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for obj in object_list %}
-                    <tr>
-                        <th>{{ forloop.counter }}</th>
-                        <td>{{ obj.title }}</td>
-                        <td>{{ obj.author }}</td>
-                        <td>{{ obj.publish_date|date:"d/m/Y" }}</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
         </div>
     </div>
 {% endblock %}

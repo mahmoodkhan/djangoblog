@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+ 
+{% block content %}</pre>
+
+<pre>
+{% if query %}</pre>
+<div class="span8">
+<h3>Results</h3>
+<div id="accordion2" class="accordion">{% for result in page.object_list %}
+ {% include 'search/_result_object.html' %}
+ {% empty %}
+ 
+No results found.
+ 
+ {% endfor %}</div>
+ {% if page.has_previous or page.has_next %}
+<div>{% if page.has_previous %}<a href="?q={{ query }}&page={{ page.previous_page_number }}">{% endif %}« Previous{% if page.has_previous %}</a>{% endif %}
+ |
+ {% if page.has_next %}<a href="?q={{ query }}&page={{ page.next_page_number }}">{% endif %}Next »{% if page.has_next %}</a>{% endif %}</div>
+ {% endif %}</div>
+<pre>
+{% else %}
+ 
+{% endif %}
+{% endblock %}

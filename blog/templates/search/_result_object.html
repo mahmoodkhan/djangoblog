@@ -1,0 +1,23 @@
+{% load myfilters %}
+{% with obj=result.object %}
+<!-- http://timbroder.com/2012/08/getting-started-with-solr-and-django.html -->
+</pre>
+<div class="accordion-group">
+<div class="accordion-heading"><a class="accordion-toggle" href="#collapse_{{ obj.id }}" data-toggle="collapse" data-parent="#accordion2">
+ {{ obj.name }}
+ </a>
+<div style="padding: 8px 15px;">
+Title: {{ obj.title }}
+
+ 
+Content: {{ obj.content|pygmentize|safe|slice:"2000" }}</div>
+</div>
+<div id="collapse_{{ obj.id }}" class="accordion-body collapse in">
+<div class="accordion-inner">
+Contact: <a href="mailto:{{ obj.owner }}">{{ obj.owner }}</a>
+ 
+ {{ obj.pub_date }}</div>
+</div>
+</div>
+<pre>
+{% endwith %}
