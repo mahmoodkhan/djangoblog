@@ -12,8 +12,6 @@ from captcha.fields import ReCaptchaField
 
 from .models import *
 
-from haystack.forms import SearchForm
-
 """
 This is a formset that will be passed to the template together with the 
 BlogPostForm so that a user can upload multiple files to blogpost.
@@ -62,16 +60,6 @@ class BlogPostForm(forms.ModelForm):
         #self.helper.add_input(Reset('rest', 'Reset', css_class='btn-warning'))
         super(BlogPostForm, self).__init__(*args, **kwargs)
         self.fields['category'].empty_label = ""
-
-class SearchForm(forms.Form):
-    q =  forms.CharField(max_length=64, required=True)
-    def __init__(self, *args, **kwargs):
-        super(SearchForm, self).__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.form_show_labels = False
-        self.helper.layout = Layout(
-            Field('q', id="q_id", css_class="form-control", placeholder="Search")
-        )
 
 
 class ContactForm(forms.Form):

@@ -24,7 +24,6 @@ class HomeView(BlogPostArchiveHierarchyMixin, ListView):
     template_name="blog/index.html"
     context_object_name = 'blogposts'
     queryset = BlogPost.objects.filter(published=True).filter(private=False)
-    form_class = SearchForm
     
     def get_context_data(self, **kwargs):
         messages.set_level(self.request, messages.DEBUG)
@@ -34,7 +33,6 @@ class HomeView(BlogPostArchiveHierarchyMixin, ListView):
         #messages.warning(self.request, 'Warning world.')
         #messages.error(self.request, 'Error <a href="#">world.</a>', extra_tags="safe")
         context = super(HomeView, self).get_context_data(**kwargs)
-        context['searchform'] = self.form_class()
         context['now'] = timezone.now()
         context['code'] = """
         <code class="python">
