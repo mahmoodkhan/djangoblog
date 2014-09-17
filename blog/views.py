@@ -11,6 +11,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 
+from haystack.views import SearchView
+
 from .models import *
 from .forms import *
 from .mixins import *
@@ -145,6 +147,17 @@ class BlogPostMonthArchiveView(BlogPostArchiveHierarchyMixin, MonthArchiveView):
     allow_future = True
     paginate_by=12
     #month_format='%m' # month number
+
+
+class Search(SearchView):
+    """ 
+    This is inheriting from haystack.SearchView so that I can override the extra_context
+    method and provide the blogpost_archive_info
+    """
+    def extra_context(self):
+        extra = super(Search, self).extra_context()
+        extra['archive_data'] = BlogPostArchiveHierarchyMixin.get_blogposts_archive_info(self)
+        return extra
 
 class ContactView(BlogPostArchiveHierarchyMixin, FormView):
     """ 

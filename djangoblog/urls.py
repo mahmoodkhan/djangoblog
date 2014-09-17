@@ -22,5 +22,10 @@ urlpatterns = patterns('',
     url(r'^detailpost/(?P<pk>\d+)/$', BlogPostDetail.as_view(), name='detailpost'),
     # To view a blog-post by slug in the url
     #url(r'^detailpost/(?P<slug>[\w\-]+)/$', BlogPostDetail.as_view(), name='detailpost'),
-    url(r'^search/', include('haystack.urls')),
+    
+    
+    #Instead of using haystack.urls I use my own search view so that I can override the
+    #"extra_context method and provide additional data
+    #url(r'^search/', include('haystack.urls')),
+    url(r'^search/', Search(), name='haystack_search'),
 )

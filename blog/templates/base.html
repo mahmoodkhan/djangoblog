@@ -8,7 +8,7 @@
         <meta name="description" content="Personal Blog">
         <meta name="author" content="Mahmood Khan">
         <meta name="keywords" content="personal blog, documentation, python, java, django">
-        <link rel="shortcut icon" href="{% static 'blog/images/favicon.ico' %}" type="image/x-icon">
+        <link rel="shortcut icon" href="{% static 'blog/images/favicon.png' %}" type="image/x-icon">
         <title>{% block title %}{% endblock %}</title>
         <link href="{% static 'blog/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css" />
         <link href="{% static 'blog/css/jquery-ui-1.10.4.custom.min.css' %}" rel="stylesheet" type="text/css" />
@@ -60,7 +60,7 @@
                     {% endif %}
                     <form class="navbar-form" role="form" method="GET" action="/search/">
                         <div class="input-group">
-                            <input type="search" name="q" placeholder="Search" class="form-control" />
+                            <input type="search" name="q" value="{{ query }}" placeholder="Search" class="form-control" />
                             <span class="input-group-btn">
                                 <button class="btn btn-primary" type="submit" id="filter-clear">
                                     <i class="glyphicon glyphicon-search"></i>
@@ -114,11 +114,11 @@
                             <li>
                                 <label class="tree-toggler nav-header">
                                     <span class="glyphicon glyphicon-chevron-down"></span> 
-                                    <a href="{% url 'yearly' year %}">  {{ year }}</a>
+                                     <a href="{% url 'yearly' year %}"> <span class="badge"> {{ year }}</span> </a>
                                 </label>
                                 <ul class = "tree">
                                     {% for month in months %}
-                                        <li> <a href="{% url 'monthly' year month %}"> {{month}}</a> </li>
+                                        <li class="list-group-item"> <a href="{% url 'monthly' year month %}"> {{month}}</a> </li>
                                     {% endfor %}
                                 </ul>
                             </li>

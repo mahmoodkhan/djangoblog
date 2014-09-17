@@ -42,6 +42,10 @@ class BlogPostArchiveHierarchyMixin(View):
         context['archive_data'] = self.get_blogposts_archive_info()
         return context
 
+    def extra_context(self):
+        extra = super(BlogPostArchiveHierarchyMixin, self).extra_context()
+        extra['archive_data'] = self.get_blogposts_archive_info()
+        return extra
 
 class BlogPostMixin(View):
     """
