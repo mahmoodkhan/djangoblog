@@ -1,5 +1,6 @@
 import json
 
+from django.db.models import Count
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.generic import View
@@ -28,11 +29,16 @@ class BlogPostArchiveHierarchyMixin(View):
         prev_year = None
         years = {}
         months = []
+        months_count = []
         for p in posts:
             if prev_year != None and prev_year != p.year:
                 years[prev_year] = months
                 months = []
-            months.append(p.strftime("%b"))
+            c = BlogPost.objects.filter(pub_date__year=p.year, pub_date__month=p.month).aggregate(Count('pk'))
+            months_count.append(p.strftime("%b"))
+            months_count.append(c['pk__count'])
+            months.append(months_count)
+            months_count = []
             prev_year = p.year
         years[prev_year] = months
         return years
@@ -41,11 +47,6 @@ class BlogPostArchiveHierarchyMixin(View):
         context = super(BlogPostArchiveHierarchyMixin, self).get_context_data(**kwargs)
         context['archive_data'] = self.get_blogposts_archive_info()
         return context
-
-    def extra_context(self):
-        extra = super(BlogPostArchiveHierarchyMixin, self).extra_context()
-        extra['archive_data'] = self.get_blogposts_archive_info()
-        return extra
 
 class BlogPostMixin(View):
     """
