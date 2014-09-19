@@ -111,6 +111,7 @@
                     <div>
                         <ul class="nav nav-list">
                             {% for year, months in archive_data.items %}
+                                {% if year %}
                                 <li>
                                     <label class="tree-toggler nav-header">
                                         <span class="glyphicon glyphicon-chevron-down"></span> 
@@ -125,6 +126,7 @@
                                         {% endfor %}
                                     </ul>
                                 </li>
+                                {% endif %}
                             {% endfor %}
                         </ul>
                     </div>
