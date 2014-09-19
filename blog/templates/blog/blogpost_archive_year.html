@@ -13,20 +13,42 @@
 
 {% block content %}
     <div class="row">
-        <div class="col-sm-10 col-md-8 col-md-offset-2">
-
-            <ul>
-                {% for date in date_list %}
-                    <li>{{ date|date }}</li>
-                {% endfor %}
-            </ul>
-            
-            <div>
+        <div class="col-sm-12 col-md-offset-0">
+            <table class="table table-bordered table-hover" width="100%">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Title</th>
+                    <th>Summary</th>
+                    <th>Author</th>
+                    <th>Published</th>
+                </tr>
+                </thead>
+                <tbody>
                 {% for obj in object_list %}
-                    <p>
-                        {{ obj.title }} - {{ obj.pub_date|date:"F j, Y" }}
-                    </p>
+                    <tr>
+                        <th><a href="/updatepost/{{ obj.pk }}">{{ forloop.counter }}</a></th>
+                        <td><a href="{{ obj.get_absolute_url }}"> {{ obj.title }}</a></td>
+                        <td>{{ obj.content|slice:"100"|safe}}</td>
+                        <td>{{ obj.owner }}</td>
+                        <td>{{ obj.pub_date|date:"M d, Y" }}</td>
+                    </tr>
                 {% endfor %}
+                </tbody>
+            </table>
+            <div class="pagination pull-left">
+                <ul>
+                    {% if previous_month %}
+                        <li class="prev">
+                            <a href="{% url 'monthly' previous_month|date:"Y" previous_month|date:"b" %}"> &larr; {{ previous_month|date:"M Y" }}</a>
+                        </li>
+                    {% endif %}
+                    {% if next_month %}
+                        <li class="next">
+                            <a href="{% url 'monthly' next_month|date:"Y" next_month|date:"b" %}"> {{ next_month|date:"M Y" }} &rarr;</a>
+                        </li>
+                    {% endif %}
+                </ul>
             </div>
         </div>
     </div>

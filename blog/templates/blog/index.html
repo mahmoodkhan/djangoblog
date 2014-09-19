@@ -17,7 +17,19 @@
         <div class="col-md-12 col-md-offset-0">
             <ul>
                 {% for blogpost in blogposts %}
-                    <li>{{ blogpost.pub_date|date }} - <a href="{{ blogpost.get_absolute_url }}">{{ blogpost.title }}</a> </li>
+                    <div class="well well-lg">
+                        <h4>
+                            {{ blogpost.title }}
+                            <br />
+                            <small> Published on {{ blogpost.pub_date|date }} </small>
+                        </h4>
+                        <p>
+                            {{ blogpost.content|pygmentize|safe|truncatechars_html:300 }}
+                            <br />
+                            <a class="pull-right" href="{{ blogpost.get_absolute_url }}">Continue reading...</a>
+                        </p>
+                        
+                    </div>
                 {% empty %}
                     <li>No articles yet.</li>
                 {% endfor %}
