@@ -15,25 +15,23 @@
 {% block content %}
     <div class="row">
         <div class="col-md-12 col-md-offset-0">
-            <ul>
-                {% for blogpost in blogposts %}
-                    <div class="well well-lg">
-                        <h4>
-                            {{ blogpost.title }}
-                            <br />
-                            <small> Published on {{ blogpost.pub_date|date }} </small>
-                        </h4>
-                        <p>
-                            {{ blogpost.content|pygmentize|safe|truncatechars_html:300 }}
-                            <br />
-                            <a class="pull-right" href="{{ blogpost.get_absolute_url }}">Continue reading...</a>
-                        </p>
-                        
-                    </div>
-                {% empty %}
-                    <li>No articles yet.</li>
-                {% endfor %}
-            </ul>
+            {% for blogpost in blogposts %}
+                <div class="well well-lg">
+                    <h4>
+                        {{ blogpost.title }}
+                        <br />
+                        <small> Published on {{ blogpost.pub_date|date }} </small>
+                    </h4>
+                    <p>
+                        {{ blogpost.content|pygmentize|safe|truncatechars_html:300 }}
+                        <br />
+                        <a class="pull-right" href="{{ blogpost.get_absolute_url }}">Continue reading...</a>
+                    </p>
+                    
+                </div>
+            {% empty %}
+                <h3>No articles yet.</h3>
+            {% endfor %}
             <p> Current time in UTC: {{ now }} </p>
         </div>
         
