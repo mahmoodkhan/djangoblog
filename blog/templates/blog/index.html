@@ -25,6 +25,11 @@
                     <p>
                         {{ blogpost.content|pygmentize|safe|truncatechars_html:300 }}
                         <br />
+                        <p class="text-primary pull-left"><strong>Tags:</strong>
+                            {% for t in blogpost.tags.all %}
+                                <a href="/search/?q={{ t.name }}"> {{ t.name }}</a> {% if not forloop.last %} ,  {% endif %}
+                            {% endfor %}
+                        </p>
                         <a class="pull-right" href="{{ blogpost.get_absolute_url }}">Continue reading...</a>
                     </p>
                     

@@ -65,6 +65,13 @@ class BlogPost(models.Model):
     def was_published_recently(self):
         return self.pub_date >= timezone.now() - datetime.timedelta(days=1)
 
+    def get_tags(self):
+        #return values
+        #self.prepared_data = super(BlogPostIndex, self).prepare(object)
+        #self.prepared_data['tags'] = [tag.name for tag in object.tags.all()]
+        #return self.prepared_data
+        return [tag.name for tag in self.tags.all()]
+
     def __str__(self):
         return ("%s (%s)" % (self.title, self.owner))
     

@@ -1,3 +1,4 @@
 {{ object.content }}
 {{ object.title }}
 {{ object.owner }}
+{{ object.tags.all }}
