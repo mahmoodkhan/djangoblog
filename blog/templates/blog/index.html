@@ -16,31 +16,31 @@
     <div class="row">
         <div class="col-md-12 col-md-offset-0">
             {% for blogpost in blogposts %}
-                <div class="well well-lg">
-                    <h4>
-                        {{ blogpost.title }}
-                        <br />
-                        <small> Published on {{ blogpost.pub_date|date }} </small>
-                    </h4>
-                    <p>
-                        {{ blogpost.content|pygmentize|safe|truncatechars_html:300 }}
-                        <br />
-                        <p class="text-primary pull-left"><strong>Tags:</strong>
-                            {% for t in blogpost.tags.all %}
-                                <a href="/search/?q={{ t.name }}"> {{ t.name }}</a> {% if not forloop.last %} ,  {% endif %}
-                            {% endfor %}
-                        </p>
-                        <a class="pull-right" href="{{ blogpost.get_absolute_url }}">Continue reading...</a>
-                    </p>
-                    
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordion" href="#collapse_{{ obj.id }}">
+                                {{ blogpost.title }}
+                            </a>
+                        </h4>
+                        <small>published on {{ blogpost.pub_date }}</small>
+                    </div>
+                    <div class="panel-body">
+                        {{ blogpost.content|pygmentize|safe|truncatechars_html:700 }}
+                    </div>
+                    <div class="panel-footer"><small><strong>Tags:</strong>
+                        {% for t in blogpost.tags.all %}
+                            <a href="/search/?q={{ t.name }}"> {{ t.name }}</a> {% if not forloop.last %} ,  {% endif %}
+                        {% endfor %}
+                        <a class="pull-right" href="{{ blogpost.get_absolute_url }}">Continue reading...</a></small>
+                    </div>
                 </div>
-            {% empty %}
-                <h3>No articles yet.</h3>
-            {% endfor %}
-            <p> Current time in UTC: {{ now }} </p>
+                {% empty %}
+                    <h3>No articles yet.</h3>
+                {% endfor %}
+                <p> Current time in UTC: {{ now }} </p>
+            </div>
         </div>
-        
-    </div>
     <div>
         {{ code|pygmentize|safe }}
     </div>

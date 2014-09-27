@@ -130,6 +130,11 @@
                             {% endfor %}
                         </ul>
                     </div>
+                    <div class="tag-cloud">
+                        {% for t in tagcloud %}
+                            <a href="/search/?q={{ t.name }}" class="size-{{ t.size }}"> {{ t.name }}({{ t.size }})</a> &nbsp;
+                        {% endfor %}
+                    </div>
                 </div> <!--  col-md-3 div collapse END RIGHT SIDEBAR-->
             </div> <!-- div row collapse -->
         </div><!-- .container div collapse -->

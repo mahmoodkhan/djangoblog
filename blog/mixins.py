@@ -43,9 +43,16 @@ class BlogPostArchiveHierarchyMixin(View):
         years[prev_year] = months
         return years
 
+    def get_tag_cloud(self):
+        tags = Tag.objects.filter(blogposts__isnull=False).annotate(size=Count('blogposts')).order_by('name')
+        #for t in tags:
+        #    %s - %s" % (t.name, t.size)
+        return tags
+    
     def get_context_data(self, **kwargs):
         context = super(BlogPostArchiveHierarchyMixin, self).get_context_data(**kwargs)
         context['archive_data'] = self.get_blogposts_archive_info()
+        context['tagcloud'] = self.get_tag_cloud()
         return context
 
 class BlogPostMixin(View):
