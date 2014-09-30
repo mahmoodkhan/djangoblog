@@ -130,10 +130,14 @@
                             {% endfor %}
                         </ul>
                     </div>
-                    <div class="tag-cloud">
-                        {% for t in tagcloud %}
-                            <a href="/search/?q={{ t.name }}" class="size-{{ t.size }}"> {{ t.name }}({{ t.size }})</a> &nbsp;
-                        {% endfor %}
+                    <br />
+                    <div id="tag_cloud" class="panel panel-primary">
+                        <div class="panel-heading">Tags In-Use</div>
+                        <div class="panel-body">
+                            {% for t in tagcloud %}
+                                <a href="/search/?q={{ t.name }}" style="font-size: {{ t.fontsize }}em" title="Number of articles using this tag: {{ t.frequency }}"> {{ t.name }}</a> &nbsp;
+                            {% endfor %}
+                        </div>
                     </div>
                 </div> <!--  col-md-3 div collapse END RIGHT SIDEBAR-->
             </div> <!-- div row collapse -->

@@ -50,16 +50,6 @@ class HomeView(BlogPostArchiveHierarchyMixin, ListView):
         #context['archive_data'] = self.get_blogposts_archive_info()
         return context
 
-class TagCloudView(View):
-    # http://stackoverflow.com/questions/5228119/creating-a-tag-cloud-from-a-list-in-django
-    # http://sujitpal.blogspot.com/2007/04/building-tag-cloud-with-python.html
-    # https://en.wikipedia.org/wiki/Tag_cloud
-    # http://blog.jeremymartin.name/2008/03/efficient-tag-cloud-algorithm.html
-    #tags = Tag.objects.all().annotate(num=Count('blogposts'))
-    #for t in tags:
-        #%s - %s" % (t.name, t.num)
-    pass
-
 class CategoryView(BlogPostArchiveHierarchyMixin, View):
     pass
 

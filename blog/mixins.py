@@ -44,10 +44,33 @@ class BlogPostArchiveHierarchyMixin(View):
         return years
 
     def get_tag_cloud(self):
-        tags = Tag.objects.filter(blogposts__isnull=False).annotate(size=Count('blogposts')).order_by('name')
-        #for t in tags:
-        #    %s - %s" % (t.name, t.size)
-        return tags
+        # http://stackoverflow.com/questions/5228119/creating-a-tag-cloud-from-a-list-in-django
+        # http://sujitpal.blogspot.com/2007/04/building-tag-cloud-with-python.html
+        # https://en.wikipedia.org/wiki/Tag_cloud
+        # http://blog.jeremymartin.name/2008/03/efficient-tag-cloud-algorithm.html
+        tags = Tag.objects.filter(blogposts__isnull=False).annotate(frequency=Count('blogposts')).order_by('frequency')
+
+        # This is the number of occurences for the most frequent tag.
+        lo_freq = tags[0].frequency
+
+        # This is the number of occurences for the least frequent tag.
+        hi_freq = tags[len(tags) -1].frequency
+
+        # The maximum font-size of the largest (most frequent) tag
+        max_fontsize = 32
+
+        # The display font-size used by the current tag
+        display_fontsize = 0
+
+        tags_dict = []
+        
+        for t in tags:
+            if t.frequency > lo_freq:
+                display_fontsize = ( ((max_fontsize * (t.frequency - lo_freq))/(hi_freq - lo_freq)) ) / 16
+            else:
+                display_fontsize = "0.8"
+            tags_dict.append({'name':t.name, 'frequency': t.frequency, 'fontsize': display_fontsize})
+        return tags_dict
     
     def get_context_data(self, **kwargs):
         context = super(BlogPostArchiveHierarchyMixin, self).get_context_data(**kwargs)
