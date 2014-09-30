@@ -50,9 +50,6 @@ class HomeView(BlogPostArchiveHierarchyMixin, ListView):
         #context['archive_data'] = self.get_blogposts_archive_info()
         return context
 
-class CategoryView(BlogPostArchiveHierarchyMixin, View):
-    pass
-
 class BlogPostUpdateView(BlogPostMixin, BlogPostArchiveHierarchyMixin, UpdateView):
     """
     A view that updates existing blogposts. The form_valid and form_invalid methods
@@ -160,6 +157,7 @@ class Search(SearchView):
     def extra_context(self):
         extra = super(Search, self).extra_context()
         extra['archive_data'] = BlogPostArchiveHierarchyMixin.get_blogposts_archive_info(self)
+        extra['tagcloud'] = BlogPostArchiveHierarchyMixin.get_tag_cloud(self)
         return extra
 
 class ContactView(BlogPostArchiveHierarchyMixin, FormView):
