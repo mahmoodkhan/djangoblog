@@ -70,7 +70,7 @@ class ContactForm(forms.Form):
     email = forms.EmailField(required=True)
     subject = forms.CharField(max_length=64, required=True)
     message = forms.CharField(required=True, widget=forms.Textarea)
-    captcha = ReCaptchaField() 
+    captcha = ReCaptchaField(attrs={'theme' : 'clean'}) 
     
     def __init__(self, *args, **kwargs):
         self.helper = FormHelper()

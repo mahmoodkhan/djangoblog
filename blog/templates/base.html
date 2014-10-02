@@ -105,10 +105,14 @@
 
                 <!-- RIGHT SIDEBAR -->
                 <div class = "col-sm-2" style="border-left:0.5px solid #ccc">
+                <!--
                     <div class="page-header">
                         <h4>Articles Trove<small><p>Previous blogposts</p></small></h4>
                     </div>
-                    <div>
+                -->
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">Archive</div>
+                        <div class="panel-body">
                         <ul class="nav nav-list">
                             {% for year, months in archive_data.items %}
                                 {% if year %}
@@ -129,13 +133,13 @@
                                 {% endif %}
                             {% endfor %}
                         </ul>
+                        </div>
                     </div>
-                    <br />
                     <div id="tag_cloud" class="panel panel-primary">
                         <div class="panel-heading">Tags In-Use</div>
                         <div class="panel-body">
                             {% for t in tagcloud %}
-                                <a href="/search/?q={{ t.name }}" style="font-size: {{ t.fontsize }}em" title="Number of articles using this tag: {{ t.frequency }}"> {{ t.name }}</a> &nbsp;
+                                <a href="/search/?q={{ t.name }}" style="font-size: {{ t.fontsize }}em" title="Number of articles using this tag: {{ t.frequency }}"> {{ t.name }}</a>
                             {% endfor %}
                         </div>
                     </div>

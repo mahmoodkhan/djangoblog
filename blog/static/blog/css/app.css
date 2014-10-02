@@ -23,9 +23,11 @@ body {
 /* Not required for template or sticky footer method. */
 
 body > .container-fluid {
-  padding: 30px;
+  padding: 60px 15px;
 }
-
+.page-header {
+    margin-top: 0px;
+}
 #footer > .container-fluid {
     padding-right: 15px;
     padding-left: 15px;
