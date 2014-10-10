@@ -29,7 +29,7 @@
                     <tr>
                         <th><a href="/updatepost/{{ obj.pk }}">{{ forloop.counter }}</a></th>
                         <td><a href="{{ obj.get_absolute_url }}"> {{ obj.title }}</a></td>
-                        <td>{{ obj.content|slice:"100"|safe}}</td>
+                        <td>{{ obj.content|truncatechars_html:100|safe}}</td>
                         <td>{{ obj.owner }}</td>
                         <td>{{ obj.pub_date|date:"M d, Y" }}</td>
                     </tr>

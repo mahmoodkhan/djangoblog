@@ -17,6 +17,9 @@ from .models import *
 from .forms import *
 from .mixins import *
 
+from ratelimit.mixins import RateLimitMixin
+
+
 class HomeView(BlogPostArchiveHierarchyMixin, ListView):
     """
     This is the home view, which subclasses ListView,a built-in view, for listing
@@ -25,7 +28,7 @@ class HomeView(BlogPostArchiveHierarchyMixin, ListView):
     model = BlogPost
     template_name="blog/index.html"
     context_object_name = 'blogposts'
-    queryset = BlogPost.objects.filter(published=True).filter(private=False)
+    queryset = BlogPost.objects.filter(published=True).filter(private=False)[:5]
     
     def get_context_data(self, **kwargs):
         messages.set_level(self.request, messages.DEBUG)
@@ -185,12 +188,14 @@ class ContactView(BlogPostArchiveHierarchyMixin, FormView):
 class AboutView(BlogPostArchiveHierarchyMixin, TemplateView):
     template_name='about.html'
 
-class LoginView(FormView):
+class LoginView(RateLimitMixin, FormView):
     """
     Provides a Login View so users can login
     """
     template_name = 'login.html'
     form_class = LoginForm
+    ratelimit_rate = '2/m'
+    ratelimit_block = True
     
     def get(self, request, *args, **kwargs):
         """
@@ -240,6 +245,10 @@ class LoginView(FormView):
         """  This method is called after the form submission has failed  """
         return super(LoginView, self).form_invalid(form)
 
+    
+    def dispatch(self, *args, **kwargs):
+        """ this is fired up first regardless of what http method is used """
+        return super(LoginView, self).dispatch(*args, **kwargs)
 
 class LogoutView(RedirectView):
     """
