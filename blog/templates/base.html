@@ -5,9 +5,7 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description" content="Personal Blog">
-        <meta name="author" content="Mahmood Khan">
-        <meta name="keywords" content="personal blog, documentation, python, java, django">
+        <meta name="description" content="personal blog about technology, politics, religion, sports, nutrition, etc.">
         <link rel="shortcut icon" href="{% static 'blog/images/favicon.png' %}" type="image/x-icon">
         <title>{% block title %}{% endblock %}</title>
         <link href="{% static 'blog/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css" />
@@ -105,11 +103,6 @@
 
                 <!-- RIGHT SIDEBAR -->
                 <div class = "col-sm-2" style="border-left:0.5px solid #ccc">
-                <!--
-                    <div class="page-header">
-                        <h4>Articles Trove<small><p>Previous blogposts</p></small></h4>
-                    </div>
-                -->
                     <div class="panel panel-primary">
                         <div class="panel-heading">Archive</div>
                         <div class="panel-body">
@@ -143,6 +136,15 @@
                             {% endfor %}
                         </div>
                     </div>
+ 
+                    <div class="list-group">
+                        <a href="#" class="list-group-item active">Categories</a>
+                        {% for c in categories %}
+                            <a href="/search/?q={{ c.name }}" class="list-group-item"> 
+                                {{ c.name }}<span class="badge pull-right"> {{c.frequency}} </span></a>
+                        {% endfor %}
+                    </div>
+
                 </div> <!--  col-md-3 div collapse END RIGHT SIDEBAR-->
             </div> <!-- div row collapse -->
         </div><!-- .container div collapse -->

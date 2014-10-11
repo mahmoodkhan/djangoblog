@@ -44,10 +44,6 @@ class BlogPostArchiveHierarchyMixin(View):
         return years
 
     def get_tag_cloud(self):
-        # http://stackoverflow.com/questions/5228119/creating-a-tag-cloud-from-a-list-in-django
-        # http://sujitpal.blogspot.com/2007/04/building-tag-cloud-with-python.html
-        # https://en.wikipedia.org/wiki/Tag_cloud
-        # http://blog.jeremymartin.name/2008/03/efficient-tag-cloud-algorithm.html
         tags = Tag.objects.filter(blogposts__isnull=False).annotate(frequency=Count('blogposts')).order_by('frequency')
 
         # This is the number of occurences for the most frequent tag.
@@ -71,11 +67,16 @@ class BlogPostArchiveHierarchyMixin(View):
                 display_fontsize = "0.8"
             tags_dict.append({'name':t.name, 'frequency': t.frequency, 'fontsize': display_fontsize})
         return tags_dict
-    
+
+    def get_categories(self):
+        categories = Category.objects.filter(blogposts__isnull=False).annotate(frequency=Count('blogposts')).order_by('name')
+        return categories
+        
     def get_context_data(self, **kwargs):
         context = super(BlogPostArchiveHierarchyMixin, self).get_context_data(**kwargs)
         context['archive_data'] = self.get_blogposts_archive_info()
         context['tagcloud'] = self.get_tag_cloud()
+        context['categories'] = self.get_categories()
         return context
 
 class BlogPostMixin(View):
