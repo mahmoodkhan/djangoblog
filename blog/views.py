@@ -121,7 +121,7 @@ class BlogPostDetail(BlogPostArchiveHierarchyMixin, DetailView):
         """ 
         object = super(BlogPostDetail, self).get_object()
         object.lastaccessed = timezone.now()
-        object.save()
+        object.save(skip_updated=True)
         return object
 
 class BlogPostArchiveIndexView(BlogPostArchiveHierarchyMixin, ArchiveIndexView):
