@@ -28,10 +28,25 @@ class HomeView(BlogPostArchiveHierarchyMixin, ListView):
     model = BlogPost
     template_name="blog/index.html"
     context_object_name = 'blogposts'
-    queryset = BlogPost.objects.filter(published=True).filter(private=False)[:5]
+
+    where = {}
+    where['private'] = False
+    where['published'] = True
     
+    def get_queryset(self):
+        if self.request.GET.get('category'):
+            self.where['category'] = self.request.GET.get('category')
+        else:
+            if self.where.get('category'):
+                del self.where['category']
+
+        #return BlogPost.objects.filter(published=True, private=False, category=self.request.GET.get('category'))[:5]
+        print(self.where)
+        return BlogPost.objects.filter(**self.where)[:5]
+
     def get_context_data(self, **kwargs):
         messages.set_level(self.request, messages.DEBUG)
+        #messages.success(self.request, self.request.GET['category'], None)
         #messages.debug(self.request, 'Debug world.')
         #messages.info(self.request, 'Info world.')
         #messages.success(self.request, 'Success world.')
