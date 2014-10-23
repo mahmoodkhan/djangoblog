@@ -65,7 +65,7 @@ class BlogPostArchiveHierarchyMixin(View):
                 display_fontsize = ( ((max_fontsize * (t.frequency - lo_freq))/(hi_freq - lo_freq)) ) / 16
             else:
                 display_fontsize = "0.8"
-            tags_dict.append({'name':t.name, 'frequency': t.frequency, 'fontsize': display_fontsize})
+            tags_dict.append({'id': t.id, 'name':t.name, 'frequency': t.frequency, 'fontsize': display_fontsize})
         return tags_dict
 
     def get_categories(self):

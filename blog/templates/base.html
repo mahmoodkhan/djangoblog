@@ -133,7 +133,7 @@
                         <div class="panel-heading">Tags In-Use</div>
                         <div class="panel-body">
                             {% for t in tagcloud %}
-                                <a href="/search/?q={{ t.name }}" style="font-size: {{ t.fontsize }}em" title="Number of articles using this tag: {{ t.frequency }}"> {{ t.name }}</a>
+                                <a href="/tag/{{ t.id }}/" style="font-size: {{ t.fontsize }}em" title="Number of articles using this tag: {{ t.frequency }}"> {{ t.name }}</a>
                             {% endfor %}
                         </div>
                     </div>
@@ -141,7 +141,7 @@
                     <div class="list-group">
                         <a href="#" class="list-group-item active">Categories</a>
                         {% for c in categories %}
-                            <a href="/?category={{c.id}}" class="list-group-item"> 
+                            <a href="/category/{{c.id}}/" class="list-group-item"> 
                                 {{ c.name }}<span class="badge pull-right"> {{c.frequency}} </span></a>
                         {% endfor %}
                     </div>

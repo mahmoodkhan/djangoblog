@@ -5,6 +5,9 @@ from blog.views import *
 admin.autodiscover()
 
 urlpatterns = patterns('',
+    url(r'^category/(?P<category>\d+)/$', HomeView.as_view(), name='home_category'),
+    url(r'^tag/(?P<tags>\d+)/$', HomeView.as_view(), name='home_tag'),
+    url(r'^category/(?P<category>\d+)/tag/(?P<tags>\d+)/$', HomeView.as_view(), name='home_category_tag'),
     url(r'^$', HomeView.as_view(), name='home'),
     (r'^static/(?P<path>.*)$', 'django.views.static.serve',  {'document_root': settings.STATIC_ROOT}),
     url(r'^ZmaTheWebsiteAdminPanelDaltaDai1484/', include(admin.site.urls)),
