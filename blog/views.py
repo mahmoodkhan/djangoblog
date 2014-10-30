@@ -60,6 +60,31 @@ class HomeView(BlogPostArchiveHierarchyMixin, ListView):
         #context['archive_data'] = self.get_blogposts_archive_info()
         return context
 
+class HiddenBlogPost(BlogPostArchiveHierarchyMixin, ListView):
+    model = BlogPost
+    template_name="blog/index.html"
+    context_object_name = 'blogposts'
+    
+    """
+    Convert string representation of a boolean to actual boolean. If the value passed in
+    is not a valid string representation of a boolean then just ignore it by returning
+    the function without any value
+    """
+    def get_boolean_from_param(self, val):
+        if val == 'False' or val == 'false' or val == 0 or val == '0':
+            return False
+        elif val == 'True' or val == 'true' or val == 1 or val == '1':
+            return True
+        else:
+            return None
+
+    def get_queryset(self, **kwargs):
+        where = {}
+        for k,v in self.kwargs.items():
+            where[k] = self.get_boolean_from_param(v) if self.get_boolean_from_param(v) is not None else v
+        return BlogPost.objects.filter(**where)[:5]
+
+
 class BlogPostUpdateView(BlogPostMixin, BlogPostArchiveHierarchyMixin, UpdateView):
     """
     A view that updates existing blogposts. The form_valid and form_invalid methods
