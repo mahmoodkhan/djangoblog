@@ -107,30 +107,24 @@
                 <!-- RIGHT SIDEBAR -->
                 <div class = "col-sm-2" style="border-left:0.5px solid #ccc">
                 <!-- TODO: http://www.webdesignforbeginners.info/bootstrap-vertical-navbar-with-submenu/ -->
-                    <div class="panel panel-primary">
-                        <div class="panel-heading">Archive</div>
-                        <div class="panel-body">
+                    <div class="list-group">
+                        <a href="#" class="list-group-item active">Archive</a>
                         <ul class="nav nav-list">
-                            {% for year, months in archive_data.items %}
-                                {% if year %}
+                        {% for year, months in archive_data.items %}
+                            {% if year %}
                                 <li>
                                     <label class="tree-toggler nav-header">
-                                        <span class="glyphicon glyphicon-chevron-down"></span> 
-                                         <a href="{% url 'yearly' year %}"> <span class="badge"> {{ year }}</span> </a>
+                                        <span class="glyphicon glyphicon-chevron-down"></span><a href="{% url 'yearly' year %}"> <span class="badge"> {{ year }}</span> </a>
                                     </label>
                                     <ul class = "tree">
-                                        {% for month in months %}
-                                            <li class="list-group-item"> 
-                                                <a href="{% url 'monthly' year month.0 %}"> {{month.0}}</a> 
-                                                <span class="badge pull-right"> {{month.1}} </span>
-                                            </li>
-                                        {% endfor %}
+                                    {% for month in months %}
+                                        <a href="{% url 'monthly' year month.0 %}" class="list-group-item">  {{month.0}}<span class="badge pull-right"> {{month.1}} </span></a>
+                                    {% endfor %}
                                     </ul>
                                 </li>
-                                {% endif %}
-                            {% endfor %}
+                            {% endif %}
+                        {% endfor %}
                         </ul>
-                        </div>
                     </div>
                     <div id="tag_cloud" class="panel panel-primary">
                         <div class="panel-heading">Tags In-Use</div>
