@@ -40,11 +40,15 @@ class BlogPostArchiveHierarchyMixin(View):
             months.append(months_count)
             months_count = []
             prev_year = p.year
-        years[prev_year] = months
+        if prev_year:
+            years[prev_year] = months
         return years
 
     def get_tag_cloud(self):
         tags = Tag.objects.filter(blogposts__isnull=False).annotate(frequency=Count('blogposts')).order_by('frequency')
+
+        if not tags:
+            return {}
 
         # This is the number of occurences for the most frequent tag.
         lo_freq = tags[0].frequency
