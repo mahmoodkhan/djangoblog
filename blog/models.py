@@ -55,7 +55,7 @@ class BlogPost(models.Model):
     owner = models.ForeignKey(User, related_name = 'blogposts')
     lastaccessed = models.DateTimeField(null=True, blank=True)
     created = models.DateTimeField(auto_now=False, auto_now_add=True)
-    updated = models.DateTimeField(auto_now=False, auto_now_add=True)
+    updated = models.DateTimeField(auto_now=False, auto_now_add=False, null=True, blank=True)
 
     class Meta:
         ordering = ['-created',]
@@ -86,10 +86,10 @@ class BlogPost(models.Model):
             """ To automatically create the slug """
             #self.slug = '%i-%s' % (self.id, slugify(self.title))
             self.slug = slugify(self.title)
-
-        """ If skip_updated=True is passed in as a parameter then skip updating """
-        if not kwargs.pop('skip_updated', False):
-            self.updated = timezone.now()
+        else:
+            """ If skip_updated=True is passed in as a parameter then skip updating """
+            if not kwargs.pop('skip_updated', False):
+                self.updated = timezone.now()
 
         super(BlogPost, self).save(*args, **kwargs)
 

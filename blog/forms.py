@@ -47,7 +47,7 @@ class BlogPostForm(forms.ModelForm):
     """
     class Meta:
         model = BlogPost
-        exclude = ['slug', 'owner', 'lastaccessed', ]
+        exclude = ['slug', 'owner', 'lastaccessed', 'updated', ]
     
     def __init__(self, *args, **kwargs):
         self.helper = FormHelper()
