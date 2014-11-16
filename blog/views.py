@@ -71,9 +71,9 @@ class HiddenBlogPost(BlogPostArchiveHierarchyMixin, ListView):
     the function without any value
     """
     def get_boolean_from_param(self, val):
-        if val == 'False' or val == 'false' or val == 0 or val == '0':
+        if val == 'False' or val == 'false':
             return False
-        elif val == 'True' or val == 'true' or val == 1 or val == '1':
+        elif val == 'True' or val == 'true':
             return True
         else:
             return None
@@ -103,6 +103,13 @@ class BlogPostUpdateView(BlogPostMixin, BlogPostArchiveHierarchyMixin, UpdateVie
         self.object = self.get_object()
         return super(BlogPostUpdateView, self).post(request, *args, **kwargs)
 
+    def form_valid(self, form):
+        """
+        If the form is valid, save the associated model.
+        """
+        form.updated = timezone.now()
+        self.object = form.save()
+        return super(BlogPostUpdateView, self).form_valid(form)
         
 class BlogPostCreateView(SuccessMessageMixin, BlogPostMixin, BlogPostArchiveHierarchyMixin, CreateView):
     """
@@ -153,7 +160,8 @@ class BlogPostDetail(BlogPostArchiveHierarchyMixin, DetailView):
         """ 
         object = super(BlogPostDetail, self).get_object()
         object.lastaccessed = timezone.now()
-        object.save(skip_updated=True)
+        #object.save(skip_updated=True)
+        object.save()
         return object
 
 class BlogPostArchiveIndexView(BlogPostArchiveHierarchyMixin, ArchiveIndexView):

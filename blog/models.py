@@ -86,10 +86,10 @@ class BlogPost(models.Model):
             """ To automatically create the slug """
             #self.slug = '%i-%s' % (self.id, slugify(self.title))
             self.slug = slugify(self.title)
-        else:
-            """ If skip_updated=True is passed in as a parameter then skip updating """
-            if not kwargs.pop('skip_updated', False):
-                self.updated = timezone.now()
+        #else:
+        #    """ If skip_updated=True is passed in as a parameter then skip updating """
+        #    if not kwargs.pop('skip_updated', False):
+        #        self.updated = timezone.now()
 
         super(BlogPost, self).save(*args, **kwargs)
 
