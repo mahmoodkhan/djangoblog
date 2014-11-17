@@ -1,4 +1,5 @@
 from django.core.mail import send_mail
+from django.core.urlresolvers import reverse_lazy
 from django.shortcuts import render
 from django.utils import timezone
 
@@ -121,6 +122,7 @@ class BlogPostCreateView(SuccessMessageMixin, BlogPostMixin, BlogPostArchiveHier
     form_class = BlogPostForm
     template_name = 'blog/blogpost_form.html'
     success_message = "%(title)s was created successfully"
+    #success_url = reverse_lazy('list_notes')
     
     def get(self, request, *args, **kwargs):
         self.object = None
