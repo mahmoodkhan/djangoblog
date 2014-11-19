@@ -29,6 +29,7 @@ class HomeView(BlogPostArchiveHierarchyMixin, ListView):
     model = BlogPost
     template_name="blog/index.html"
     context_object_name = 'blogposts'
+    paginate_by = 4
 
     def get_queryset(self, **kwargs):
         where = {'private': False, 'published': True}
