@@ -108,8 +108,8 @@ class BlogPostUpdateView(BlogPostMixin, BlogPostArchiveHierarchyMixin, UpdateVie
         """
         If the form is valid, save the associated model.
         """
-        form.updated = timezone.now()
         self.object = form.save()
+        self.object.updated = timezone.now()
         return super(BlogPostUpdateView, self).form_valid(form)
         
 class BlogPostCreateView(SuccessMessageMixin, BlogPostMixin, BlogPostArchiveHierarchyMixin, CreateView):
