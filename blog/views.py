@@ -47,7 +47,7 @@ class HomeView(BlogPostArchiveHierarchyMixin, ListView):
         #messages.warning(self.request, 'Warning world.')
         #messages.error(self.request, 'Error <a href="#">world.</a>', extra_tags="safe")
         context = super(HomeView, self).get_context_data(**kwargs)
-        context['now'] = timezone.now()
+        #context['now'] = timezone.now()
         context['code'] = """
         <code class="python">
             @register.filter(name='cut')
@@ -59,7 +59,6 @@ class HomeView(BlogPostArchiveHierarchyMixin, ListView):
                 return value.lower()
         </code>
         """
-        #context['archive_data'] = self.get_blogposts_archive_info()
         return context
 
 class HiddenBlogPost(BlogPostArchiveHierarchyMixin, ListView):

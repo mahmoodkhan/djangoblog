@@ -39,9 +39,6 @@
                 <p> Current time in UTC: {{ now }} </p>
             </div>
         </div>
-    <div>
-        {{ code|pygmentize|safe }}
-    </div>
     {% if is_paginated %}
         <div class="pagination">
             <span class="page-links">
@@ -57,4 +54,9 @@
             </span>
         </div>
     {% endif %}
+    <h1>Your To-Do list</h1>
+    <input id = "id_new_item" placeholder="Enter a to-do item" />
+    <table id="id_list_table">
+    </table>
+    
 {% endblock %}
