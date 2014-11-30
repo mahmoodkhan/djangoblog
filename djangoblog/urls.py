@@ -51,6 +51,7 @@ urlpatterns = patterns('',
     url(r'^updatepost/(?P<pk>\d+)/$', BlogPostUpdateView.as_view(), name='updatepost'),
     url(r'^detailpost/(?P<pk>\d+)/$', BlogPostDetail.as_view(), name='detailpost'),
 
+    url(r'^create_comment/$', CreateCommentView.as_view(), name='create_comment'),
     # To view a blog-post by slug in the url
     #url(r'^detailpost/(?P<slug>[\w\-]+)/$', BlogPostDetail.as_view(), name='detailpost'),
 

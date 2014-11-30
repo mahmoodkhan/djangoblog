@@ -61,6 +61,17 @@ class HomeView(BlogPostArchiveHierarchyMixin, ListView):
         """
         return context
 
+class CreateCommentView(CreateView):
+    model = Comment
+    form_class = CommentForm
+
+    def get_success_url(self):
+        return reverse_lazy('detailpost', kwargs={ "pk": self.object.blogpost.pk })
+
+    def form_valid(self, form):
+        #form.instance.created_by = self.request.user
+        return super(CreateCommentView, self).form_valid(form)
+
 class HiddenBlogPost(BlogPostArchiveHierarchyMixin, ListView):
     model = BlogPost
     template_name="blog/index.html"
@@ -72,9 +83,9 @@ class HiddenBlogPost(BlogPostArchiveHierarchyMixin, ListView):
     the function without any value
     """
     def get_boolean_from_param(self, val):
-        if val == 'False' or val == 'false':
+        if val == 'False' or val == 'false' or val == 'off':
             return False
-        elif val == 'True' or val == 'true':
+        elif val == 'True' or val == 'true' or val == 'on':
             return True
         else:
             return None

@@ -1,3 +1,4 @@
+from django.core.urlresolvers import reverse_lazy
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.forms.models import inlineformset_factory
@@ -77,6 +78,8 @@ class CommentForm(forms.ModelForm):
         self.helper.label_class = 'col-lg-2'
         self.helper.field_class = 'col-lg-10'
         self.helper.html5_required = True
+        self.helper.form_method = 'post'
+        self.helper.form_action = reverse_lazy('create_comment')
         self.helper.add_input(Submit('submit', 'Submit'))
         self.helper.add_input(Reset('rest', 'Reset', css_class='btn-warning'))
 
