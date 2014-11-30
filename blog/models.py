@@ -110,7 +110,7 @@ class Comment(models.Model):
         A comment has an owner
         A comment belongs to a single blogpost
     """
-    author = models.TextField(max_length=64)
+    author = models.CharField(max_length=64, db_index=True)
     body = models.TextField()
     blogpost = models.ForeignKey(BlogPost, related_name='comments')
     created = models.DateTimeField(auto_now=False, auto_now_add=True)

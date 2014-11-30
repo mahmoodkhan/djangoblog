@@ -54,13 +54,31 @@ class BlogPostForm(forms.ModelForm):
         self.helper.form_class = 'form-horizontal'
         self.helper.label_class = 'col-lg-2'
         self.helper.field_class = 'col-lg-10'
-        self.helper.html5_required = False
+        self.helper.html5_required = True
         self.helper.form_tag = False
         #self.helper.add_input(Submit('submit', 'Submit'))
         #self.helper.add_input(Reset('rest', 'Reset', css_class='btn-warning'))
         super(BlogPostForm, self).__init__(*args, **kwargs)
         self.fields['category'].empty_label = ""
 
+class CommentForm(forms.ModelForm):
+    """
+    A Model Form for making comments on a particular blogpost.
+    http://django-crispy-forms.readthedocs.org/en/latest/form_helper.html
+    """
+    class Meta:
+        model = Comment
+        exclude = ['updated', ]
+
+    def __init__(self, *args, **kwargs):
+        super(CommentForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper(self)
+        self.helper.form_class = 'form-horizontal'
+        self.helper.label_class = 'col-lg-2'
+        self.helper.field_class = 'col-lg-10'
+        self.helper.html5_required = True
+        self.helper.add_input(Submit('submit', 'Submit'))
+        self.helper.add_input(Reset('rest', 'Reset', css_class='btn-warning'))
 
 class ContactForm(forms.Form):
     """

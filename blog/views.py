@@ -166,6 +166,17 @@ class BlogPostDetail(BlogPostArchiveHierarchyMixin, DetailView):
         object.save()
         return object
 
+    def get_context_data(self, **kwargs):
+        #context = RequestContext(self.request)
+        context = super(BlogPostDetail, self).get_context_data(**kwargs)
+        try:
+            print(self.kwargs)
+            context['commentform'] = CommentForm(initial={'blogpost': self.kwargs['pk']})
+        except Exception as e:
+            print (e)
+            pass
+        return context
+
 class BlogPostArchiveIndexView(BlogPostArchiveHierarchyMixin, ArchiveIndexView):
     """
     A top-level index page showing the “latest” objects, by date.
