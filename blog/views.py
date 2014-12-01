@@ -181,10 +181,8 @@ class BlogPostDetail(BlogPostArchiveHierarchyMixin, DetailView):
         #context = RequestContext(self.request)
         context = super(BlogPostDetail, self).get_context_data(**kwargs)
         try:
-            print(self.kwargs)
             context['commentform'] = CommentForm(initial={'blogpost': self.kwargs['pk']})
         except Exception as e:
-            print (e)
             pass
         return context
 
