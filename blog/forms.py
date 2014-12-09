@@ -32,8 +32,8 @@ class AttachmentFormsetHelper(FormHelper):
         super(AttachmentFormsetHelper, self).__init__(*args, **kwargs)
         self.html5_required = True
         self.form_class = 'form-horizontal'
-        self.label_class = 'col-lg-2'
-        self.field_class = 'col-lg-8'
+        self.label_class = 'col-sm-2'
+        self.field_class = 'col-sm-8'
         self.form_tag = False
         self.render_required_fields = True
         self.disable_csrf = True
@@ -42,6 +42,7 @@ class AttachmentFormsetHelper(FormHelper):
             'attachment',
         )
 
+from crispy_forms.layout import Layout, HTML, Field
 class BlogPostForm(forms.ModelForm):
     """
     A Model Form for BlogPost model to be used for creating new blogposts
@@ -53,8 +54,9 @@ class BlogPostForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.helper = FormHelper()
         self.helper.form_class = 'form-horizontal'
-        self.helper.label_class = 'col-lg-2'
-        self.helper.field_class = 'col-lg-10'
+        self.helper.label_class = 'col-sm-2'
+        self.helper.field_class = 'col-sm-10'
+        self.helper.label_size = ' col-sm-offset-2'
         self.helper.html5_required = True
         self.helper.form_tag = False
         #self.helper.add_input(Submit('submit', 'Submit'))
@@ -75,8 +77,8 @@ class CommentForm(forms.ModelForm):
         super(CommentForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper(self)
         self.helper.form_class = 'form-horizontal'
-        self.helper.label_class = 'col-lg-2'
-        self.helper.field_class = 'col-lg-10'
+        self.helper.label_class = 'col-sm-2'
+        self.helper.field_class = 'col-sm-10'
         self.helper.html5_required = True
         self.helper.form_method = 'post'
         self.helper.form_action = reverse_lazy('create_comment')
@@ -96,8 +98,8 @@ class ContactForm(forms.Form):
     def __init__(self, *args, **kwargs):
         self.helper = FormHelper()
         self.helper.form_class = 'form-horizontal'
-        self.helper.label_class = 'col-lg-2'
-        self.helper.field_class = 'col-lg-10'
+        self.helper.label_class = 'col-sm-2'
+        self.helper.field_class = 'col-sm-10'
         self.helper.html5_required = True
         self.helper.add_input(Submit('submit', 'Submit'))
         self.helper.add_input(Reset('rest', 'Reset', css_class='btn-warning'))
@@ -112,8 +114,8 @@ class LoginForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):
         self.helper = FormHelper()
         self.helper.form_class = 'form-horizontal'
-        self.helper.label_class = 'col-lg-2'
-        self.helper.field_class = 'col-lg-8'
+        self.helper.label_class = 'col-sm-2'
+        self.helper.field_class = 'col-sm-8'
         self.helper.form_tag = False
         self.helper.form_method = 'post'
         self.helper.form_action = '/login/'

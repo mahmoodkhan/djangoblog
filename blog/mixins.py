@@ -83,12 +83,19 @@ class BlogPostArchiveHierarchyMixin(View):
         context['categories'] = self.get_categories()
         return context
 
+class LoginRequired(View):
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        """ this is fired up first regardless of what http method is used """
+        return super(LoginRequired, self).dispatch(*args, **kwargs)
+
+
 class BlogPostMixin(View):
     """
     A mixin that renders BlogPost form on GET request and processes it on POST request.
     """
     
-    #@method_decorator(login_required)
+    @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
         """ this is fired up first regardless of what http method is used """
         return super(BlogPostMixin, self).dispatch(*args, **kwargs)

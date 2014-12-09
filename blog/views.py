@@ -62,17 +62,19 @@ class HomeView(BlogPostArchiveHierarchyMixin, ListView):
         return context
 
 class CreateCommentView(CreateView):
+    """
+    Creates comments made on blogpost entries.
+    """
     model = Comment
     form_class = CommentForm
 
     def get_success_url(self):
         return reverse_lazy('detailpost', kwargs={ "pk": self.object.blogpost.pk })
 
-    def form_valid(self, form):
-        #form.instance.created_by = self.request.user
-        return super(CreateCommentView, self).form_valid(form)
-
-class HiddenBlogPost(BlogPostArchiveHierarchyMixin, ListView):
+class HiddenBlogPost(LoginRequired, BlogPostArchiveHierarchyMixin, ListView):
+    """
+    A view that shows hidden posts only to the authenticated users
+    """
     model = BlogPost
     template_name="blog/index.html"
     context_object_name = 'blogposts'
