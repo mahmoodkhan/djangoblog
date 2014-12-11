@@ -122,7 +122,7 @@ class Comment(models.Model):
         verbose_name_plural = 'Comments'
 
     def __str__(self):
-        return ("%s (%s)" % (self.name, self.owner))
+        return ("%s (%s)" % (self.body, self.author))
     
     def get_absolute_url(self):
         """

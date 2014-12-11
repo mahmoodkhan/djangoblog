@@ -182,6 +182,9 @@ class BlogPostDetail(BlogPostArchiveHierarchyMixin, DetailView):
     def get_context_data(self, **kwargs):
         #context = RequestContext(self.request)
         context = super(BlogPostDetail, self).get_context_data(**kwargs)
+        print(self.object.pk)
+        comments = Comment.objects.filter(blogpost__pk=self.object.pk)
+        context['comments'] = comments
         try:
             context['commentform'] = CommentForm(initial={'blogpost': self.kwargs['pk']})
         except Exception as e:
