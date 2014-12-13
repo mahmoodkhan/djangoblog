@@ -166,6 +166,13 @@ class BlogPostDetail(BlogPostArchiveHierarchyMixin, DetailView):
         # Add in the attachments linked to this blogpost
         context['attachments'] = Attachment.objects.filter(blogpost=self.object.pk)
         # return the modified context to be passed onto the template
+        
+        comments = Comment.objects.filter(blogpost__pk=self.object.pk)
+        context['comments'] = comments
+        try:
+            context['commentform'] = CommentForm(initial={'blogpost': self.kwargs['pk']})
+        except Exception as e:
+            pass
         return context
     
     def get_object(self):
@@ -179,17 +186,8 @@ class BlogPostDetail(BlogPostArchiveHierarchyMixin, DetailView):
         object.save()
         return object
 
-    def get_context_data(self, **kwargs):
-        #context = RequestContext(self.request)
-        context = super(BlogPostDetail, self).get_context_data(**kwargs)
-        print(self.object.pk)
-        comments = Comment.objects.filter(blogpost__pk=self.object.pk)
-        context['comments'] = comments
-        try:
-            context['commentform'] = CommentForm(initial={'blogpost': self.kwargs['pk']})
-        except Exception as e:
-            pass
-        return context
+
+        
 
 class BlogPostArchiveIndexView(BlogPostArchiveHierarchyMixin, ArchiveIndexView):
     """

@@ -117,7 +117,7 @@ class Comment(models.Model):
     updated = models.DateTimeField(auto_now=True, auto_now_add=False)
 
     class Meta:
-        ordering = ['author',]
+        ordering = ['author','-created']
         verbose_name = 'Comment'
         verbose_name_plural = 'Comments'
 

@@ -15,28 +15,40 @@
 {% block content %}
     <div class="col-sm-12 col-md-offset-0">
 
-        <p>
         {{ object.content | pygmentize|safe }}
-        </p>
-        <p>
-            {% for a in attachments %}
-                <li>{{ a.attachment }}</li>
-            {% empty %}
-                <li>No Attachments.</li>
-            {% endfor %}
-        </p>
-        <p>
-            {% for c in comments %}
-                {{ c.body}} <br />
-            {% endfor %}
-        </p>
+
+        <div>
+            <h4>Attachments</h4>
+            <ul>
+                {% for a in attachments %}
+                    <li>{{ a.attachment }}</li>
+                {% empty %}
+                    <li>No Attachments.</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <br />
+        <h4>Comments </h4>
+        
+        {% for c in comments %}
+            <blockquote>
+                <footer>{{ c.author }} commented on {{ c.created }}</footer>
+                <p>
+                {{ c.body | pygmentize|safe }}
+                </p>
+            </blockquote>
+            <hr />
+        {% endfor %}
     </div>
+
     <div class = "row">
         <div class = "col-md-12">
             {% crispy commentform commentform.helper %}
         </div>
     </div>
-        <div id="disqus_thread"></div>
+
+    <div id="disqus_thread"></div>
+    <!--
     <script type="text/javascript">
         /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
         var disqus_shortname = 'nazoana'; // required: replace example with your forum shortname
@@ -48,4 +60,5 @@
             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
         })();
     </script>
+    -->
 {% endblock %}
