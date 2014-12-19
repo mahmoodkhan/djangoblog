@@ -1,6 +1,7 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from blog.views import *
+from blog.google import *
 
 admin.autodiscover()
 # regular reference:
@@ -55,6 +56,7 @@ urlpatterns = patterns('',
     # To view a blog-post by slug in the url
     #url(r'^detailpost/(?P<slug>[\w\-]+)/$', BlogPostDetail.as_view(), name='detailpost'),
 
+    url(r'^google/$', MyView.as_view(), name='create_comment'),
 
     #Instead of using haystack.urls I use my own search view so that I can override the
     #"extra_context method and provide additional data

@@ -1,0 +1,43 @@
+<!-- The top of file index.html -->
+<html itemscope itemtype="http://schema.org/Article">
+<head>
+  <!-- BEGIN Pre-requisites -->
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js">
+  </script>
+  <script src=""https://apis.google.com/js/client:platform.js?onload=start" async defer>
+  </script>
+  <!-- END Pre-requisites -->
+</head>
+<!-- ... -->
+</html>
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+
+{% block extra_js_in_header %}
+
+<script src="https://apis.google.com/js/client:platform.js?onload=start" async defer> </script>
+
+{% endblock %}
+
+{% block page_title %}
+    Google Sign in form
+{% endblock %}
+
+{% block content %}
+<div class="row">
+<!-- Add where you want your sign-in button to render -->
+<div id="signinButton">
+  <span class="g-signin"
+    data-scope="https://www.googleapis.com/auth/plus.login"
+    data-clientid="YOUR_CLIENT_ID"
+    data-redirecturi="postmessage"
+    data-accesstype="offline"
+    data-cookiepolicy="single_host_origin"
+    data-callback="signInCallback">
+  </span>
+</div>
+<div id="result"></div>
+
+</div>
+{% endblock %}
