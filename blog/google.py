@@ -1,4 +1,4 @@
-import os, logging, httplib2, json, datetime
+import os, logging, json, datetime #httplib2
 #from apiclient.discovery import build
 
 from django.core.urlresolvers import reverse
@@ -11,11 +11,11 @@ from django.template import Context, loader, RequestContext
 #from .models import CredentialsModel, PrMasterlistUrls
 from django.conf import settings
 
-from oauth2client import xsrfutil
-from oauth2client.client import AccessTokenRefreshError
-from oauth2client.client import flow_from_clientsecrets
-from oauth2client.client import FlowExchangeError
-from oauth2client.django_orm import Storage
+#from oauth2client import xsrfutil
+#from oauth2client.client import AccessTokenRefreshError
+#from oauth2client.client import flow_from_clientsecrets
+#from oauth2client.client import FlowExchangeError
+#from oauth2client.django_orm import Storage
 
 from django.views.generic import View
 from django.contrib.auth.models import User
@@ -23,12 +23,12 @@ from django.views.decorators.csrf import csrf_protect
 
 from django.contrib.auth.decorators import login_required
 
-CLIENT_SECRETS = os.path.join(os.path.dirname(__file__), 'client_secrets.json')
-logger = logging.getLogger("epro")
-FLOW = flow_from_clientsecrets(
-    CLIENT_SECRETS,
-    scope='https://www.googleapis.com/auth/plus.login', #'https://www.googleapis.com/auth/drive',
-    redirect_uri='http://localhost:8000/oauth2callback/')
+#CLIENT_SECRETS = os.path.join(os.path.dirname(__file__), 'client_secrets.json')
+#logger = logging.getLogger("epro")
+#FLOW = flow_from_clientsecrets(
+#    CLIENT_SECRETS,
+#    scope='https://www.googleapis.com/auth/plus.login', #'https://www.googleapis.com/auth/drive',
+#    redirect_uri='http://localhost:8000/oauth2callback/')
 
 
 class MyView(View):
