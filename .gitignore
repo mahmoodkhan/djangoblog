@@ -9,6 +9,8 @@ media
 local_settings.py
 db.sqlite3
 .DS_Store
+blog/client_secrets.json
+content.html
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

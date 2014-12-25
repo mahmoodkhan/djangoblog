@@ -42,7 +42,7 @@ $.ajaxSetup({
     crossDomain: false, // obviates need for sameOrigin test
     beforeSend: function(xhr, settings) {
         if (!csrfSafeMethod(settings.type)) {
-            console.log(getCookie('csrftoken'));
+            //console.log("csrftoken: " + getCookie('csrftoken'));
             xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
         }
     }

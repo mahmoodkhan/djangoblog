@@ -1,5 +1,5 @@
-import os, logging, json, datetime, random, string #httplib2
-#from apiclient.discovery import build
+import os, logging, json, datetime, random, string
+from apiclient.discovery import build
 
 from django.core.urlresolvers import reverse
 from django.core import serializers
@@ -8,14 +8,9 @@ from django.http import HttpResponseBadRequest
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, render
 from django.template import Context, loader, RequestContext
-#from .models import CredentialsModel, PrMasterlistUrls
+
 from django.conf import settings
 
-#from oauth2client import xsrfutil
-#from oauth2client.client import AccessTokenRefreshError
-#from oauth2client.client import flow_from_clientsecrets
-#from oauth2client.client import FlowExchangeError
-#from oauth2client.django_orm import Storage
 import httplib2
 from oauth2client.client import AccessTokenRefreshError
 from oauth2client.client import flow_from_clientsecrets
@@ -27,34 +22,31 @@ from django.views.decorators.csrf import csrf_protect
 from django.utils.decorators import method_decorator
 
 from django.contrib.auth.decorators import login_required
-from django.views.decorators.csrf import csrf_protect
-
-#CLIENT_SECRETS = os.path.join(os.path.dirname(__file__), 'client_secrets.json')
-#logger = logging.getLogger("epro")
-#FLOW = flow_from_clientsecrets(
-#    CLIENT_SECRETS,
-#    scope='https://www.googleapis.com/auth/plus.login', #'https://www.googleapis.com/auth/drive',
-#    redirect_uri='http://localhost:8000/oauth2callback/')
+from django.views.decorators.csrf import csrf_protect,  ensure_csrf_cookie
 
 
 class GoogleSingInView(TemplateView):
     template_name="plus.html"
-    
-    #def get(self, request, *args, **kwargs):
+    @method_decorator(ensure_csrf_cookie)
+    @method_decorator(csrf_protect)
+    def get(self, request, *args, **kwargs):
         # Create a state token to prevent request forgery.
         # Store it in the session for later validation.
         #state = ''.join(random.choice(string.ascii_uppercase + string.digits)
         #          for x in range(32))
         #request.session['be'] = state
         #request.session['me'] = "oauth2callback"
-        #return render(request, self.template_name, {})
+        return render(request, self.template_name, {})
         #print("GET STATE")
         #print(request.session['be'])
         #print("GET TEST")
         #print(request.session['me'])
         #return super(GoogleSingInView, self).get(request, *args, **kwargs)
-    @method_decorator(csrf_protect)
+    @method_decorator(ensure_csrf_cookie)
     def post(self, request, *args, **kwargs):
+        # https://www.googleapis.com/discovery/v1/apis/plus/v1/rest
+        # https://developers.google.com/+/web/signin/server-side-flow
+        #https://github.com/googleplus/gplus-quickstart-python/blob/master/signin.py
         code = request.POST.get("code", None)
         #print("POST STATE: ")
         #print(request.session['be'])
@@ -65,14 +57,18 @@ class GoogleSingInView(TemplateView):
                 oauth_flow = flow_from_clientsecrets('blog/client_secrets.json', scope='')
                 oauth_flow.redirect_uri = 'postmessage'
                 credentials = oauth_flow.step2_exchange(code)
+                # https://google-api-python-client.googlecode.com/hg/docs/epy/oauth2client.client.OAuth2Credentials-class.html
+                print(credentials.to_json())
                 #return HttpResponse(credentials)
             except FlowExchangeError as e:
                 return HttpResponse("Failed to upgrade the authorization code. 401 %s" % e)
                 #return render(request, self.template_name, {})
         else:
             return HttpResponse ("No Code")
-
-         # An ID Token is a cryptographically-signed JSON object encoded in base 64.
+        SERVICE = build('plus', 'v1')
+        http = httplib2.Http()
+        http = credentials.authorize(http)
+        # An ID Token is a cryptographically-signed JSON object encoded in base 64.
         # Normally, it is critical that you validate an ID Token before you use it,
         # but since you are communicating directly with Google over an
         # intermediary-free HTTPS channel and using your Client Secret to
@@ -81,5 +77,7 @@ class GoogleSingInView(TemplateView):
         # ID Token to other components of your app, it is extremely important that
         # the other components validate the token before using it.
         gplus_id = credentials.id_token['sub']
+        google_request = SERVICE.people().list(userId='me', collection='visible')
+        result = google_request.execute(http=http)
         print(gplus_id)
-        return HttpResponse(credentials)
+        return HttpResponse(json.dumps(result))
