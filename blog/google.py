@@ -77,7 +77,12 @@ class GoogleSingInView(TemplateView):
         # ID Token to other components of your app, it is extremely important that
         # the other components validate the token before using it.
         gplus_id = credentials.id_token['sub']
-        google_request = SERVICE.people().list(userId='me', collection='visible')
+        #google_request = SERVICE.people().get(userId='me', collection='visible')
+        google_request = SERVICE.people().get(userId='me')
+        #people_resource = SERVICE.people()
+        #people_document = people_resource.get(userId='me').execute()
+
         result = google_request.execute(http=http)
         print(gplus_id)
+        #print(people_document)
         return HttpResponse(json.dumps(result))
