@@ -15,6 +15,7 @@ import httplib2
 from oauth2client.client import AccessTokenRefreshError
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
+from oauth2client.django_orm import Storage
 
 from django.views.generic import View, FormView, TemplateView
 from django.contrib.auth.models import User
@@ -83,6 +84,7 @@ class GoogleSingInView(TemplateView):
         #people_document = people_resource.get(userId='me').execute()
 
         result = google_request.execute(http=http)
-        print(gplus_id)
+        #print(gplus_id)
         #print(people_document)
+        #return HttpResponse(json.dumps(credentials.to_json()))
         return HttpResponse(json.dumps(result))

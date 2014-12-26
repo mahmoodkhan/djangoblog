@@ -130,15 +130,19 @@ class Comment(models.Model):
         """
         return reverse('blog.views.comment', args=[str(self.id)])
 
-class UserProfile(models.Model):
+
+from oauth2client.django_orm import CredentialsField
+class Commenter(models.Model):
     """
         Extending Django's built-in user object to use it 
         for third-party authentications
     """
-    user = models.OneToOneField(User, unique=True, related_name = 'userprofile')
-    access_token = models.TextField(max_length=254, db_index=True)
-    expiry_at = models.DateTimeField(null=True)
-    refresh_token = models.CharField(max_length=254, null=True)
+    #user = models.OneToOneField(User, unique=True, related_name = 'userprofile')
+    id = models.AutoField(primary_key=True)
+    credential = CredentialsField()
+    #access_token = models.TextField(max_length=254, db_index=True)
+    #expiry_at = models.DateTimeField(null=True)
+    #refresh_token = models.CharField(max_length=254, null=True)
     googleplus_id = models.CharField(max_length=100, unique=True, db_index=True)
     googleplus_display_name = models.CharField(max_length=100, unique=True, db_index=True)
 
