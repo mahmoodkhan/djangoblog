@@ -79,13 +79,17 @@ class GoogleSingInView(TemplateView):
             result = google_request.execute(http=http)
             try:
                 guser = Commenter.objects.get(email=credentials.id_token['email'])
-                guser.plus_id = credentials.id_token['sub']
-                guser.give_name = result['name']['givenName']
-                guser.family_name = result['name']['familyName']
-                guser.display_name = result['displayName']
-                guser.is_plus_user = result['isPlusUser']
-                guser.gender = result['gender']
-                guser.image_url = result['image']['url']
+                guser.plus_id = credentials.id_token['sub'] if 'sub' in credentials.id_token else None
+                guser.given_name = result['name']['givenName'] if ('name' in result and 'givenName' in result['name']) else None
+                guser.family_name = result['name']['familyName'] if ('name' in result and 'familyName' in result['name']) else None
+                guser.display_name = result['displayName'] if 'displayName' in result else None
+                guser.is_plus_user = result['isPlusUser'] if 'isPlusUser' in result else None
+                guser.gender = result['gender'] if 'gender' in result else None
+                guser.image_url = result['image']['url'] if ('image' in result and 'url' in result['image']) else None
+                guser.language = result['language'] if 'language' in result else None
+                guser.birthday = result['birthday'] if 'birthday' in result else None
+                guser.age_range_min = result['ageRange']['min'] if ('ageRange' in result and 'min' in result['ageRange']) else None
+                guser.age_range_max = result['ageRange']['max'] if ('ageRange' in result and 'max' in result['ageRange']) else None
                 guser.save()
                 return HttpResponse(json.dumps(result))
             except Commenter.DoesNotExist as e:
@@ -94,4 +98,46 @@ class GoogleSingInView(TemplateView):
                 pass
             
         return HttpResponse(json.dumps(credentials.to_json()))
-        
+"""
+Data Loaded: {
+    "kind": "plus#person", 
+    "url": "https://plus.google.com/103475622359731419372", 
+    "language": "en", 
+    "ageRange": {"min": 21}, 
+    "gender": "other", 
+    "displayName": "Mahmood Khan", 
+    "circledByCount": 0, 
+    "isPlusUser": true, 
+    "emails": [{"type": "account", "value": "mahmoodullah@gmail.com"}], 
+    "verified": false, 
+    "name": {"familyName": "Khan", "givenName": "Mahmood"}, 
+    "etag": "RqKWnRU4WW46-6W3rWhLR9iFZQM/GN5N5w9AXv7HMr3ONqHag6YZMQo", 
+    "objectType": "person", 
+    "id": "103475622359731419372", 
+    "birthday": "1980-01-01", 
+    "image": {
+        "url": "https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg?sz=50", 
+        "isDefault": true
+    }
+}
+
+Data Loaded: {
+    "verified": false, 
+    "name": {"givenName": "Mahmood", "familyName": "Khan"}, 
+    "gender": "male", 
+    "kind": "plus#person", 
+    "language": "en", 
+    "objectType": "person", 
+    "url": "https://plus.google.com/103475622359731419372", 
+    "isPlusUser": true, 
+    "ageRange": {"min": 21}, 
+    "image": {
+        "isDefault": true, "url": "https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg?sz=50"
+    }, 
+    "displayName": "Mahmood Khan", 
+    "etag": "\"RqKWnRU4WW46-6W3rWhLR9iFZQM/uRTQM9CGPsBnX1Y2QCmmuquLAgo\"", 
+    "circledByCount": 0, 
+    "emails": [{"type": "account", "value": "mahmoodullah@gmail.com"}], 
+    "id": "103475622359731419372"
+}"
+"""

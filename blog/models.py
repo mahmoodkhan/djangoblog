@@ -149,6 +149,8 @@ class Commenter(models.Model):
     gender = models.CharField(max_length=20, blank=True, null=True)
     image_url = models.URLField(blank=True, null=True)
     birthday = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True)
+    age_range_min = models.IntegerField(blank=True, null=True)
+    age_range_max = models.IntegerField(blank=True, null=True)
     language = models.CharField(max_length=20, db_index=True, null=True, blank=True)
 
     def __str__(self):
