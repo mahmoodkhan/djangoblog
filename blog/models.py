@@ -138,14 +138,18 @@ class Commenter(models.Model):
         for third-party authentications
     """
     #user = models.OneToOneField(User, unique=True, related_name = 'userprofile')
-    id = models.AutoField(primary_key=True)
+    #id = models.AutoField(primary_key=True)
+    email = models.EmailField(max_length=75, unique=True, db_index=True)
     credential = CredentialsField()
-    #access_token = models.TextField(max_length=254, db_index=True)
-    #expiry_at = models.DateTimeField(null=True)
-    #refresh_token = models.CharField(max_length=254, null=True)
-    googleplus_id = models.CharField(max_length=100, unique=True, db_index=True)
-    googleplus_display_name = models.CharField(max_length=100, unique=True, db_index=True)
+    plus_id = models.CharField(max_length=100, unique=True, db_index=True, null=True)
+    given_name = models.CharField(max_length=50, blank=True, null=True)
+    family_name = models.CharField(max_length=50, blank=True, null=True)
+    display_name = models.CharField(max_length=100, db_index=True, blank=True, null=True)
+    is_plus_user = models.BooleanField(default=False)
+    gender = models.CharField(max_length=20, blank=True, null=True)
+    image_url = models.URLField(blank=True, null=True)
+    birthday = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True)
+    language = models.CharField(max_length=20, db_index=True, null=True, blank=True)
 
     def __str__(self):
-        return ("%s - %s" % (self.id,  self.googleplus_id))
-
+        return ("Email: %s - Google+ ID: %s" % (self.email,  self.gplus_id))

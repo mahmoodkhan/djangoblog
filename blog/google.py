@@ -25,7 +25,7 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_protect,  ensure_csrf_cookie
 
-
+from .models import *
 class GoogleSingInView(TemplateView):
     template_name="plus.html"
     @method_decorator(ensure_csrf_cookie)
@@ -45,6 +45,7 @@ class GoogleSingInView(TemplateView):
         #return super(GoogleSingInView, self).get(request, *args, **kwargs)
     @method_decorator(ensure_csrf_cookie)
     def post(self, request, *args, **kwargs):
+        #skope = "https://www.googleapis.com/auth/plus.login email"
         # https://www.googleapis.com/discovery/v1/apis/plus/v1/rest
         # https://developers.google.com/+/web/signin/server-side-flow
         #https://github.com/googleplus/gplus-quickstart-python/blob/master/signin.py
@@ -53,38 +54,44 @@ class GoogleSingInView(TemplateView):
         #print(request.session['be'])
         #print("TEST")
         #print(request.session['me'])
-        if code:
-            try:
-                oauth_flow = flow_from_clientsecrets('blog/client_secrets.json', scope='')
-                oauth_flow.redirect_uri = 'postmessage'
-                credentials = oauth_flow.step2_exchange(code)
-                # https://google-api-python-client.googlecode.com/hg/docs/epy/oauth2client.client.OAuth2Credentials-class.html
-                print(credentials.to_json())
-                #return HttpResponse(credentials)
-            except FlowExchangeError as e:
-                return HttpResponse("Failed to upgrade the authorization code. 401 %s" % e)
-                #return render(request, self.template_name, {})
-        else:
+        if code is None:
             return HttpResponse ("No Code")
-        SERVICE = build('plus', 'v1')
-        http = httplib2.Http()
-        http = credentials.authorize(http)
-        # An ID Token is a cryptographically-signed JSON object encoded in base 64.
-        # Normally, it is critical that you validate an ID Token before you use it,
-        # but since you are communicating directly with Google over an
-        # intermediary-free HTTPS channel and using your Client Secret to
-        # authenticate yourself to Google, you can be confident that the token you
-        # receive really comes from Google and is valid. If your server passes the
-        # ID Token to other components of your app, it is extremely important that
-        # the other components validate the token before using it.
-        gplus_id = credentials.id_token['sub']
-        #google_request = SERVICE.people().get(userId='me', collection='visible')
-        google_request = SERVICE.people().get(userId='me')
-        #people_resource = SERVICE.people()
-        #people_document = people_resource.get(userId='me').execute()
 
-        result = google_request.execute(http=http)
-        #print(gplus_id)
-        #print(people_document)
-        #return HttpResponse(json.dumps(credentials.to_json()))
-        return HttpResponse(json.dumps(result))
+        try:
+            oauth_flow = flow_from_clientsecrets('blog/client_secrets.json', scope="")
+            oauth_flow.redirect_uri = 'postmessage'
+            credentials = oauth_flow.step2_exchange(code)
+            # https://google-api-python-client.googlecode.com/hg/docs/epy/oauth2client.client.OAuth2Credentials-class.html
+            #return HttpResponse(credentials)
+        except FlowExchangeError as e:
+            return HttpResponse("Failed to upgrade the authorization code. 401 %s" % e)
+            #return render(request, self.template_name, {})
+            
+        storage = Storage(Commenter, 'email', credentials.id_token['email'], 'credential')
+        if storage.get() is None or credentials.invalid == True:
+            storage.put(credentials)
+            
+            SERVICE = build('plus', 'v1')
+            http = httplib2.Http()
+            http = credentials.authorize(http)
+            
+            google_request = SERVICE.people().get(userId='me')
+            result = google_request.execute(http=http)
+            try:
+                guser = Commenter.objects.get(email=credentials.id_token['email'])
+                guser.plus_id = credentials.id_token['sub']
+                guser.give_name = result['name']['givenName']
+                guser.family_name = result['name']['familyName']
+                guser.display_name = result['displayName']
+                guser.is_plus_user = result['isPlusUser']
+                guser.gender = result['gender']
+                guser.image_url = result['image']['url']
+                guser.save()
+                return HttpResponse(json.dumps(result))
+            except Commenter.DoesNotExist as e:
+                print("ERROR")
+                print(e)
+                pass
+            
+        return HttpResponse(json.dumps(credentials.to_json()))
+        
