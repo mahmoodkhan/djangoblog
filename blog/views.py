@@ -33,7 +33,7 @@ class HomeView(BlogPostArchiveHierarchyMixin, ListView):
 
     def get_queryset(self, **kwargs):
         where = {'private': False, 'published': True}
-        print(self.kwargs)
+        #print(self.kwargs)
         if self.kwargs:
             where.update(self.kwargs)
         return BlogPost.objects.filter(**where)[:5]

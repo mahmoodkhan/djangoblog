@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+{% load myfilters %}
+
+{% block title %}Home{% endblock %}
+
+{% block page_title %}
+    Google+ Users
+{% endblock %}
+{% block description %}
+    Google Users
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12 col-md-offset-0">
+            {% for u in gusers %}
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            {{ u.email }}
+                        </h4>
+                        <small>published on {{ u.display_name }}</small>
+                    </div>
+                    <div class="panel-body">
+                        {{ u.credential }}
+                    </div>
+                </div>
+                {% empty %}
+                    <h3>No articles yet.</h3>
+                {% endfor %}
+            </div>
+        </div>
+    <table id="id_list_table">
+    <div> {{ me }} </div>
+    </table>
+    
+{% endblock %}

@@ -18,6 +18,9 @@ from oauth2client.client import FlowExchangeError
 from oauth2client.django_orm import Storage
 
 from django.views.generic import View, FormView, TemplateView
+from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic.list import ListView
+
 from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_protect
 from django.utils.decorators import method_decorator
@@ -26,6 +29,28 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_protect,  ensure_csrf_cookie
 
 from .models import *
+
+class ShowGoogleUsers(ListView):
+    model = Commenter
+    template_name = "plus_users.html"
+    context_object_name = 'gusers'
+    
+    
+
+    def get_context_data(self, **kwargs):
+        storage = Storage(Commenter, 'email', 'mahmoodullah@gmail.com', 'credential')
+        credential = storage.get()
+        print(credential.id_token['sub'])
+        SERVICE = build('plus', 'v1')
+        http = httplib2.Http()
+        http = credential.authorize(http)
+
+        google_request = SERVICE.people().get(userId=credential.id_token['sub'])
+        result = google_request.execute(http=http)
+        context = super(ShowGoogleUsers, self).get_context_data(**kwargs)
+        context['me'] = result
+        return context
+
 class GoogleSingInView(TemplateView):
     template_name="plus.html"
     @method_decorator(ensure_csrf_cookie)
@@ -62,7 +87,7 @@ class GoogleSingInView(TemplateView):
             oauth_flow.redirect_uri = 'postmessage'
             credentials = oauth_flow.step2_exchange(code)
             # https://google-api-python-client.googlecode.com/hg/docs/epy/oauth2client.client.OAuth2Credentials-class.html
-            #return HttpResponse(credentials)
+            #return HttpResponse(credentials.to_json())
         except FlowExchangeError as e:
             return HttpResponse("Failed to upgrade the authorization code. 401 %s" % e)
             #return render(request, self.template_name, {})
@@ -98,46 +123,3 @@ class GoogleSingInView(TemplateView):
                 pass
             
         return HttpResponse(json.dumps(credentials.to_json()))
-"""
-Data Loaded: {
-    "kind": "plus#person", 
-    "url": "https://plus.google.com/103475622359731419372", 
-    "language": "en", 
-    "ageRange": {"min": 21}, 
-    "gender": "other", 
-    "displayName": "Mahmood Khan", 
-    "circledByCount": 0, 
-    "isPlusUser": true, 
-    "emails": [{"type": "account", "value": "mahmoodullah@gmail.com"}], 
-    "verified": false, 
-    "name": {"familyName": "Khan", "givenName": "Mahmood"}, 
-    "etag": "RqKWnRU4WW46-6W3rWhLR9iFZQM/GN5N5w9AXv7HMr3ONqHag6YZMQo", 
-    "objectType": "person", 
-    "id": "103475622359731419372", 
-    "birthday": "1980-01-01", 
-    "image": {
-        "url": "https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg?sz=50", 
-        "isDefault": true
-    }
-}
-
-Data Loaded: {
-    "verified": false, 
-    "name": {"givenName": "Mahmood", "familyName": "Khan"}, 
-    "gender": "male", 
-    "kind": "plus#person", 
-    "language": "en", 
-    "objectType": "person", 
-    "url": "https://plus.google.com/103475622359731419372", 
-    "isPlusUser": true, 
-    "ageRange": {"min": 21}, 
-    "image": {
-        "isDefault": true, "url": "https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg?sz=50"
-    }, 
-    "displayName": "Mahmood Khan", 
-    "etag": "\"RqKWnRU4WW46-6W3rWhLR9iFZQM/uRTQM9CGPsBnX1Y2QCmmuquLAgo\"", 
-    "circledByCount": 0, 
-    "emails": [{"type": "account", "value": "mahmoodullah@gmail.com"}], 
-    "id": "103475622359731419372"
-}"
-"""
