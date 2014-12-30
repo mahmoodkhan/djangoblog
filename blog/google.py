@@ -35,8 +35,6 @@ class ShowGoogleUsers(ListView):
     template_name = "plus_users.html"
     context_object_name = 'gusers'
     
-    
-
     def get_context_data(self, **kwargs):
         storage = Storage(Commenter, 'email', 'mahmoodullah@gmail.com', 'credential')
         credential = storage.get()

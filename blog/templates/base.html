@@ -70,7 +70,7 @@
                         </div>
                     </form>
                 </div><!-- .navbar-header collapse -->
-            </div><!-- .container collapse -->
+            </div><!-- .container-fluid collapse -->
         </div><!-- .navbar collapse -->
 
         
@@ -99,10 +99,8 @@
                             <small><p>{% block description %} {% endblock %}</p></small>
                         </h4>
                     </div>
-                    <div>
-                        {% block content %} {% endblock %}
-                    </div>
-                </div> <!-- col-xs-9 div collapse -->
+                    {% block content %} {% endblock %}
+                </div> <!-- col-sm-10 div collapse -->
 
                 <!-- RIGHT SIDEBAR -->
                 <div class = "col-sm-2" style="border-left:0.5px solid #ccc">

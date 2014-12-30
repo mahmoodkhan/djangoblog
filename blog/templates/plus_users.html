@@ -13,27 +13,38 @@
 {% endblock %}
 
 {% block content %}
-    <div class="row">
-        <div class="col-md-12 col-md-offset-0">
-            {% for u in gusers %}
-                <div class="panel panel-info">
-                    <div class="panel-heading">
-                        <h4 class="panel-title">
-                            {{ u.email }}
-                        </h4>
-                        <small>published on {{ u.display_name }}</small>
-                    </div>
-                    <div class="panel-body">
-                        {{ u.credential }}
-                    </div>
-                </div>
-                {% empty %}
-                    <h3>No articles yet.</h3>
-                {% endfor %}
-            </div>
-        </div>
-    <table id="id_list_table">
-    <div> {{ me }} </div>
+
+<div class="table-responsive">
+    <table class="table table-striped table-hover table-bordered">
+        <thead>
+            <tr>
+                <th class="col-sm-2">Display Name</th>
+                <th class="col-sm-1">Given Name</th>
+                <th class="col-sm-2">Email</th>
+                <th class="col-sm-3">Gender</th>
+                <th class="col-sm-1">Language</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for u in gusers %}
+            <tr role="row">
+                <td>{{ u.display_name }}</td> <!--  class="{% cycle 'odd' 'even' %}"-->
+                <td>{{ u.given_name }}</td>
+                <td>{{ u.email }}</td>
+                <td>{{ u.gender }}</td>
+                <td>{{ u.language }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
     </table>
-    
+</div>
+
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <h3 class="panel-title">Panel title</h3>
+    </div>
+    <div class="panel-body">
+        {{ me }}
+    </div>
+</div>
 {% endblock %}
