@@ -1,7 +1,11 @@
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse_lazy
+from django.core.serializers.python import Serializer
+from django.utils.encoding import smart_text
+
 from django.shortcuts import render
 from django.utils import timezone
+from django.conf import settings
 
 from django.views.generic import RedirectView, FormView, DetailView, CreateView, TemplateView
 from django.views.generic.dates import ArchiveIndexView, MonthArchiveView, YearArchiveView
@@ -20,6 +24,19 @@ from .mixins import *
 
 from ratelimit.mixins import RateLimitMixin
 
+class JsonSerializer(Serializer):
+    """
+    Overrides django's JSON serialzer so that the JSON output is more flat.
+
+    http://www.acnenomor.com/2673377p1/django-serializers-to-json-custom-json-output-format
+    Usage:
+        serializer = JsonSerializer()
+        data = serializer.serialize(<queryset>, <optional>fields=('field1', 'field2'))
+    """
+    def end_object( self, obj ):
+        #self._current['id'] = obj._get_pk_val()
+        self._current['id'] = smart_text(obj._get_pk_val(), strings_only=True)
+        self.objects.append( self._current )
 
 class HomeView(BlogPostArchiveHierarchyMixin, ListView):
     """
@@ -186,9 +203,6 @@ class BlogPostDetail(BlogPostArchiveHierarchyMixin, DetailView):
         object.save()
         return object
 
-
-        
-
 class BlogPostArchiveIndexView(BlogPostArchiveHierarchyMixin, ArchiveIndexView):
     """
     A top-level index page showing the “latest” objects, by date.
@@ -215,7 +229,6 @@ class BlogPostMonthArchiveView(BlogPostArchiveHierarchyMixin, MonthArchiveView):
     allow_future = True
     paginate_by=12
     #month_format='%m' # month number
-
 
 class Search(SearchView):
     """ 
@@ -245,10 +258,10 @@ class ContactView(BlogPostArchiveHierarchyMixin, FormView):
         send_mail(
             subject=form.cleaned_data.get('subject').strip(),
             message = message,
-            from_email = 'me@example.com',
-            recipient_list = ['mkhan@mercycorps.org',],
+            from_email = settings.DEFAULT_FROM_EMAIL,
+            recipient_list = [settings.MY_EMAIL,],
         )
-        return super(ContactFormView, self).form_valid(form)
+        return super(ContactView, self).form_valid(form)
 
 class AboutView(BlogPostArchiveHierarchyMixin, TemplateView):
     template_name='about.html'
@@ -309,11 +322,6 @@ class LoginView(RateLimitMixin, FormView):
     def form_invalid(self, form):
         """  This method is called after the form submission has failed  """
         return super(LoginView, self).form_invalid(form)
-
-    
-    def dispatch(self, *args, **kwargs):
-        """ this is fired up first regardless of what http method is used """
-        return super(LoginView, self).dispatch(*args, **kwargs)
 
 class LogoutView(RedirectView):
     """
