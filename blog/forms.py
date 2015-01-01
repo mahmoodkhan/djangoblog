@@ -105,6 +105,25 @@ class ContactForm(forms.Form):
         self.helper.add_input(Reset('rest', 'Reset', css_class='btn-warning'))
         super(ContactForm, self).__init__(*args, **kwargs)
 
+class CommenterForm(forms.ModelForm):
+    
+    class Meta:
+        model = Commenter
+        exclude = ['image_url', 'credential',]
+    
+    def __init__(self, *args, **kwargs):
+        id = kwargs.pop('id')
+        super(CommenterForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper(self)
+        self.helper.form_class = 'form-horizontal'
+        self.helper.label_class = 'col-sm-2'
+        self.helper.field_class = 'col-sm-10'
+        self.helper.html5_required = True
+        self.helper.form_method = 'post'
+        self.helper.form_action = reverse('commenter', kwargs={'pk': id})
+        self.helper.add_input(Submit('submit', 'Submit', css_id="btn-from"))
+        self.helper.add_input(Reset('rest', 'Reset', css_class='btn-warning'))
+
 class LoginForm(AuthenticationForm):
     """
     A login form that inherits from Django's builtin AuthenticationForm, which has

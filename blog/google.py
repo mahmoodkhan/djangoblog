@@ -36,17 +36,22 @@ class ShowGoogleUsers(ListView):
     context_object_name = 'gusers'
     
     def get_context_data(self, **kwargs):
+        context = super(ShowGoogleUsers, self).get_context_data(**kwargs)
+        """
         storage = Storage(Commenter, 'email', 'mahmoodullah@gmail.com', 'credential')
         credential = storage.get()
-        print(credential.id_token['sub'])
+        if credential is None:
+            return context
+
         SERVICE = build('plus', 'v1')
         http = httplib2.Http()
         http = credential.authorize(http)
 
         google_request = SERVICE.people().get(userId=credential.id_token['sub'])
         result = google_request.execute(http=http)
-        context = super(ShowGoogleUsers, self).get_context_data(**kwargs)
+        
         context['me'] = result
+        """
         return context
 
 class GoogleSingInView(TemplateView):

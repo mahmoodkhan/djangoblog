@@ -155,3 +155,9 @@ class Commenter(models.Model):
 
     def __str__(self):
         return ("Email: %s - Google+ ID: %s" % (self.email,  self.gplus_id))
+
+    def get_absolute_url(self):
+        """
+        Used when we need to link to a specific blog post.
+        """
+        return reverse('commenter', args=[str(self.id)])

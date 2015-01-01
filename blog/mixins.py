@@ -2,9 +2,11 @@ import json
 
 from django.db.models import Count
 from django.http import HttpResponse
+from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.generic import View
 from django.utils.decorators import method_decorator
+from django.db import models
 
 from django.contrib.auth.decorators import login_required
 
@@ -147,47 +149,29 @@ class BlogPostMixin(View):
             pass
         return context
 
-class JSONMixin(object):
+class AjaxableResponseMixin(object):
     """
-    To process forms that works with AJAX
-    To send the data to server and return the list of errors if the data didn't pass the validation.
+    Mixin to add AJAX support to a form.
+    Must be used with an object-based FormView (e.g. CreateView)
     """
-    def render_to_response(self, context, **httpresponse_kwargs):
-        return self.get_json_response(
-            self.convert_context_to_json(context),
-            **httpresponse_kwargs
-        )
-
-    def get_json_response(self, content, **httpresponse_kwargs):
-        return HttpResponse(
-            content,
-            content_type='application/json',
-            **httpresponse_kwargs
-        )
-
-    def convert_context_to_json(self, context):
-        """
-        To serialize a Django form and return JSON object with its fields and errors
-        """
-        form = context.get('form')
-        to_json = {}
-        options = context.get('options', {})
-        to_json.update(options=options)
-        to_json.update(success=context.get('success', False))
-        fields = {}
-        for field_name, field in form.fields.items():
-            if isinstance(field, DateField) and isinstance(form[field_name].value(), datetime.date):
-                fields[field_name] = unicode(form[field_name].value().strftime('%d.%m.%Y'))
-            else:
-                fields[field_name] = form[field_name].value() and unicode(form[field_name].value()) or form[field_name].value()
-            to_json.update(fields=fields)
-            if form.errors:
-                errors = {
-                    'non_field_errors': form.non_field_errors(),
-                }
-                fields = {}
-                for field_name, text in form.errors.items():
-                    fields[field_name] = text
-                errors.update(fields=fields)
-                to_json.update(errors=errors)
-            return json.dumps(to_json)
+    """
+    def form_invalid(self, form):
+        response = super(AjaxableResponseMixin, self).form_invalid(form)
+        if self.request.is_ajax():
+            #return JsonResponse(form.errors, status=400)
+            return response
+        else:
+            return response
+    """
+    def form_valid(self, form):
+        # We make sure to call the parent's form_valid() method because
+        # it might do some processing (in the case of CreateView, it will
+        # call form.save() for example).
+        response = super(AjaxableResponseMixin, self).form_valid(form)
+        if self.request.is_ajax():
+            data = {
+                'pk': self.object.pk,
+            }
+            return JsonResponse(data)
+        else:
+            return response

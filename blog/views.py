@@ -88,6 +88,21 @@ class CreateCommentView(CreateView):
     def get_success_url(self):
         return reverse_lazy('detailpost', kwargs={ "pk": self.object.blogpost.pk })
 
+class CommenterUpdateView(AjaxableResponseMixin, UpdateView): 
+    #class CommenterUpdateView(UpdateView): 
+    model = Commenter
+    form_class = CommenterForm
+    template_name="blog/commenter_form_inner.html"
+    success_message = "%(given_name)s record was updated successfully"
+    
+    def get_form_kwargs(self):
+        kwargs = super(CommenterUpdateView, self).get_form_kwargs()
+        kwargs.update({'id': self.object.id})
+        return kwargs
+    
+    def get_success_message(self, cleaned_data):
+        return self.success_message % dict(cleaned_data, given_name=self.object.given_name)
+
 class HiddenBlogPost(LoginRequired, BlogPostArchiveHierarchyMixin, ListView):
     """
     A view that shows hidden posts only to the authenticated users
@@ -142,7 +157,9 @@ class BlogPostUpdateView(BlogPostMixin, BlogPostArchiveHierarchyMixin, UpdateVie
         self.object.updated = timezone.now()
         return super(BlogPostUpdateView, self).form_valid(form)
         
-class BlogPostCreateView(SuccessMessageMixin, BlogPostMixin, BlogPostArchiveHierarchyMixin, CreateView):
+class BlogPostCreateView(AjaxableResponseMixin, 
+    SuccessMessageMixin, BlogPostMixin, 
+    BlogPostArchiveHierarchyMixin, CreateView):
     """
     A view that creates new blogposts. the form_valid and form_invalid is 
     handled in the BlogPostMixin because the code in those methods is the
