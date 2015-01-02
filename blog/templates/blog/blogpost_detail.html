@@ -31,12 +31,17 @@
         <h4>Comments </h4>
         
         {% for c in comments %}
+            
             <blockquote>
                 <footer>{{ c.author }} commented on {{ c.created }}</footer>
                 <p>
                 {{ c.body | pygmentize|safe }}
                 </p>
             </blockquote>
+            
+            <p class="comment">
+                {{ c.body | pygmentize|safe }}
+            </p>
             <hr />
         {% endfor %}
     </div>

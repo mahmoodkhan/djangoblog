@@ -101,15 +101,12 @@ $(document).ready(function() {
                     }
                 },
                 error: function (xhr, ajaxOptions, thrownError) {
-                    console.log(xhr.status + ": " + JSON.stringify(xhr.responseJSON));
-                    console.log(JSON.stringify(xhr));
+                    //console.log(xhr.status + ": " + JSON.stringify(xhr.responseJSON));
                     //console.log(JSON.stringify(xhr));
-                    //errors = eval(xhr.responseText.errs);
                     $.each(xhr.responseJSON, function(fieldname, errmsg){
                         id = "#id_" + fieldname;
                         $(id).parent().after( errmsg );
                     });
-                    //$('#emsg').text( e_msg ).fadeIn("slow");
                 }
             });
         });

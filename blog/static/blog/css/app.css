@@ -1,20 +1,20 @@
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 body {
-  /* Margin bottom by footer height */
-  margin-bottom: 60px;
+    /* Margin bottom by footer height */
+    margin-bottom: 60px;
 }
 #footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  /* Set the fixed height of the footer here */
-  height: 30px;
-  background-color: #f5f5f5;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    /* Set the fixed height of the footer here */
+    height: 30px;
+    background-color: #f5f5f5;
 }
 
 
@@ -23,7 +23,7 @@ body {
 /* Not required for template or sticky footer method. */
 
 body > .container-fluid {
-  padding: 60px 15px;
+    padding: 60px 15px;
 }
 .page-header {
     margin-top: 0px;
@@ -38,4 +38,10 @@ body > .container-fluid {
     color: #828293;
     background-color: #F5EBFF;
     border-color: #DFDBE4;
+}
+
+.comment {
+    padding: 10px 20px;
+    margin: 0px 0px 20px;
+    border-left: 5px solid #EEE;
 }
