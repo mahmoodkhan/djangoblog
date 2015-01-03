@@ -1,5 +1,4 @@
-import os, logging, json, datetime, random, string
-from apiclient.discovery import build
+import os, logging, json, datetime, random, string, httplib2
 
 from django.core.urlresolvers import reverse
 from django.core import serializers
@@ -8,94 +7,126 @@ from django.http import HttpResponseBadRequest
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, render
 from django.template import Context, loader, RequestContext
-
+from django.views.generic import TemplateView
+from django.views.generic.edit import UpdateView
+from django.views.generic.list import ListView
+from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
+from django.utils.decorators import method_decorator
 from django.conf import settings
 
-import httplib2
+from oauth2client import xsrfutil
 from oauth2client.client import AccessTokenRefreshError
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
 from oauth2client.django_orm import Storage
 
-from django.views.generic import View, FormView, TemplateView
-from django.views.generic.edit import CreateView, UpdateView
-from django.views.generic.list import ListView
-
-from django.contrib.auth.models import User
-from django.views.decorators.csrf import csrf_protect
-from django.utils.decorators import method_decorator
-
-from django.contrib.auth.decorators import login_required
-from django.views.decorators.csrf import csrf_protect,  ensure_csrf_cookie
+from apiclient.discovery import build
 
 from .models import *
+from .forms import *
+from .mixins import *
+
+class CommenterUpdateView(AjaxableResponseMixin, UpdateView): 
+    """
+    Provides a way to update the Commenter record manually
+    """
+    model = Commenter
+    form_class = CommenterForm
+    template_name="blog/commenter_form_inner.html"
+    success_message = "%(given_name)s record was updated successfully"
+    
+    def get_form_kwargs(self):
+        kwargs = super(CommenterUpdateView, self).get_form_kwargs()
+        kwargs.update({'id': self.object.id})
+        return kwargs
+    
+    def get_success_message(self, cleaned_data):
+        return self.success_message % dict(cleaned_data, given_name=self.object.given_name)
 
 class ShowGoogleUsers(ListView):
+    """
+    Provides a list of everyone who has logged in to the site 
+    """
     model = Commenter
     template_name = "plus_users.html"
     context_object_name = 'gusers'
     
     def get_context_data(self, **kwargs):
+        """
+        TODO: This method is just a test that can be deleted
+        """
         context = super(ShowGoogleUsers, self).get_context_data(**kwargs)
-        """
-        storage = Storage(Commenter, 'email', 'mahmoodullah@gmail.com', 'credential')
-        credential = storage.get()
-        if credential is None:
-            return context
+        try:
+            storage = Storage(Commenter, 'email', 'mahmoodullah@gmail.com', 'credential')
+            credential = storage.get()
+            if credential is None:
+                context['me'] = "No credentials found!"
+                return context
+            
+            http = httplib2.Http()
+            http = credential.authorize(http)
 
-        SERVICE = build('plus', 'v1')
-        http = httplib2.Http()
-        http = credential.authorize(http)
-
-        google_request = SERVICE.people().get(userId=credential.id_token['sub'])
-        result = google_request.execute(http=http)
-        
-        context['me'] = result
-        """
+            SERVICE = build('plus', 'v1', http=http)
+            google_request = SERVICE.people().get(userId=credential.id_token['sub'])
+            result = google_request.execute()
+            
+            context['me'] = result
+        except AccessTokenRefreshError as e:
+            context['me'] = "Unable to refresh access token"
         return context
 
 class GoogleSingInView(TemplateView):
+    """
+    Shows the Google+ sign-in button and when processes the POST data from the Google+
+    Sign-in button
+    """
     template_name="plus.html"
+    
+
     @method_decorator(ensure_csrf_cookie)
     @method_decorator(csrf_protect)
     def get(self, request, *args, **kwargs):
-        # Create a state token to prevent request forgery.
-        # Store it in the session for later validation.
-        #state = ''.join(random.choice(string.ascii_uppercase + string.digits)
-        #          for x in range(32))
-        #request.session['be'] = state
-        #request.session['me'] = "oauth2callback"
-        return render(request, self.template_name, {})
-        #print("GET STATE")
-        #print(request.session['be'])
-        #print("GET TEST")
-        #print(request.session['me'])
-        #return super(GoogleSingInView, self).get(request, *args, **kwargs)
+        """
+        The view is protected with csrf because its cookie value is required for the AJAX 
+        POST request when user clicks on the sign-in button
+        """
+        
+        #For added security to make sure that the request's session is intact between
+        #the GET (showing the sign-in button" to the POST (submitting the sign-in)
+        self.request.session['state'] = xsrfutil.generate_token(settings.SECRET_KEY, None)
+
+        return super(GoogleSingInView, self).get(request, *args, **kwargs)
+
     @method_decorator(ensure_csrf_cookie)
     def post(self, request, *args, **kwargs):
-        #skope = "https://www.googleapis.com/auth/plus.login email"
-        # https://www.googleapis.com/discovery/v1/apis/plus/v1/rest
-        # https://developers.google.com/+/web/signin/server-side-flow
-        #https://github.com/googleplus/gplus-quickstart-python/blob/master/signin.py
+        """
+        Process the POST data sent via AJAX after user clicks on the sign-in button.
+        """
+        # retrive the one-time  Google generated code after user granted permission to the app.
         code = request.POST.get("code", None)
-        #print("POST STATE: ")
-        #print(request.session['be'])
-        #print("TEST")
-        #print(request.session['me'])
+
+        # Make sure the request session is still intact and hasn't been tempered with.
+        if not xsrfutil.validate_token(settings.SECRET_KEY, request.session['state'], None):
+            return HttpResponseBadRequest()
+
+        # if there is no one-time Google generated code then return 
         if code is None:
             return HttpResponse ("No Code")
 
+        # Exchange the one-time Google generated code for an AccessToken and RefreshToken.
+        # Remember that RefreshToken is only generated once during the initial granting of
+        # permission by the user.
         try:
             oauth_flow = flow_from_clientsecrets('blog/client_secrets.json', scope="")
             oauth_flow.redirect_uri = 'postmessage'
             credentials = oauth_flow.step2_exchange(code)
-            # https://google-api-python-client.googlecode.com/hg/docs/epy/oauth2client.client.OAuth2Credentials-class.html
-            #return HttpResponse(credentials.to_json())
         except FlowExchangeError as e:
             return HttpResponse("Failed to upgrade the authorization code. 401 %s" % e)
-            #return render(request, self.template_name, {})
-            
+
+        # retrieve the credentials object from the database based on the user's email
         storage = Storage(Commenter, 'email', credentials.id_token['email'], 'credential')
+
+        # if the credentials object does not exist or is invalid then store it
         if storage.get() is None or credentials.invalid == True:
             storage.put(credentials)
             
@@ -119,10 +150,6 @@ class GoogleSingInView(TemplateView):
                 guser.age_range_min = result['ageRange']['min'] if ('ageRange' in result and 'min' in result['ageRange']) else None
                 guser.age_range_max = result['ageRange']['max'] if ('ageRange' in result and 'max' in result['ageRange']) else None
                 guser.save()
-                return HttpResponse(json.dumps(result))
             except Commenter.DoesNotExist as e:
-                print("ERROR")
                 print(e)
-                pass
-            
         return HttpResponse(json.dumps(credentials.to_json()))
