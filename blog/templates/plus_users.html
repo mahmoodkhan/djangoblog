@@ -32,7 +32,7 @@
         {% for u in gusers %}
             <tr role="row">
                 <td style="display:none;">{{ u.pk }} </td>
-                <td>{{ u.display_name }}</td> <!--  class="{% cycle 'odd' 'even' %}"-->
+                <td>{{ u.display_name }}</td>
                 <td>{{ u.given_name }}</td>
                 <td>{{ u.family_name }}</td>
                 <td>{{ u.email }}</td>
@@ -45,7 +45,7 @@
     </table>
 </div>
 
-<!--
+
 <div class="panel panel-primary">
     <div class="panel-heading">
         <h3 class="panel-title">Panel title</h3>
@@ -54,7 +54,7 @@
         {{ me }}
     </div>
 </div>
--->
+
 
 <div class="modal fade" id="form-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
