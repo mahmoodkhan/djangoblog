@@ -39,7 +39,7 @@ class HomeView(BlogPostArchiveHierarchyMixin, ListView):
         #print(self.kwargs)
         if self.kwargs:
             where.update(self.kwargs)
-        return BlogPost.objects.filter(**where)[:5]
+        return BlogPost.objects.filter(**where)[:50]
 
     def get_context_data(self, **kwargs):
         messages.set_level(self.request, messages.DEBUG)

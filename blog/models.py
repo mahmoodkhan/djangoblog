@@ -3,8 +3,11 @@ from django.core.urlresolvers import reverse
 from django.template.defaultfilters import slugify
 from django.db import models
 from django.utils import timezone
+
 from django.contrib import admin
 from django.contrib.auth.models import User
+
+from oauth2client.django_orm import CredentialsField
 
 class Category(models.Model):
     name = models.CharField(max_length=64)
@@ -130,17 +133,11 @@ class Comment(models.Model):
         """
         return reverse('blog.views.comment', args=[str(self.id)])
 
-
-from oauth2client.django_orm import CredentialsField
 class Commenter(models.Model):
     """
-        Extending Django's built-in user object to use it 
-        for third-party authentications
+    Basic info about a user who comments on an article
     """
-    #user = models.OneToOneField(User, unique=True, related_name = 'userprofile')
-    #id = models.AutoField(primary_key=True)
-    email = models.EmailField(max_length=75, unique=True, db_index=True)
-    credential = CredentialsField()
+    email = models.EmailField(max_length=75, unique=True)
     plus_id = models.CharField(max_length=100, unique=True, db_index=True, null=True)
     given_name = models.CharField(max_length=50, blank=True, null=True)
     family_name = models.CharField(max_length=50, blank=True, null=True)
@@ -152,12 +149,21 @@ class Commenter(models.Model):
     age_range_min = models.IntegerField(blank=True, null=True)
     age_range_max = models.IntegerField(blank=True, null=True)
     language = models.CharField(max_length=20, db_index=True, null=True, blank=True)
+    created = models.DateTimeField(auto_now=False, auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True, auto_now_add=False)
 
     def __str__(self):
-        return ("Email: %s - Google+ ID: %s" % (self.email,  self.gplus_id))
+        return ("Email: %s - Google+ ID: %s" % (self.email,  self.plus_id))
 
     def get_absolute_url(self):
         """
         Used when we need to link to a specific blog post.
         """
         return reverse('commenter', args=[str(self.id)])
+
+class GoogleCredentialsModel(models.Model):
+    """
+    For storing Google+ Credentials object per each unique commenter
+    """
+    commenter = models.OneToOneField(Commenter, primary_key=True, related_name='gplus_credential')
+    credential = CredentialsField()

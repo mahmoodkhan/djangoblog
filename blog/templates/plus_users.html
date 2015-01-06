@@ -32,13 +32,13 @@
         {% for u in gusers %}
             <tr role="row">
                 <td style="display:none;">{{ u.pk }} </td>
-                <td>{{ u.display_name }}</td>
-                <td>{{ u.given_name }}</td>
-                <td>{{ u.family_name }}</td>
-                <td>{{ u.email }}</td>
-                <td>{{ u.gender }}</td>
-                <td>{{ u.language }}</td>
-                <td>{{ u.birthday }}</td>
+                <td>{% if u.display_name %} {{ u.display_name }} {% endif %}</td>
+                <td>{% if u.given_name %} {{ u.given_name }} {% endif %}</td>
+                <td>{% if u.family_name %} {{ u.family_name }} {% endif %}</td>
+                <td>{% if u.email %} {{ u.email }} {% endif %}</td>
+                <td>{% if u.gender %} {{ u.gender }} {% endif %}</td>
+                <td>{% if u.language %} {{ u.language }} {% endif %}</td>
+                <td>{% if u.birthday %} {{ u.birthday }} {% endif %}</td>
             </tr>
         {% endfor %}
         </tbody>

@@ -57,22 +57,25 @@ class ShowGoogleUsers(ListView):
         """
         context = super(ShowGoogleUsers, self).get_context_data(**kwargs)
         try:
-            storage = Storage(Commenter, 'email', 'mahmoodullah@gmail.com', 'credential')
-            credential = storage.get()
-            if credential is None:
+            commenter = Commenter.objects.get(email='mahmoodullah@gmail.com')
+            storage = Storage(GoogleCredentialsModel, 'commenter', commenter, 'credential')
+            credentials = storage.get()
+            if credentials is None:
                 context['me'] = "No credentials found!"
-                return context
-            
-            http = httplib2.Http()
-            http = credential.authorize(http)
+            else:
+                http = httplib2.Http()
+                http = credentials.authorize(http)
 
-            SERVICE = build('plus', 'v1', http=http)
-            google_request = SERVICE.people().get(userId=credential.id_token['sub'])
-            result = google_request.execute()
-            
-            context['me'] = result
+                SERVICE = build('plus', 'v1', http=http)
+                google_request = SERVICE.people().get(userId=credentials.id_token['sub'])
+                result = google_request.execute()
+                #context['me'] = result
+                context['me'] = credentials.to_json()
+        except Commenter.DoesNotExist as e:
+            context['me'] = "Commenter does not exist"
         except AccessTokenRefreshError as e:
             context['me'] = "Unable to refresh access token"
+
         return context
 
 class GoogleSingInView(TemplateView):
@@ -123,13 +126,17 @@ class GoogleSingInView(TemplateView):
         except FlowExchangeError as e:
             return HttpResponse("Failed to upgrade the authorization code. 401 %s" % e)
 
+        commenter, created = Commenter.objects.get_or_create(email=credentials.id_token['email'], defaults={'plus_id': credentials.id_token['sub']})
+        
         # retrieve the credentials object from the database based on the user's email
-        storage = Storage(Commenter, 'email', credentials.id_token['email'], 'credential')
+        storage = Storage(GoogleCredentialsModel, 'commenter', commenter, 'credential')
 
         # if the credentials object does not exist or is invalid then store it
         if storage.get() is None or credentials.invalid == True:
             storage.put(credentials)
-            
+
+        # if the commenter did not exist before, then save his/her basic profile
+        if created:
             SERVICE = build('plus', 'v1')
             http = httplib2.Http()
             http = credentials.authorize(http)
@@ -137,19 +144,18 @@ class GoogleSingInView(TemplateView):
             google_request = SERVICE.people().get(userId='me')
             result = google_request.execute(http=http)
             try:
-                guser = Commenter.objects.get(email=credentials.id_token['email'])
-                guser.plus_id = credentials.id_token['sub'] if 'sub' in credentials.id_token else None
-                guser.given_name = result['name']['givenName'] if ('name' in result and 'givenName' in result['name']) else None
-                guser.family_name = result['name']['familyName'] if ('name' in result and 'familyName' in result['name']) else None
-                guser.display_name = result['displayName'] if 'displayName' in result else None
-                guser.is_plus_user = result['isPlusUser'] if 'isPlusUser' in result else None
-                guser.gender = result['gender'] if 'gender' in result else None
-                guser.image_url = result['image']['url'] if ('image' in result and 'url' in result['image']) else None
-                guser.language = result['language'] if 'language' in result else None
-                guser.birthday = result['birthday'] if 'birthday' in result else None
-                guser.age_range_min = result['ageRange']['min'] if ('ageRange' in result and 'min' in result['ageRange']) else None
-                guser.age_range_max = result['ageRange']['max'] if ('ageRange' in result and 'max' in result['ageRange']) else None
-                guser.save()
+                commenter.given_name = result['name']['givenName'] if ('name' in result and 'givenName' in result['name']) else None
+                commenter.family_name = result['name']['familyName'] if ('name' in result and 'familyName' in result['name']) else None
+                commenter.display_name = result['displayName'] if 'displayName' in result else None
+                commenter.is_plus_user = result['isPlusUser'] if 'isPlusUser' in result else None
+                commenter.gender = result['gender'] if 'gender' in result else None
+                commenter.image_url = result['image']['url'] if ('image' in result and 'url' in result['image']) else None
+                commenter.language = result['language'] if 'language' in result else None
+                commenter.birthday = result['birthday'] if 'birthday' in result else None
+                commenter.age_range_min = result['ageRange']['min'] if ('ageRange' in result and 'min' in result['ageRange']) else None
+                commenter.age_range_max = result['ageRange']['max'] if ('ageRange' in result and 'max' in result['ageRange']) else None
+                commenter.save()
             except Commenter.DoesNotExist as e:
                 print(e)
+            
         return HttpResponse(json.dumps(credentials.to_json()))
