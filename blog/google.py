@@ -43,7 +43,7 @@ class CommenterUpdateView(AjaxableResponseMixin, UpdateView):
     def get_success_message(self, cleaned_data):
         return self.success_message % dict(cleaned_data, given_name=self.object.given_name)
 
-class ShowGoogleUsers(ListView):
+class ShowGoogleUsers(BlogPostArchiveHierarchyMixin, ListView):
     """
     Provides a list of everyone who has logged in to the site 
     """
@@ -78,7 +78,7 @@ class ShowGoogleUsers(ListView):
 
         return context
 
-class GoogleSingInView(TemplateView):
+class GoogleSingInView(BlogPostArchiveHierarchyMixin, TemplateView):
     """
     Shows the Google+ sign-in button and when processes the POST data from the Google+
     Sign-in button
