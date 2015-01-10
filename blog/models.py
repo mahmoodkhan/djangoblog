@@ -108,31 +108,6 @@ class Attachment(models.Model):
         """
         return reverse('detailpost', args=[str(self.id)])
 
-class Comment(models.Model):
-    """
-        A comment has an owner
-        A comment belongs to a single blogpost
-    """
-    author = models.CharField(max_length=64, db_index=True)
-    body = models.TextField()
-    blogpost = models.ForeignKey(BlogPost, related_name='comments')
-    created = models.DateTimeField(auto_now=False, auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True, auto_now_add=False)
-
-    class Meta:
-        ordering = ['author','-created']
-        verbose_name = 'Comment'
-        verbose_name_plural = 'Comments'
-
-    def __str__(self):
-        return ("%s (%s)" % (self.body, self.author))
-    
-    def get_absolute_url(self):
-        """
-        Used when we need to link to a specific blog post.
-        """
-        return reverse('blog.views.comment', args=[str(self.id)])
-
 class Commenter(models.Model):
     """
     Basic info about a user who comments on an article
@@ -167,3 +142,28 @@ class GoogleCredentialsModel(models.Model):
     """
     commenter = models.OneToOneField(Commenter, primary_key=True, related_name='gplus_credential')
     credential = CredentialsField()
+
+class Comment(models.Model):
+    """
+        A comment has an owner
+        A comment belongs to a single blogpost
+    """
+    commenter = models.ForeignKey(Commenter, db_index=True, related_name='comments')
+    body = models.TextField()
+    blogpost = models.ForeignKey(BlogPost, related_name='comments')
+    created = models.DateTimeField(auto_now=False, auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True, auto_now_add=False)
+
+    class Meta:
+        ordering = ['commenter','-created']
+        verbose_name = 'Comment'
+        verbose_name_plural = 'Comments'
+
+    def __str__(self):
+        return ("%s (%s)" % (self.body, self.author))
+    
+    def get_absolute_url(self):
+        """
+        Used when we need to link to a specific blog post.
+        """
+        return reverse('blog.views.comment', args=[str(self.id)])

@@ -39,7 +39,9 @@
                 </p>
             </blockquote>
             
+            <footer> {{ c.commenter.given_name }} commented on {{ c.created }}</footer>
             <p class = "comment">
+                <img src={{ c.commenter.image_url }} />
                 {{ c.body | pygmentize|safe }}
             </p>
             <hr />
