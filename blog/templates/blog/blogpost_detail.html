@@ -31,20 +31,17 @@
         <h4>Comments </h4>
         
         {% for c in comments %}
-            
-            <blockquote>
-                <footer>{{ c.author }} commented on {{ c.created }}</footer>
-                <p>
-                {{ c.body | pygmentize|safe }}
-                </p>
-            </blockquote>
-            
-            <footer> {{ c.commenter.given_name }} commented on {{ c.created }}</footer>
-            <p class = "comment">
-                <img src={{ c.commenter.image_url }} />
-                {{ c.body | pygmentize|safe }}
-            </p>
-            <hr />
+            <ul class="media-list">
+                <li class="media comment">
+                    <a class="media-left" href="#">
+                        <img src="{{ c.commenter.image_url }} " alt="..." class = "img-circle" width="50" height="50">
+                    </a> <span class="text-muted"> {{ c.commenter.display_name }} commented on {{ c.created }} </span>
+                    <div class="media-body">
+                        <!--<h4 class="media-heading"></h4>-->
+                        {{ c.body | pygmentize|safe }}
+                    </div>
+                </li>
+            </ul>
         {% endfor %}
     </div>
 
