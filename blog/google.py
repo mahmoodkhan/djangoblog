@@ -57,7 +57,7 @@ class ShowGoogleUsers(BlogPostArchiveHierarchyMixin, ListView):
         """
         context = super(ShowGoogleUsers, self).get_context_data(**kwargs)
         try:
-            commenter = Commenter.objects.get(email='mahmoodullah@gmail.com')
+            commenter = Commenter.objects.get(email='mkhan1484@gmail.com')
             storage = Storage(GoogleCredentialsModel, 'commenter', commenter, 'credential')
             credentials = storage.get()
             if credentials is None:
@@ -107,7 +107,7 @@ class GoogleSingInView(BlogPostArchiveHierarchyMixin, TemplateView):
         """
         # retrive the one-time  Google generated code after user granted permission to the app.
         code = request.POST.get("code", None)
-
+        #print(request.session['test'])
         # Make sure the request session is still intact and hasn't been tempered with.
         if not xsrfutil.validate_token(settings.SECRET_KEY, request.session['state'], None):
             return HttpResponseBadRequest()
@@ -128,6 +128,8 @@ class GoogleSingInView(BlogPostArchiveHierarchyMixin, TemplateView):
 
         commenter, created = Commenter.objects.get_or_create(email=credentials.id_token['email'], defaults={'plus_id': credentials.id_token['sub']})
         
+        request.session['cid'] = commenter.pk
+
         # retrieve the credentials object from the database based on the user's email
         storage = Storage(GoogleCredentialsModel, 'commenter', commenter, 'credential')
 
@@ -158,4 +160,5 @@ class GoogleSingInView(BlogPostArchiveHierarchyMixin, TemplateView):
             except Commenter.DoesNotExist as e:
                 print(e)
             
-        return HttpResponse(json.dumps(credentials.to_json()))
+        #return HttpResponse(json.dumps(credentials.to_json()))
+        return HttpResponse(json.dumps({"commenter_id": commenter.pk}))

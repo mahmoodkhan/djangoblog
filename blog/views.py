@@ -18,6 +18,8 @@ from django.contrib.messages.views import SuccessMessageMixin
 
 from haystack.views import SearchView
 
+from oauth2client import xsrfutil
+
 from .models import *
 from .forms import *
 from .mixins import *
@@ -71,6 +73,10 @@ class CreateCommentView(CreateView):
     model = Comment
     form_class = CommentForm
 
+    def post(self, request, *args, **kwargs):
+        print(request.POST)
+        return super(CreateCommentView, self).post(request, *args, **kwargs)
+        
     def get_success_url(self):
         return reverse_lazy('detailpost', kwargs={ "pk": self.object.blogpost.pk })
 
@@ -167,17 +173,22 @@ class BlogPostDetail(BlogPostArchiveHierarchyMixin, DetailView):
         """
         This method is used to provide additional context to be passed to the template.
         """
+        self.request.session['state'] = xsrfutil.generate_token(settings.SECRET_KEY, None)
+        
         # Call the base implementation first to get a context
         context = super(BlogPostDetail, self).get_context_data(**kwargs)
+
         # Add in the attachments linked to this blogpost
         context['attachments'] = Attachment.objects.filter(blogpost=self.object.pk)
-        # return the modified context to be passed onto the template
 
-        comments = Comment.objects.filter(blogpost__pk=self.object.pk)
+        comments = Comment.objects.filter(blogpost__pk=self.object.pk).order_by('created')
         context['comments'] = comments
+        
+        print(self.request.session.get('cid', 0))
         try:
             context['commentform'] = CommentForm(initial={'blogpost': self.kwargs['pk']})
         except Exception as e:
+            print(e)
             pass
         return context
 

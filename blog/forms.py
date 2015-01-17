@@ -2,6 +2,7 @@ from django.core.urlresolvers import reverse_lazy
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.forms.models import inlineformset_factory
+from django.forms import ModelForm, HiddenInput
 
 from django.contrib.auth.forms import AuthenticationForm
 
@@ -64,6 +65,9 @@ class BlogPostForm(forms.ModelForm):
         super(BlogPostForm, self).__init__(*args, **kwargs)
         self.fields['category'].empty_label = ""
 
+#https://docs.djangoproject.com/en/1.7/topics/forms/modelforms/#overriding-the-default-fields
+#http://effectivedjango.com/forms.html
+
 class CommentForm(forms.ModelForm):
     """
     A Model Form for making comments on a particular blogpost.
@@ -72,18 +76,25 @@ class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         exclude = ['updated', ]
+        fields = ('commenter', 'body', 'blogpost')
+        widgets = {
+            'commenter': HiddenInput(attrs={}),
+            'blogpost': HiddenInput(attrs={}),
+        }
 
     def __init__(self, *args, **kwargs):
         super(CommentForm, self).__init__(*args, **kwargs)
+        self.fields['body'].label = "Your Comment"
         self.helper = FormHelper(self)
         self.helper.form_class = 'form-horizontal'
         self.helper.label_class = 'col-sm-2'
         self.helper.field_class = 'col-sm-10'
         self.helper.html5_required = True
         self.helper.form_method = 'post'
-        self.helper.form_action = reverse_lazy('create_comment')
-        self.helper.add_input(Submit('submit', 'Submit'))
-        self.helper.add_input(Reset('rest', 'Reset', css_class='btn-warning'))
+        self.helper.form_tag = False
+        #self.helper.form_action = reverse_lazy('create_comment')
+        #self.helper.add_input(Submit('submit', 'Submit', id="signinButton"))
+        #self.helper.add_input(Reset('rest', 'Reset', css_class='btn-warning'))
 
 class ContactForm(forms.Form):
     """

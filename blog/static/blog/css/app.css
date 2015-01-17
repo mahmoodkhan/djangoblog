@@ -40,6 +40,10 @@ body > .container-fluid {
     border-color: #DFDBE4;
 }
 
+.asteriskField {
+    color: red;
+}
+
 .comment {
     padding: 10px 20px;
     margin: 0px 0px 20px;

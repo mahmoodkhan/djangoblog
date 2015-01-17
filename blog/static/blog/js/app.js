@@ -5,8 +5,6 @@ $(document).ready(function() {
         placeholder: "Select a Category",
         allowClear: true
     });
-
-    $("#id_blogpost").select2();
 });
 
 /*
