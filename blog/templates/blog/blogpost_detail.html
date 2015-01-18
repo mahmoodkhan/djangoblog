@@ -73,7 +73,9 @@
             blogpost: {{ object.id }}
         })
         .done(function() {
-            console.log("commented submitted successfully");
+            window.location.reload();
+            $('#signinButton').attr('disabled', false);
+            $('#comment_form').trigger("reset");
         })
         .fail(function(e){
             console.log("comment FAILED! " + e.message);
