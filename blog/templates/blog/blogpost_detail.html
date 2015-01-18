@@ -9,90 +9,86 @@
     {{ object.title}}
 {% endblock %}
 {% block extra_js_in_header %}
-    <meta name="google-signin-clientid" content="436904769980-46s5h10ckh8acf5337m1an3fiko7du3g.apps.googleusercontent.com" />
-    <meta name="google-signin-scope" content="email" />
-    <meta name="google-signin-cookiepolicy" content="single_host_origin" />
-    <meta name="google-signin-callback" content="render" />
-    <meta name="google-signin-includegrantedscopes" content="true" />
-    
-    <!-- The Google Javascript library required for Google+ Sign-in button -->
-    <script src="https://apis.google.com/js/client:platform.js" async defer></script>
-    
-    <script type = "text/javascript">
-        //Callback function for when the user clicks on the sign-in button.
-        function signInCallback(authResult) {
-            // Send the one-time code to server only after google has signed-in user
-            if (authResult['status']['signed_in']) {
-                // Hide the sign-in button now that the user is authorized, for example:
-                //$('#signinButton').attr('style', 'display: none');
-                
-                // Send the code to the server
-                $.post( "{% url 'google_sign_in' %}", {'code': authResult['code']} )
-                    .done(function( data ) {
-                        var commenter_id = jQuery.parseJSON(data).commenter_id;
-                        //console.log( "Data Loaded: " + jQuery.parseJSON(data).commenter_id );
-                        //var $form = $("#comment_form");
-                        //console.log($form.serialize());
-                        
-                        $.post("/create_comment/", {
-                                csrfmiddlewaretoken: $("#comment_form").find("[name='csrfmiddlewaretoken']").val(), 
-                                commenter: commenter_id,
-                                body: $("#comment_form").find("[name='body']").val(), 
-                                blogpost: {{ object.id }},
-                                submit:"Sign-in+with+Google+to+comment"
-                            })
-                            .done(function() {
-                                console.log("commented submitted successfully");
-                            })
-                            .fail(function(e){
-                                console.log("comment FAILED! " + e.message);
-                            });
-                        
-                    })
-                    .fail(function() {
-                        alert( "error" );
-                    });
-            } else if (authResult['error']) {
-                /** 
-                    Possible error codes:
-                        "access_denied" - User denied access to your app.
-                        "immediate_failed" - Could not automatically log in the user
-                 */
-                console.log('error: ' + authResult['error']);
-                console.log('authResult: ' + authResult['error_description']);
-            }
-        }
-    
-        /* Callback function that is called when Javascript library is done loading */
-        function render() {
-            var additionalParams = {
-                'callback': signInCallback,
-                'accesstype': 'offline',
-                'approvalprompt': 'auto',
-            };
+<meta name="google-signin-clientid" content="436904769980-46s5h10ckh8acf5337m1an3fiko7du3g.apps.googleusercontent.com" />
+<meta name="google-signin-scope" content="email" />
+<meta name="google-signin-cookiepolicy" content="single_host_origin" />
+<meta name="google-signin-callback" content="render" />
+<meta name="google-signin-includegrantedscopes" content="true" />
 
-            // Attach a click listener to a button to trigger the flow.
-            var signinButton = document.getElementById('signinButton');
-            signinButton.addEventListener('click', function(e) {
-                e.preventDefault(); // prevent form submission
-                gapi.auth.signIn(additionalParams);
+<!-- The Google Javascript library required for Google+ Sign-in button -->
+<script src="https://apis.google.com/js/client:platform.js" async defer></script>
+
+<script type = "text/javascript">
+
+    /* Callback function for when the user clicks on the sign-in button. */
+    function signInCallback(authResult) {
+        // Send the one-time code to server only after google has signed-in user
+        if (authResult['status']['signed_in']) {
+            // Send the code to the server
+            $.post( "{% url 'google_sign_in' %}", {
+                'code': authResult['code']
+            })
+            .done(function( data ) {
+                var commenter_id = jQuery.parseJSON(data).commenter_id;
+                //console.log( "Data Loaded: " + jQuery.parseJSON(data).commenter_id );
+                submitComment(commenter_id);
+            })
+            .fail(function() {
+                console.log("Error in submitting code to Google");
             });
+        } else if (authResult['error']) {
+            /*
+             * Possible error codes:
+             *   "access_denied" - User denied access to your app.
+             *   "immediate_failed" - Could not automatically log in the user
+             */
+            console.log('error: ' + authResult['error']);
+            console.log('authResult: ' + authResult['error_description']);
         }
-        function submitComment(){
-            console.log("SUBMIT COMMENT");
-            
-        }
-    </script>
+    }
+
+    /* Callback function that is called when Javascript library is done loading */
+    function render() {
+        var additionalParams = {
+            'callback': signInCallback,
+            'accesstype': 'offline',
+            'approvalprompt': 'auto',
+        };
+
+        // Attach a click listener to a button to trigger the flow.
+        var signinButton = document.getElementById('signinButton');
+        signinButton.addEventListener('click', function(e) {
+            $('#signinButton').attr('disabled',true);
+            e.preventDefault(); // prevent form submission
+            gapi.auth.signIn(additionalParams);
+        });
+    }
+    
+    /* Submits user's comment to the server  */
+    function submitComment(commenter_id){
+        $.post("/create_comment/", {
+            csrfmiddlewaretoken: $("#comment_form").find("[name='csrfmiddlewaretoken']").val(), 
+            commenter: commenter_id,
+            body: $("#comment_form").find("[name='body']").val(), 
+            blogpost: {{ object.id }}
+        })
+        .done(function() {
+            console.log("commented submitted successfully");
+        })
+        .fail(function(e){
+            console.log("comment FAILED! " + e.message);
+        });
+    }
+</script>
 {% endblock %}
+
 {% block description %}
     Published on {{ object.pub_date}} and last updated on {{ object.updated }}
 {% endblock %}
 
 {% block content %}
     <div class="col-sm-12 col-md-offset-0">
-
         {{ object.content | pygmentize|safe }}
-
         <div>
             <h4>Attachments</h4>
             <ul>
@@ -104,7 +100,6 @@
             </ul>
         </div>
         <br />
-        
         
         <h4>Comments </h4>
         <ul class="media-list">
