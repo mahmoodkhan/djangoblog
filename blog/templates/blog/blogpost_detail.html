@@ -56,10 +56,19 @@
         };
 
         // Attach a click listener to a button to trigger the flow.
-        var signinButton = document.getElementById('signinButton');
-        signinButton.addEventListener('click', function(e) {
+        //var signinButton = document.getElementById('signinButton');
+        //signinButton.addEventListener('click', function(e) {
+            //$('#signinButton').attr('disabled',true);
+            //if ($("#comment_form").find("[name='body']").val() == "" ) {
+            //    alert("You may first type your comment and then submit it");
+            //    return;
+            //}
+        //});
+        
+        // Trigger Google+ login on form submission
+        $("#comment_form").submit(function(e) {
             $('#signinButton').attr('disabled',true);
-            e.preventDefault(); // prevent form submission
+            e.preventDefault();
             gapi.auth.signIn(additionalParams);
         });
     }

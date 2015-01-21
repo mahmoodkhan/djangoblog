@@ -55,6 +55,8 @@ class BlogPost(models.Model):
     private = models.BooleanField(default=True)
     category = models.ForeignKey(Category, related_name='blogposts')
     tags = models.ManyToManyField(Tag, related_name='blogposts')
+    votes_up = models.IntegerField(blank=True, null=True)
+    votes_down = models.IntegerField(blank=True, null=True)
     owner = models.ForeignKey(User, related_name = 'blogposts')
     lastaccessed = models.DateTimeField(null=True, blank=True)
     created = models.DateTimeField(auto_now=False, auto_now_add=True)
@@ -149,8 +151,10 @@ class Comment(models.Model):
         A comment belongs to a single blogpost
     """
     commenter = models.ForeignKey(Commenter, db_index=True, related_name='comments')
-    body = models.TextField()
     blogpost = models.ForeignKey(BlogPost, related_name='comments')
+    body = models.TextField()
+    votes_up = models.IntegerField(blank=True, null=True)
+    votes_down = models.IntegerField(blank=True, null=True)
     created = models.DateTimeField(auto_now=False, auto_now_add=True)
     updated = models.DateTimeField(auto_now=True, auto_now_add=False)
 

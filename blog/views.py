@@ -11,6 +11,7 @@ from django.views.generic import RedirectView, FormView, DetailView, CreateView,
 from django.views.generic.dates import ArchiveIndexView, MonthArchiveView, YearArchiveView
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic.list import ListView
+from django.http import HttpResponseBadRequest
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
@@ -74,7 +75,14 @@ class CreateCommentView(CreateView):
     form_class = CommentForm
 
     def post(self, request, *args, **kwargs):
-        print(request.POST)
+
+        # Make sure the request session is still intact and hasn't been tempered with.
+        if not xsrfutil.validate_token(settings.SECRET_KEY, request.session['state'], None):
+            return HttpResponseBadRequest()
+        
+        if request.POST.get("commenter") is None:
+            return HttpResponseBadRequest()
+        messages.success(self.request, "Your commented is posted")
         return super(CreateCommentView, self).post(request, *args, **kwargs)
         
     def get_success_url(self):
@@ -184,7 +192,7 @@ class BlogPostDetail(BlogPostArchiveHierarchyMixin, DetailView):
         comments = Comment.objects.filter(blogpost__pk=self.object.pk).order_by('created')
         context['comments'] = comments
         
-        print(self.request.session.get('cid', 0))
+        #print(self.request.session.get('cid', 0))
         try:
             context['commentform'] = CommentForm(initial={'blogpost': self.kwargs['pk']})
         except Exception as e:

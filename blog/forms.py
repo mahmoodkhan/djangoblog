@@ -65,13 +65,9 @@ class BlogPostForm(forms.ModelForm):
         super(BlogPostForm, self).__init__(*args, **kwargs)
         self.fields['category'].empty_label = ""
 
-#https://docs.djangoproject.com/en/1.7/topics/forms/modelforms/#overriding-the-default-fields
-#http://effectivedjango.com/forms.html
-
 class CommentForm(forms.ModelForm):
     """
     A Model Form for making comments on a particular blogpost.
-    http://django-crispy-forms.readthedocs.org/en/latest/form_helper.html
     """
     class Meta:
         model = Comment
