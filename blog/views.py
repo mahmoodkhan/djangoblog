@@ -27,7 +27,7 @@ from .mixins import *
 
 from ratelimit.mixins import RateLimitMixin
 
-class HomeView(BlogPostArchiveHierarchyMixin, ListView):
+class HomeView(ListView):
     """
     This is the home view, which subclasses ListView,a built-in view, for listing
     the 5 most recent blog-posts.
@@ -67,7 +67,7 @@ class HomeView(BlogPostArchiveHierarchyMixin, ListView):
         """
         return context
 
-class CreateCommentView(CreateView):
+class CreateCommentView(AjaxableResponseMixin, CreateView):
     """
     Creates comments made on blogpost entries.
     """
@@ -82,14 +82,14 @@ class CreateCommentView(CreateView):
         
         if request.POST.get("commenter") is None:
             return HttpResponseBadRequest()
-        messages.success(self.request, "Your commented is posted")
+        #messages.success(self.request, "Your commented is posted")
         return super(CreateCommentView, self).post(request, *args, **kwargs)
         
     def get_success_url(self):
         return reverse_lazy('detailpost', kwargs={ "pk": self.object.blogpost.pk })
 
 
-class HiddenBlogPost(LoginRequired, BlogPostArchiveHierarchyMixin, ListView):
+class HiddenBlogPost(LoginRequired, ListView):
     """
     A view that shows hidden posts only to the authenticated users
     """
@@ -117,7 +117,7 @@ class HiddenBlogPost(LoginRequired, BlogPostArchiveHierarchyMixin, ListView):
         return BlogPost.objects.filter(**where)[:5]
 
 
-class BlogPostUpdateView(BlogPostMixin, BlogPostArchiveHierarchyMixin, UpdateView):
+class BlogPostUpdateView(BlogPostMixin, UpdateView):
     """
     A view that updates existing blogposts. The form_valid and form_invalid methods
     are handled in in BlogPostMixin because that code is shared between this view and
@@ -144,8 +144,7 @@ class BlogPostUpdateView(BlogPostMixin, BlogPostArchiveHierarchyMixin, UpdateVie
         return super(BlogPostUpdateView, self).form_valid(form)
 
 class BlogPostCreateView(AjaxableResponseMixin,
-    SuccessMessageMixin, BlogPostMixin,
-    BlogPostArchiveHierarchyMixin, CreateView):
+    SuccessMessageMixin, BlogPostMixin, CreateView):
     """
     A view that creates new blogposts. the form_valid and form_invalid is
     handled in the BlogPostMixin because the code in those methods is the
@@ -171,7 +170,7 @@ class BlogPostCreateView(AjaxableResponseMixin,
         """
         return self.success_message % dict(cleaned_data, title=self.object.title)
 
-class BlogPostDetail(BlogPostArchiveHierarchyMixin, DetailView):
+class BlogPostDetail(DetailView):
     """
     Show a read-only detailed view of the blogpost object with all its attributes.
     """
@@ -211,7 +210,7 @@ class BlogPostDetail(BlogPostArchiveHierarchyMixin, DetailView):
         object.save()
         return object
 
-class BlogPostArchiveIndexView(BlogPostArchiveHierarchyMixin, ArchiveIndexView):
+class BlogPostArchiveIndexView(ArchiveIndexView):
     """
     A top-level index page showing the “latest” objects, by date.
     """
@@ -219,7 +218,7 @@ class BlogPostArchiveIndexView(BlogPostArchiveHierarchyMixin, ArchiveIndexView):
     date_field = "pub_date"
     allow_future = True
 
-class BlogPostYearArchiveView(BlogPostArchiveHierarchyMixin, YearArchiveView):
+class BlogPostYearArchiveView(YearArchiveView):
     """
     Annual View of BlogPosts by pub_date.
     """
@@ -228,7 +227,7 @@ class BlogPostYearArchiveView(BlogPostArchiveHierarchyMixin, YearArchiveView):
     make_object_list = True
     allow_future = True
 
-class BlogPostMonthArchiveView(BlogPostArchiveHierarchyMixin, MonthArchiveView):
+class BlogPostMonthArchiveView(MonthArchiveView):
     """
     Monthly view of Blogposts by pub_date
     """
@@ -249,7 +248,7 @@ class Search(SearchView):
         extra['tagcloud'] = BlogPostArchiveHierarchyMixin.get_tag_cloud(self)
         return extra
 
-class ContactView(BlogPostArchiveHierarchyMixin, FormView):
+class ContactView(FormView):
     """
     A class based view that inherits from FormView, a generic view in Django, to provide
     a Contact form for site visitors to use to get contact the site owner
@@ -271,7 +270,7 @@ class ContactView(BlogPostArchiveHierarchyMixin, FormView):
         )
         return super(ContactView, self).form_valid(form)
 
-class AboutView(BlogPostArchiveHierarchyMixin, TemplateView):
+class AboutView(TemplateView):
     template_name='about.html'
 
 class LoginView(RateLimitMixin, FormView):

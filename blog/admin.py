@@ -34,6 +34,9 @@ class BlogPostAdmin(admin.ModelAdmin):
 class AttachmentAdmin(admin.ModelAdmin):
     pass
 
+class CommenterAdmin(admin.ModelAdmin):
+    display_fields = ["email", "given_name", "family_name", "gender", "", ]
+
 class CommentAdmin(admin.ModelAdmin):
     display_fields = ["author", "blogpost", "pub_date",]
 
@@ -42,3 +45,4 @@ admin.site.register(Comment, CommentAdmin)
 admin.site.register(Attachment, AttachmentAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Tag, TagAdmin)
+admin.site.register(Commenter, CommenterAdmin)

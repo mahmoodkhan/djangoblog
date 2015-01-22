@@ -1,3 +1,5 @@
+from django.core.serializers.python import Serializer
+from django.utils.encoding import smart_text
 class JsonSerializer(Serializer):
     """
     Overrides django's JSON serialzer so that the JSON output is more flat.

@@ -54,7 +54,10 @@
             'accesstype': 'offline',
             'approvalprompt': 'auto',
         };
-
+        
+        $("#reset-id-reset").click(function(e) {
+            $('#signinButton').attr('disabled', false);
+        });
         // Attach a click listener to a button to trigger the flow.
         //var signinButton = document.getElementById('signinButton');
         //signinButton.addEventListener('click', function(e) {
@@ -67,8 +70,8 @@
         
         // Trigger Google+ login on form submission
         $("#comment_form").submit(function(e) {
-            $('#signinButton').attr('disabled',true);
             e.preventDefault();
+            $('#signinButton').attr('disabled',true);
             gapi.auth.signIn(additionalParams);
         });
     }
@@ -81,15 +84,17 @@
             body: $("#comment_form").find("[name='body']").val(), 
             blogpost: {{ object.id }}
         })
-        .done(function() {
-            window.location.reload();
+        .done(function(data) {
+            window.location.reload(false); // reload from cache
             $('#signinButton').attr('disabled', false);
             $('#comment_form').trigger("reset");
+            $('.alert').show();
         })
         .fail(function(e){
             console.log("comment FAILED! " + e.message);
         });
     }
+    
 </script>
 {% endblock %}
 
@@ -98,18 +103,21 @@
 {% endblock %}
 
 {% block content %}
+
     <div class="col-sm-12 col-md-offset-0">
         {{ object.content | pygmentize|safe }}
-        <div>
-            <h4>Attachments</h4>
-            <ul>
-                {% for a in attachments %}
-                    <li>{{ a.attachment }}</li>
-                {% empty %}
-                    <li>No Attachments.</li>
-                {% endfor %}
-            </ul>
-        </div>
+        {% if attachments %}
+            <div>
+                <h4>Attachments</h4>
+                <ul>
+                    {% for a in attachments %}
+                        <li>{{ a.attachment }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+        
+        <br />
         <br />
         
         <h4>Comments </h4>
@@ -124,10 +132,20 @@
                     {{ c.body | pygmentize|safe }}
                 </div>
             </li>
+        {% empty %}
+            <p class="bg-warning text-muted" style="padding:15px;">Be the first to comment.</p>
         {% endfor %}
         </ul>
     </div>
-
+    
+    <div class = "row">
+        <div class = "col-md-12">
+            <div class="alert alert-success" style="display: none">
+                <span class="close" data-dismiss="alert">&times;</span>
+                <strong>Success! </strong> Your commment posted.
+            </div>
+        </div>
+    </div>
     <!-- Add where you want your sign-in button to render -->
     <!--
     <div id="signinButton2">
@@ -139,7 +157,7 @@
             <form id="comment_form" class="form-horizontal" action="/create_comment/" method="post">
                 {% crispy commentform commentform.helper %}
                 <input name="submit" value="Sign-in with Google to comment" class="btn btn-primary" id="signinButton" type="submit">
-                <input name="rest" value="Reset" class="btn btn-inverse btn-warning" id="reset-id-rest" type="reset">
+                <input name="rest" value="Reset" class="btn btn-inverse btn-warning" id="reset-id-reset" type="reset">
             </form>
         </div>
     </div>

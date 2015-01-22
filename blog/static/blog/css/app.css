@@ -44,6 +44,11 @@ body > .container-fluid {
     color: red;
 }
 
+mark {
+    background-color: #FCF8E3;
+    color: #999;
+}
+
 .comment {
     padding: 10px 20px;
     margin: 0px 0px 20px;

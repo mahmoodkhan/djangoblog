@@ -1,6 +1,5 @@
 import json
 
-from django.db.models import Count
 from django.http import HttpResponse
 from django.http import JsonResponse
 from django.shortcuts import render
@@ -12,78 +11,7 @@ from django.contrib.auth.decorators import login_required
 
 from .models import *
 from .forms import *
-
-class BlogPostArchiveHierarchyMixin(View):
-    """
-    A mixin that creates a structure shown below based on pub_date of blogposts
-    2011
-        Jan
-        Feb
-    2012
-        Sep
-        Oct
-    etc.
-    This mixin is available in almost all views in order to maintain that right side
-    hierarchical view of previous blogposts in all views
-    """
-    def get_blogposts_archive_info(self):
-        posts = BlogPost.objects.datetimes("pub_date", "month").filter(published=True).filter(private=False)
-        prev_year = None
-        years = {}
-        months = []
-        months_count = []
-        for p in posts:
-            if prev_year != None and prev_year != p.year:
-                years[prev_year] = months
-                months = []
-            c = BlogPost.objects.filter(pub_date__year=p.year, pub_date__month=p.month).aggregate(Count('pk'))
-            months_count.append(p.strftime("%b"))
-            months_count.append(c['pk__count'])
-            months.append(months_count)
-            months_count = []
-            prev_year = p.year
-        if prev_year:
-            years[prev_year] = months
-        return years
-
-    def get_tag_cloud(self):
-        tags = Tag.objects.filter(blogposts__isnull=False).annotate(frequency=Count('blogposts')).order_by('frequency')
-
-        if not tags:
-            return {}
-
-        # This is the number of occurences for the most frequent tag.
-        lo_freq = tags[0].frequency
-
-        # This is the number of occurences for the least frequent tag.
-        hi_freq = tags[len(tags) -1].frequency
-
-        # The maximum font-size of the largest (most frequent) tag
-        max_fontsize = 32
-
-        # The display font-size used by the current tag
-        display_fontsize = 0
-
-        tags_dict = []
-        
-        for t in tags:
-            if t.frequency > lo_freq:
-                display_fontsize = ( ((max_fontsize * (t.frequency - lo_freq))/(hi_freq - lo_freq)) ) / 16
-            else:
-                display_fontsize = "0.8"
-            tags_dict.append({'id': t.id, 'name':t.name, 'frequency': t.frequency, 'fontsize': display_fontsize})
-        return tags_dict
-
-    def get_categories(self):
-        categories = Category.objects.filter(blogposts__isnull=False).annotate(frequency=Count('blogposts')).order_by('name')
-        return categories
-        
-    def get_context_data(self, **kwargs):
-        context = super(BlogPostArchiveHierarchyMixin, self).get_context_data(**kwargs)
-        context['archive_data'] = self.get_blogposts_archive_info()
-        context['tagcloud'] = self.get_tag_cloud()
-        context['categories'] = self.get_categories()
-        return context
+from .utils import *
 
 class LoginRequired(View):
     @method_decorator(login_required)
@@ -170,7 +98,7 @@ class AjaxableResponseMixin(object):
         response = super(AjaxableResponseMixin, self).form_valid(form)
         if self.request.is_ajax():
             data = {
-                'pk': self.object.pk,
+                'object': JsonSerializer().serialize([self.object,]),
             }
             return JsonResponse(data)
         else:

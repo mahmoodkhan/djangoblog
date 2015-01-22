@@ -76,7 +76,7 @@
         
         <div class="container-fluid">
             <div class="row">
-                <div class = "col-sm-10" style="border-right:0.5px solid #ccc">
+                <div class = "col-sm-9" style="border-right:0.5px solid #ccc">
                     <div id = "messages">
                         {% if messages %}
                             {% for message in messages %}
@@ -103,18 +103,15 @@
                 </div> <!-- col-sm-10 div collapse -->
 
                 <!-- RIGHT SIDEBAR -->
-                <div class = "col-sm-2" style="border-left:0.5px solid #ccc">
-                <!-- TODO: http://www.webdesignforbeginners.info/bootstrap-vertical-navbar-with-submenu/ -->
+                <div class = "col-sm-3">
                     <div class="list-group">
-                        <a href="#" class="list-group-item active">Archive</a>
-                        <ul class="nav nav-list">
+                        <a href="#" class="list-group-item"><strong>Archive</strong></a>
+                        <ul class="list-group">
                         {% for year, months in archive_data.items %}
                             {% if year %}
-                                <li>
-                                    <label class="tree-toggler nav-header">
-                                        <span class="glyphicon glyphicon-chevron-down"></span><a href="{% url 'yearly' year %}"> <span class="badge"> {{ year }}</span> </a>
-                                    </label>
-                                    <ul class = "tree">
+                                <li class="tree-toggler list-group-item">
+                                    <span class="glyphicon glyphicon-plus" style="cursor:pointer"></span>&nbsp; &nbsp;<a href="{% url 'yearly' year %}">{{ year }}</a><span class="badge pull-right">3</span>
+                                    <ul class = "tree" style="display: none;">
                                     {% for month in months %}
                                         <a href="{% url 'monthly' year month.0 %}" class="list-group-item">  {{month.0}}<span class="badge pull-right"> {{month.1}} </span></a>
                                     {% endfor %}
@@ -124,17 +121,17 @@
                         {% endfor %}
                         </ul>
                     </div>
-                    <div id="tag_cloud" class="panel panel-primary">
-                        <div class="panel-heading">Tags In-Use</div>
+                    <div id="tag_cloud" class="panel panel-default">
+                        <div class="panel-heading"><strong>Tags In-Use</strong></div>
                         <div class="panel-body">
-                            {% for t in tagcloud %}
-                                <a href="/tag/{{ t.id }}/" style="font-size: {{ t.fontsize }}em" title="Number of articles using this tag: {{ t.frequency }}"> {{ t.name }}</a>
+                            {% for t in tags %}
+                                <a href="/tag/{{ t.id }}/" style="font-size: {{ t.fontsize }}em" title="Number of articles using this tag: {{ t.frequency }}"><font color="{{ t.color }}"> {{ t.name }}</font></a>
                             {% endfor %}
                         </div>
                     </div>
  
                     <div class="list-group">
-                        <a href="#" class="list-group-item active">Categories</a>
+                        <a href="#" class="list-group-item"><strong>Categories</strong></a>
                         {% for c in categories %}
                             <a href="/category/{{c.id}}/" class="list-group-item"> 
                                 {{ c.name }}<span class="badge pull-right"> {{c.frequency}} </span></a>
@@ -148,7 +145,13 @@
                     {% include "debug.html" %}
                 </div>
             </div>
-        </div><!-- .container div collapse -->
+            <div class = "row">
+                <div class = "col-sm-12">
+                    <!-- Contact Me Modal goes here -->
+
+                </div>
+            </div>
+        </div><!-- .container-fluid div collapse -->
 
         <!--http://getbootstrap.com/examples/sticky-footer-navbar/-->
         <div id="footer"><!-- Sticky Footer -->
@@ -173,9 +176,11 @@
         <script type="text/javascript" src="{% static 'blog/js/app.js' %}"></script>
         <script type="text/javascript">
             $(document).ready(function () {
-                $('label.tree-toggler').click(function () {
-                    $(this).parent().children('ul.tree').toggle(100);
-                    $(this).children('span').toggleClass( "glyphicon glyphicon-chevron-down glyphicon glyphicon-chevron-right");
+                $('li.tree-toggler').click(function () {
+                    $(this).children('ul.tree').toggle(300);
+                    $(this).children('span').eq(0).toggleClass( "glyphicon glyphicon-plus glyphicon glyphicon-minus");
+                    //$(this).parent().children('ul.tree').toggle(300);
+                    //$(this).children('span').toggleClass( "glyphicon glyphicon-chevron-down glyphicon glyphicon-chevron-right");
                 });
             });
         
