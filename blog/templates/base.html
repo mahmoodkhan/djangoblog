@@ -147,44 +147,79 @@
             </div>
             <div class = "row">
                 <div class = "col-sm-12">
-                    <!-- Contact Me Modal goes here -->
 
-                </div>
-            </div>
+                    <div class="modal fade" id="form_modal" tabindex="-1" role="dialog" aria-labelledby="form_modal_label" aria-hidden="true">
+                        <div class="modal-dialog modal-md">
+                            <div class="modal-content" id="modal_content">
+                                <!-- form will be inserted here -->
+                            </div> <!-- .modal-content div collapse -->
+                        </div><!-- .modal-dialog .modal-lg div collapse -->
+                    </div> <!-- .modal fade div collapse -->
+
+                </div> <!-- .col-sm-12 div collapse -->
+            </div><!-- .row div collapse -->
         </div><!-- .container-fluid div collapse -->
 
         <!--http://getbootstrap.com/examples/sticky-footer-navbar/-->
         <div id="footer"><!-- Sticky Footer -->
             <div class="container-fluid">
                 <span style="float: left;" class="text-muted">
-                    Mahmood Khan's blog @  KHANKORE {% now "Y" %}
+                    NAZOANA {% now "Y" %}
                 </span>
                 <span style="float:right;" class="text-muted">
                     <a href="{% url 'about' %}" class="text-muted">About</a> | 
-                    <a href="{% url 'contact' %}" class="text-muted">Contact</a>
+                    <a href="#" id = "contact_id" class="text-muted">Contact</a>
                 </span>
             </div>
         </div><!-- .footer div collapse -->
 
         <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
         <script type="text/javascript" src="{% static 'blog/js/jquery-1.11.0.min.js' %}"></script>
-
         <script type="text/javascript" src="{% static 'blog/js/select2.min.js' %}"></script>
-
         <!-- Bootstrap compiled javascript plugins -->
         <script type="text/javascript" src="{% static 'blog/js/bootstrap.min.js' %}"></script>
         <script type="text/javascript" src="{% static 'blog/js/app.js' %}"></script>
         <script type="text/javascript">
             $(document).ready(function () {
+                /* Register click event on the category tree and toggle its visibility */
                 $('li.tree-toggler').click(function () {
-                    $(this).children('ul.tree').toggle(300);
-                    $(this).children('span').eq(0).toggleClass( "glyphicon glyphicon-plus glyphicon glyphicon-minus");
                     //$(this).parent().children('ul.tree').toggle(300);
-                    //$(this).children('span').toggleClass( "glyphicon glyphicon-chevron-down glyphicon glyphicon-chevron-right");
+                    $(this).children('ul.tree').toggle(300);
+                    $(this).children('span').eq(0).toggleClass("glyphicon glyphicon-plus glyphicon glyphicon-minus");
+                });
+                
+                $("#contact_id").on("click", function() {
+                    $('#modal_content').load("{% url 'contact' %}", function () {
+                        $("#form_modal").modal('toggle');
+                        var form = $("#contact_form");
+                        submitForm(form, "#contact_form");
+                    });
                 });
             });
-        
+            
+            
+            function submitForm(form, formName){
+                $(form).on('submit', function(e) {
+                    e.preventDefault();
+                    $.ajax({
+                        type: $(form).attr('method'),
+                        url: $(form).attr('action'),
+                        data: $(form).serialize(),
+                        success: function(xhr, ajaxOptions, thrownError)  {
+                            if ($(xhr).find('.has-error').length > 0 ) {
+                                $("#form_modal").find('#modal_content').html(xhr);
+                                // called again to register the 'onsubmit' event of the reloaded html form
+                                submitForm($(formName), formName); 
+                            } else {
+                                $("#form_modal").modal('toggle');
+                                createAlert("success", "Your message has been sent");
+                            }
+                        },
+                    });
+                });
+            }
         </script>
+        <script type="text/javascript" src="http://www.google.com/recaptcha/api/js/recaptcha_ajax.js"></script>
         {% block js_in_footer %} {% endblock %}
     </body>
 </html>

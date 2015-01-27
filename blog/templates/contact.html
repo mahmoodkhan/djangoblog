@@ -1,20 +1,9 @@
-{% extends 'base.html' %}
-{% load staticfiles %}
 {% load crispy_forms_tags %}
-
-{% block title %}Send an email{% endblock %}
-
-{% block page_title %}
-    Contact Form
-{% endblock %}
-{% block description %}
-    A response to your question or comment when necessary is sent within three days.
-{% endblock %}
-
-{% block content %}
-    <div class="row">
-        <div class="col-md-12">
-            {% crispy form form.helper %}
-        </div>
-    </div>
-{% endblock %}
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title">Contact Me</h4>
+</div>
+<div class="modal-body" id="form_modal_body">
+    <!-- Form will be inserted here -->
+    {% crispy form form.helper %}
+</div>

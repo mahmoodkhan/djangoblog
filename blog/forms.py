@@ -108,6 +108,8 @@ class ContactForm(forms.Form):
         self.helper.label_class = 'col-sm-2'
         self.helper.field_class = 'col-sm-10'
         self.helper.html5_required = True
+        self.helper.form_id = "contact_form"
+        self.helper.form_action = reverse_lazy('contact')
         self.helper.add_input(Submit('submit', 'Submit'))
         self.helper.add_input(Reset('rest', 'Reset', css_class='btn-warning'))
         super(ContactForm, self).__init__(*args, **kwargs)

@@ -268,6 +268,7 @@ class ContactView(FormView):
             from_email = settings.DEFAULT_FROM_EMAIL,
             recipient_list = [settings.MY_EMAIL,],
         )
+        messages.success(self.request, "Thank you for your feedback")
         return super(ContactView, self).form_valid(form)
 
 class AboutView(TemplateView):
