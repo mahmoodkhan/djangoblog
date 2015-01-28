@@ -1,0 +1,15 @@
+ <div id = "messages">
+        {% if messages %}
+            {% for message in messages %}
+                    {% if 'safe' in message.tags %}
+                        <div class="alert alert-{{message.level_tag}} alert-dismissible" role="alert">
+                        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        {{ message|safe }}</div>
+                    {% else %} 
+                        <div class="alert alert-{{message.level_tag}} alert-dismissible" role="alert">
+                        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        {{ message }}</div>
+                    {% endif %}
+            {% endfor %}
+        {% endif %}
+    </div><!-- .messages div collapse -->

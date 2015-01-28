@@ -1,0 +1,7 @@
+<div class="list-group">
+    <a href="#" class="list-group-item"><strong>Filter Posts by Category</strong></a>
+    {% for c in categories %}
+        <a href="/category/{{c.id}}/" class="list-group-item"> 
+            {{ c.name }}<span class="badge pull-right"> {{c.frequency}} </span></a>
+    {% endfor %}
+</div>

@@ -1,0 +1,15 @@
+{% if user.is_authenticated  %}
+<ul class="nav navbar-nav navbar-right">
+    <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            <span class="glyphicon glyphicon-user"></span> {{ user.username }}
+            <b class="caret"></b>
+        </a>
+        <ul class="dropdown-menu">
+            <li class="dropdown-header">Profile</li>
+            <li><a href="{%  url 'newblogpost' %}"> New BlogPost </a></li>
+            <li><a href="{% url 'logout' %}"> Logout </a></li>
+        </ul>
+    </li><!-- .dropdown collapse -->
+</ul>
+{% endif %}

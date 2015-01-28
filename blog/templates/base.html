@@ -22,53 +22,15 @@
         <div class="navbar navbar-default navbar-fixed-top" role="navigation">
             <div class="container-fluid">
                 <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
+                    {% include "_navbartoggle.html" %}
                     <a class="navbar-brand" href="{% url 'home' %}">
                         <img style="margin-top: -15px;" width="152" height="34" src="{% static 'blog/images/logo.png' %}" />
                     </a>
                 </div>
                 <div class="navbar-collapse collapse" role="navigation">
-                    <ul class="nav navbar-nav">
-                        <li class="{{ home_tab }}"><a href="{% url 'home' %}"><span class="glyphicon glyphicon-home"></span> Home</a></li>
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Posts By Category<b class="caret"></b></a>
-                            <ul class="dropdown-menu">
-                                <li><a class="{{ prs_list_tab }}" href="#"> General  </a></li>
-                                <li><a class="{{ prs_monthly_tab }}" href="#"> Technical  </a></li>
-                                <li><a class="{{import_pr_list_tab }}" href="#">  Health  </a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                    {% if user.is_authenticated  %}
-                    <ul class="nav navbar-nav navbar-right">
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                <span class="glyphicon glyphicon-user"></span> {{ user.username }}
-                                <b class="caret"></b>
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li class="dropdown-header">Profile</li>
-                                <li><a href="{%  url 'newblogpost' %}"> New BlogPost </a></li>
-                                <li><a href="{% url 'logout' %}"> Logout </a></li>
-                            </ul>
-                        </li><!-- .dropdown collapse -->
-                    </ul>
-                    {% endif %}
-                    <form class="navbar-form" role="form" method="GET" action="/search/">
-                        <div class="input-group">
-                            <input type="search" name="q" value="{{ query }}" placeholder="Search" class="form-control" />
-                            <span class="input-group-btn">
-                                <button class="btn btn-primary" type="submit" id="filter-clear">
-                                    <i class="glyphicon glyphicon-search"></i>
-                                </button>
-                            </span>
-                        </div>
-                    </form>
+                    {% include "_navbar.html" %}
+                    {% include "_usermenu.html" %}
+                    {% include "_search.html" %}
                 </div><!-- .navbar-header collapse -->
             </div><!-- .container-fluid collapse -->
         </div><!-- .navbar collapse -->
@@ -77,21 +39,7 @@
         <div class="container-fluid">
             <div class="row">
                 <div class = "col-sm-9" style="border-right:0.5px solid #ccc">
-                    <div id = "messages">
-                        {% if messages %}
-                            {% for message in messages %}
-                                    {% if 'safe' in message.tags %}
-                                        <div class="alert alert-{{message.level_tag}} alert-dismissible" role="alert">
-                                        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                                        {{ message|safe }}</div>
-                                    {% else %} 
-                                        <div class="alert alert-{{message.level_tag}} alert-dismissible" role="alert">
-                                        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                                        {{ message }}</div>
-                                    {% endif %}
-                            {% endfor %}
-                        {% endif %}
-                    </div><!-- .messages div collapse -->
+                    {% include "_messages.html" %}
 
                     <div class="page-header" align = "center">
                         <h4>
@@ -100,78 +48,30 @@
                         </h4>
                     </div>
                     {% block content %} {% endblock %}
-                </div> <!-- col-sm-10 div collapse -->
+                </div> <!-- col-sm-9 div collapse -->
 
                 <!-- RIGHT SIDEBAR -->
                 <div class = "col-sm-3">
-                    <div class="list-group">
-                        <a href="#" class="list-group-item"><strong>Archive</strong></a>
-                        <ul class="list-group">
-                        {% for year, months in archive_data.items %}
-                            {% if year %}
-                                <li class="tree-toggler list-group-item">
-                                    <span class="glyphicon glyphicon-plus" style="cursor:pointer"></span>&nbsp; &nbsp;<a href="{% url 'yearly' year %}">{{ year }}</a><span class="badge pull-right">3</span>
-                                    <ul class = "tree" style="display: none;">
-                                    {% for month in months %}
-                                        <a href="{% url 'monthly' year month.0 %}" class="list-group-item">  {{month.0}}<span class="badge pull-right"> {{month.1}} </span></a>
-                                    {% endfor %}
-                                    </ul>
-                                </li>
-                            {% endif %}
-                        {% endfor %}
-                        </ul>
-                    </div>
-                    <div id="tag_cloud" class="panel panel-default">
-                        <div class="panel-heading"><strong>Tags In-Use</strong></div>
-                        <div class="panel-body">
-                            {% for t in tags %}
-                                <a href="/tag/{{ t.id }}/" style="font-size: {{ t.fontsize }}em" title="Number of articles using this tag: {{ t.frequency }}"><font color="{{ t.color }}"> {{ t.name }}</font></a>
-                            {% endfor %}
-                        </div>
-                    </div>
- 
-                    <div class="list-group">
-                        <a href="#" class="list-group-item"><strong>Categories</strong></a>
-                        {% for c in categories %}
-                            <a href="/category/{{c.id}}/" class="list-group-item"> 
-                                {{ c.name }}<span class="badge pull-right"> {{c.frequency}} </span></a>
-                        {% endfor %}
-                    </div>
-
-                </div> <!--  col-md-3 div collapse END RIGHT SIDEBAR-->
+                    {% include "_archive.html" %}
+                    {% include "_tags.html" %}
+                    {% include "_categories.html" %}
+                </div> <!--  col-sm-3 div collapse END RIGHT SIDEBAR-->
             </div> <!-- div row collapse -->
+
             <div class = "row">
                 <div class = "col-sm-12">
                     {% include "debug.html" %}
                 </div>
             </div>
+
             <div class = "row">
                 <div class = "col-sm-12">
-
-                    <div class="modal fade" id="form_modal" tabindex="-1" role="dialog" aria-labelledby="form_modal_label" aria-hidden="true">
-                        <div class="modal-dialog modal-md">
-                            <div class="modal-content" id="modal_content">
-                                <!-- form will be inserted here -->
-                            </div> <!-- .modal-content div collapse -->
-                        </div><!-- .modal-dialog .modal-lg div collapse -->
-                    </div> <!-- .modal fade div collapse -->
-
+                    {% include "_modal.html" %}
                 </div> <!-- .col-sm-12 div collapse -->
             </div><!-- .row div collapse -->
         </div><!-- .container-fluid div collapse -->
 
-        <!--http://getbootstrap.com/examples/sticky-footer-navbar/-->
-        <div id="footer"><!-- Sticky Footer -->
-            <div class="container-fluid">
-                <span style="float: left;" class="text-muted">
-                    NAZOANA {% now "Y" %}
-                </span>
-                <span style="float:right;" class="text-muted">
-                    <a href="{% url 'about' %}" class="text-muted">About</a> | 
-                    <a href="#" id = "contact_id" class="text-muted">Contact</a>
-                </span>
-            </div>
-        </div><!-- .footer div collapse -->
+        {% include "_footer.html" %}
 
         <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
         <script type="text/javascript" src="{% static 'blog/js/jquery-1.11.0.min.js' %}"></script>
@@ -188,36 +88,15 @@
                     $(this).children('span').eq(0).toggleClass("glyphicon glyphicon-plus glyphicon glyphicon-minus");
                 });
                 
+                /* Register onclick event for the "contact" link in order to trigger the modal*/
                 $("#contact_id").on("click", function() {
                     $('#modal_content').load("{% url 'contact' %}", function () {
                         $("#form_modal").modal('toggle');
                         var form = $("#contact_form");
-                        submitForm(form, "#contact_form");
+                        submitForm(form, "#contact_form", "Thank you for your feedback.");
                     });
                 });
             });
-            
-            
-            function submitForm(form, formName){
-                $(form).on('submit', function(e) {
-                    e.preventDefault();
-                    $.ajax({
-                        type: $(form).attr('method'),
-                        url: $(form).attr('action'),
-                        data: $(form).serialize(),
-                        success: function(xhr, ajaxOptions, thrownError)  {
-                            if ($(xhr).find('.has-error').length > 0 ) {
-                                $("#form_modal").find('#modal_content').html(xhr);
-                                // called again to register the 'onsubmit' event of the reloaded html form
-                                submitForm($(formName), formName); 
-                            } else {
-                                $("#form_modal").modal('toggle');
-                                createAlert("success", "Your message has been sent");
-                            }
-                        },
-                    });
-                });
-            }
         </script>
         <script type="text/javascript" src="http://www.google.com/recaptcha/api/js/recaptcha_ajax.js"></script>
         {% block js_in_footer %} {% endblock %}

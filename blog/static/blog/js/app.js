@@ -1,11 +1,35 @@
 $(document).ready(function() { 
+    /* add select2 js library to these dropdowns */
     $("#id_tags").select2();
     
     $("#id_category").select2({
         placeholder: "Select a Category",
         allowClear: true
     });
+
+
 });
+
+function submitForm(form, formName, successMessage){
+    $(form).on('submit', function(e) {
+        e.preventDefault();
+        $.ajax({
+            type: $(form).attr('method'),
+            url: $(form).attr('action'),
+            data: $(form).serialize(),
+            success: function(xhr, ajaxOptions, thrownError)  {
+                if ($(xhr).find('.has-error').length > 0 ) {
+                    $("#form_modal").find('#modal_content').html(xhr);
+                    // called again to register the 'onsubmit' event of the reloaded html form
+                    submitForm($(formName), formName, successMessage); 
+                } else {
+                    $("#form_modal").modal('toggle');
+                    createAlert("success", successMessage);
+                }
+            },
+        });
+    });
+}
 
 function createAlert (type, message) {
     $("#messages").append(

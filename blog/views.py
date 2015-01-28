@@ -244,8 +244,8 @@ class Search(SearchView):
     """
     def extra_context(self):
         extra = super(Search, self).extra_context()
-        extra['archive_data'] = BlogPostArchiveHierarchyMixin.get_blogposts_archive_info(self)
-        extra['tagcloud'] = BlogPostArchiveHierarchyMixin.get_tag_cloud(self)
+        #extra['archive_data'] = BlogPostArchiveHierarchyMixin.get_blogposts_archive_info(self)
+        #extra['tagcloud'] = BlogPostArchiveHierarchyMixin.get_tag_cloud(self)
         return extra
 
 class ContactView(FormView):

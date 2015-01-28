@@ -55,81 +55,28 @@
     </div>
 </div>
 
-
-<div class="modal fade" id="form-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+<div class="modal fade" id="form_modal" tabindex="-1" role="dialog" aria-labelledby="form_modal_label" aria-hidden="true">
     <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Modal title</h4>
-            </div>
-            <div id = "form-modal-body" class="modal-body">
-                <!-- Form will be inserted here -->
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
-            </div>
-        </div>
-    </div>
-</div>
+        <div class="modal-content" id="modal_content">
+            <!-- form will be inserted here -->
+        </div> <!-- .modal-content div collapse -->
+    </div><!-- .modal-dialog .modal-lg div collapse -->
+</div> <!-- .modal fade div collapse -->
 
 {% endblock %}
 {% block js_in_footer %}
 <script>
-$(document).ready(function() {
-
-    /*
-     * Submitting the form via ajax and preventing the default form submission behavior
-     */
-    var formAjaxSubmit = function(form, modal) {
-        $(form).submit(function (e) {
-            e.preventDefault();
-            $.ajax({
-                type: $(this).attr('method'),
-                url: $(this).attr('action'),
-                data: $(this).serialize(),
-                success: function (xhr, ajaxOptions, thrownError) {
-                    //console.log(ajaxOptions);
-                    //console.log(JSON.stringify(xhr));
-                    if ( $(xhr).find('.has-error').length > 0 ) {
-                        $(modal).find('.modal-body').html(xhr);
-                        formAjaxSubmit(form, modal);
-                    } else {
-                        // Close the Modal if record is successfully saved
-                        $(modal).modal('toggle');
-                    }
-                },
-                error: function (xhr, ajaxOptions, thrownError) {
-                    //console.log(xhr.status + ": " + JSON.stringify(xhr.responseJSON));
-                    //console.log(JSON.stringify(xhr));
-                    $.each(xhr.responseJSON, function(fieldname, errmsg){
-                        id = "#id_" + fieldname;
-                        $(id).parent().after( errmsg );
-                    });
-                }
+    $(document).ready(function() {
+        /* Any time user clicks on the table row, popup the Modal for editing record */
+        $("#gusers tr").click(function() {
+            var id = $(this).find("td:nth-child(1)").text().trim();
+            $('#modal_content').load('/commenter/'+id+"/", function () {
+                $('#form_modal').modal('toggle');
+                var form = $("#commenter_form");
+                // the submitForm function is defined in the base.html file.
+                submitForm(form, "#commenter_form", "Record updated successfully.");
             });
         });
-    };
-    
-    /*
-     * Helper function to load the form onto the Modal upon user clicking table row
-     */
-    function getForm(id) {
-        $('#form-modal-body').load('/commenter/'+id+"/", function () {
-            //alert("OK");
-            $('#form-modal').modal('toggle');
-            formAjaxSubmit('#form-modal-body form', '#form-modal');
-        });
-    }
-    
-    /*
-     * Any time user clicks on the table row, popup the Modal for editing record
-     */
-    $("#gusers tr").click(function() {
-        var id = $(this).find("td:nth-child(1)").text().trim();
-        getForm(id);
     });
-});
 </script>
 {% endblock %}

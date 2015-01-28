@@ -1,0 +1,17 @@
+<div class="list-group">
+    <a href="#" class="list-group-item"><strong>Archive</strong></a>
+    <ul class="list-group">
+    {% for year, months in archive_data.items %}
+        {% if year %}
+            <li class="tree-toggler list-group-item">
+                <span class="glyphicon glyphicon-plus" style="cursor:pointer"></span>&nbsp; &nbsp;<a href="{% url 'yearly' year %}">{{ year }}</a><span class="badge pull-right">3</span>
+                <ul class = "tree" style="display: none;">
+                {% for month in months %}
+                    <a href="{% url 'monthly' year month.0 %}" class="list-group-item">  {{month.0}}<span class="badge pull-right"> {{month.1}} </span></a>
+                {% endfor %}
+                </ul>
+            </li>
+        {% endif %}
+    {% endfor %}
+    </ul>
+</div>
