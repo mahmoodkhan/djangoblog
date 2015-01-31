@@ -171,7 +171,7 @@ class Comment(models.Model):
         """ After a comment has been posted. Send me an email so I know someone commented """
         super(Comment, self).save(*args, **kwargs) # Call the "real" save() 
         send_mail(
-            subject= "NazoAna: " . self.commenter.display_name . " commented on " . self.get_absolute_url
+            subject= "NazoAna: got commented on " . self.get_absolute_url,
             message = self.body,
             from_email = settings.DEFAULT_FROM_EMAIL,
             recipient_list = [settings.MY_EMAIL,],

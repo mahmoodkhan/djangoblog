@@ -1,4 +1,5 @@
 from django.conf.urls import patterns, include, url
+from django.conf import settings
 from django.contrib import admin
 from blog.views import *
 from blog.google import *
@@ -65,7 +66,8 @@ urlpatterns = patterns('',
     #url(r'^search/', include('haystack.urls')),
     url(r'^search/', Search(), name='haystack_search'),
 )
-import debug_toolbar
-urlpatterns += patterns('',
-    url(r'^__debug__/', include(debug_toolbar.urls)),
-)
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns += patterns('',
+        url(r'^__debug__/', include(debug_toolbar.urls)),
+    )
