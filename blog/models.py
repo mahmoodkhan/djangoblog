@@ -1,5 +1,6 @@
 import datetime
 from django.core.urlresolvers import reverse
+from django.core.mail import send_mail
 from django.template.defaultfilters import slugify
 from django.db import models
 from django.utils import timezone
@@ -166,6 +167,16 @@ class Comment(models.Model):
     def __str__(self):
         return ("%s (%s)" % (self.body, self.commenter))
     
+    def save(self, *args, **kwargs):
+        """ After a comment has been posted. Send me an email so I know someone commented """
+        super(Comment, self).save(*args, **kwargs) # Call the "real" save() 
+        send_mail(
+            subject= "NazoAna: " . self.commenter.display_name . " commented on " . self.get_absolute_url
+            message = self.body,
+            from_email = settings.DEFAULT_FROM_EMAIL,
+            recipient_list = [settings.MY_EMAIL,],
+        )
+
     def get_absolute_url(self):
         """
         Used when we need to link to a specific blog post.

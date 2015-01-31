@@ -50,7 +50,10 @@ def get_tag_cloud(self):
     display_fontsize = 0
 
     tags_dict = []
-    multiplier = (max_fontsize-min_fontsize)/(hi_freq-lo_freq)
+    if hi_freq - lo_freq != 0:
+        multiplier = (max_fontsize-min_fontsize)/(hi_freq-lo_freq)
+    else:
+        multiplier = 1
     multiplier = float("{0:.2f}".format(multiplier))
     
     colors = ["#728FCE", "#357EC7", "#008080", "#254117", "#E2A76F", "#C88141", "#6F4E37", "#E78A61", "#C24641", "#7D0541", "#583759", "#837E7C", "#2C3539"]

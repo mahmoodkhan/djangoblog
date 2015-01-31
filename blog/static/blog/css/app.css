@@ -5,7 +5,7 @@ html {
     min-height: 100%;
 }
 
-footer {
+#page-footer{
   position: absolute;
   bottom: 0;
   width: 100%;
