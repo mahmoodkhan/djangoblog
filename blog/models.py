@@ -5,6 +5,8 @@ from django.template.defaultfilters import slugify
 from django.db import models
 from django.utils import timezone
 
+from django.conf import settings
+
 from django.contrib import admin
 from django.contrib.auth.models import User
 
@@ -171,7 +173,7 @@ class Comment(models.Model):
         """ After a comment has been posted. Send me an email so I know someone commented """
         super(Comment, self).save(*args, **kwargs) # Call the "real" save() 
         send_mail(
-            subject= "NazoAna: got commented on " . self.get_absolute_url,
+            subject= "NazoAna: got commented on " + str(self.blogpost.get_absolute_url()),
             message = self.body,
             from_email = settings.DEFAULT_FROM_EMAIL,
             recipient_list = [settings.MY_EMAIL,],
