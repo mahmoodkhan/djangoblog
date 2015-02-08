@@ -41,10 +41,10 @@ def get_tag_cloud(self):
     hi_freq = tags[len(tags) -1].frequency
 
     # The maximum font-size of the largest (most frequent) tag
-    max_fontsize = 1.5
+    max_fontsize = 1.7
     
     # The minimum font-size of the smallest (least frequent) tag
-    min_fontsize = 0.6
+    min_fontsize = 0.8
     
     # The display font-size used by the current tag
     display_fontsize = 0

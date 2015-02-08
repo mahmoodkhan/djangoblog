@@ -6,6 +6,7 @@ class BlogPostIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.CharField(document=True, use_template=True)
     title = indexes.CharField(model_attr='title', faceted=True)
     pub_date = indexes.DateTimeField(model_attr='pub_date', faceted=True)
+    content = indexes.CharField(model_attr='content')
     
     def get_model(self):
         return BlogPost

@@ -117,8 +117,15 @@
             </div>
         {% endif %}
         
-        <br />
-        <br />
+        
+        
+        {% if object.annotation %}
+            <hr />
+            <h4>Author's Annotations</h4>
+            <div class="well well-small">
+                {{ object.annotation | safe }}
+            </div>
+        {% endif %}
         
         <h4>Comments </h4>
         <ul class="media-list">
