@@ -15,9 +15,6 @@
 <meta name="google-signin-callback" content="render" />
 <meta name="google-signin-includegrantedscopes" content="true" />
 
-<!-- The Google Javascript library required for Google+ Sign-in button -->
-<script src="https://apis.google.com/js/client:platform.js" async defer></script>
-
 <script type = "text/javascript">
 
     /* Callback function for when the user clicks on the sign-in button. */
@@ -96,6 +93,7 @@
     }
     
 </script>
+
 {% endblock %}
 
 {% block description %}
@@ -168,4 +166,9 @@
             </form>
         </div>
     </div>
+{% endblock %}
+
+{% block js_in_footer %} 
+    <!-- The Google Javascript library required for Google+ Sign-in button -->
+    <script src="https://apis.google.com/js/client:platform.js" async defer></script>
 {% endblock %}

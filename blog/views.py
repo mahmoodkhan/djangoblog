@@ -53,18 +53,6 @@ class HomeView(ListView):
         #messages.warning(self.request, 'Warning world.')
         #messages.error(self.request, 'Error <a href="#">world.</a>', extra_tags="safe")
         context = super(HomeView, self).get_context_data(**kwargs)
-        #context['now'] = timezone.now()
-        context['code'] = """
-        <code class="python">
-            @register.filter(name='cut')
-            def cut(value, arg):
-                return value.replace(arg, '')
-
-            @register.filter
-            def lower(value):
-                return value.lower()
-        </code>
-        """
         return context
 
 class CreateCommentView(AjaxableResponseMixin, CreateView):
@@ -82,7 +70,6 @@ class CreateCommentView(AjaxableResponseMixin, CreateView):
         
         if request.POST.get("commenter") is None:
             return HttpResponseBadRequest()
-        #messages.success(self.request, "Your commented is posted")
         return super(CreateCommentView, self).post(request, *args, **kwargs)
         
     def get_success_url(self):
