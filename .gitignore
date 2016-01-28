@@ -23,6 +23,8 @@ __pycache__/
 pip-log.txt
 pip-delete-this-directory.txt
 
+static/
+
 # Unit test / coverage reports
 htmlcov/
 .tox/
