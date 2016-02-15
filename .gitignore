@@ -37,3 +37,7 @@ schema.xml
 # Translations
 *.mo
 
+# ignore virtual_environment folders
+bin/
+include/
+lib/
