@@ -11,13 +11,14 @@ from django.views.generic import RedirectView, FormView, DetailView, CreateView,
 from django.views.generic.dates import ArchiveIndexView, MonthArchiveView, YearArchiveView
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic.list import ListView
+
+from django.db.models import Q
+
 from django.http import HttpResponseBadRequest
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
-
-from haystack.views import SearchView
 
 from oauth2client import xsrfutil
 
@@ -25,7 +26,7 @@ from .models import *
 from .forms import *
 from .mixins import *
 
-from ratelimit.mixins import RateLimitMixin
+from ratelimit.mixins import RatelimitMixin
 
 class HomeView(ListView):
     """
@@ -67,11 +68,11 @@ class CreateCommentView(AjaxableResponseMixin, CreateView):
         # Make sure the request session is still intact and hasn't been tempered with.
         if not xsrfutil.validate_token(settings.SECRET_KEY, request.session['state'], None):
             return HttpResponseBadRequest()
-        
+
         if request.POST.get("commenter") is None:
             return HttpResponseBadRequest()
         return super(CreateCommentView, self).post(request, *args, **kwargs)
-        
+
     def get_success_url(self):
         return reverse_lazy('detailpost', kwargs={ "pk": self.object.blogpost.pk })
 
@@ -168,7 +169,7 @@ class BlogPostDetail(DetailView):
         This method is used to provide additional context to be passed to the template.
         """
         self.request.session['state'] = xsrfutil.generate_token(settings.SECRET_KEY, None)
-        
+
         # Call the base implementation first to get a context
         context = super(BlogPostDetail, self).get_context_data(**kwargs)
 
@@ -177,7 +178,7 @@ class BlogPostDetail(DetailView):
 
         comments = Comment.objects.filter(blogpost__pk=self.object.pk).order_by('created')
         context['comments'] = comments
-        
+
         #print(self.request.session.get('cid', 0))
         try:
             context['commentform'] = CommentForm(initial={'blogpost': self.kwargs['pk']})
@@ -199,7 +200,7 @@ class BlogPostDetail(DetailView):
 
 class BlogPostArchiveIndexView(ArchiveIndexView):
     """
-    A top-level index page showing the “latest” objects, by date.
+    A top-level index page showing the "latest" objects, by date.
     """
     queryset = BlogPost.objects.filter(published=True).filter(private=False)
     date_field = "pub_date"
@@ -224,16 +225,26 @@ class BlogPostMonthArchiveView(MonthArchiveView):
     paginate_by=12
     #month_format='%m' # month number
 
-class Search(SearchView):
+class SearchView(ListView):
     """
     This is inheriting from haystack.SearchView so that I can override the extra_context
     method and provide the blogpost_archive_info
     """
-    def extra_context(self):
-        extra = super(Search, self).extra_context()
-        #extra['archive_data'] = BlogPostArchiveHierarchyMixin.get_blogposts_archive_info(self)
-        #extra['tagcloud'] = BlogPostArchiveHierarchyMixin.get_tag_cloud(self)
-        return extra
+    model = BlogPost
+    template_name="blog/index.html"
+    context_object_name = 'blogposts'
+
+    def get_queryset(self):
+        search = self.request.GET.get('search', None)
+        # Had to do the following
+        # 1. create fulltext index summary_index on feedback_feedback(summary);
+        # 2. create fulltext index description_index on feedback_feedback(description)
+        args = ( Q( title__search = search ) | Q( content__search = search ), )
+        #kwargs = prepare_query_params(self.request.GET)
+        #qs = BlogPost.objects.filter(*args)# if search else (), **kwargs)
+        qs = BlogPost.objects.filter(content__search=search)
+        return qs
+
 
 class ContactView(FormView):
     """
@@ -261,12 +272,13 @@ class ContactView(FormView):
 class AboutView(TemplateView):
     template_name='about.html'
 
-class LoginView(RateLimitMixin, FormView):
+class LoginView(RatelimitMixin, FormView):
     """
     Provides a Login View so users can login
     """
     template_name = 'login.html'
     form_class = LoginForm
+    ratelimit_key = 'ip'
     ratelimit_rate = '2/m'
     ratelimit_block = True
 

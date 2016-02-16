@@ -41,3 +41,6 @@ schema.xml
 bin/
 include/
 lib/
+blog/migrations/
+pip-selfcheck.json
+selenium/

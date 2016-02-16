@@ -7,31 +7,31 @@ from blog.google import *
 admin.autodiscover()
 # regular reference:
 # . any char
-# ^ start of string 
+# ^ start of string
 # $ end of string
-# * 0 or more of preceding 
+# * 0 or more of preceding
 # + 1 or more of preceding
-# ? 0 or 1 of preceding 
+# ? 0 or 1 of preceding
 # (?!..) matches when it doesnt match ..
-# *? 0 or more, minimal match 
+# *? 0 or more, minimal match
 # +? 1 or more, minimal match
-# {m} exactly m of preceding 
+# {m} exactly m of preceding
 # {m,n} between m to n of preceding
-# [..] eg. [abc],[a-z],[0-9a-z] 
+# [..] eg. [abc],[a-z],[0-9a-z]
 # [^..] matches if doesn't match [..]
-# (..) groups what's inside 
+# (..) groups what's inside
 # (?=..) matches .. but doesn't consume it
 # \d [0-9] (decimal digit)
 # \D [^0-9] (non-digit)
-# \w [a-zA-Z0-9_] (alphanumeric) 
+# \w [a-zA-Z0-9_] (alphanumeric)
 # \W [^a-zA-Z0-9_] (non-alphanumeric)
-# \s [ \t\n\r\f\v] (whitespace) 
+# \s [ \t\n\r\f\v] (whitespace)
 # \S [^ \t\n\r\f\v] (non-whitespace)
 
 urlpatterns = patterns('',
     url(r'^ZmaTheWebsiteAdminPanelDaltaDai1484/', include(admin.site.urls)),
     (r'^static/(?P<path>.*)$', 'django.views.static.serve',  {'document_root': settings.STATIC_ROOT}),
-    
+
     url(r'^$', HomeView.as_view(), name='home'),
     url(r'^category/(?P<category>\d+)/$', HomeView.as_view(), name='home_category'),
     url(r'^tag/(?P<tags>\d+)/$', HomeView.as_view(), name='home_tag'),
@@ -63,11 +63,5 @@ urlpatterns = patterns('',
 
     #Instead of using haystack.urls I use my own search view so that I can override the
     #"extra_context method and provide additional data
-    #url(r'^search/', include('haystack.urls')),
-    url(r'^search/', Search(), name='haystack_search'),
+    url(r'^search/$', SearchView.as_view(), name='search'),
 )
-if settings.DEBUG:
-    import debug_toolbar
-    urlpatterns += patterns('',
-        url(r'^__debug__/', include(debug_toolbar.urls)),
-    )
