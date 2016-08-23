@@ -26,7 +26,7 @@ from .models import *
 from .forms import *
 from .mixins import *
 
-class CommenterUpdateView(AjaxableResponseMixin, UpdateView): 
+class CommenterUpdateView(AjaxableResponseMixin, UpdateView):
     """
     Provides a way to update the Commenter record manually
     """
@@ -34,23 +34,23 @@ class CommenterUpdateView(AjaxableResponseMixin, UpdateView):
     form_class = CommenterForm
     template_name="blog/commenter_form_inner.html"
     success_message = "%(given_name)s record was updated successfully"
-    
+
     def get_form_kwargs(self):
         kwargs = super(CommenterUpdateView, self).get_form_kwargs()
         kwargs.update({'id': self.object.id})
         return kwargs
-    
+
     def get_success_message(self, cleaned_data):
         return self.success_message % dict(cleaned_data, given_name=self.object.given_name)
 
 class ShowGoogleUsers(ListView):
     """
-    Provides a list of everyone who has logged in to the site 
+    Provides a list of everyone who has logged in to the site
     """
     model = Commenter
     template_name = "plus_users.html"
     context_object_name = 'gusers'
-    
+
     def get_context_data(self, **kwargs):
         """
         TODO: This method is just a test that can be deleted
@@ -84,16 +84,16 @@ class GoogleSingInView(TemplateView):
     Sign-in button
     """
     template_name="plus.html"
-    
+
 
     @method_decorator(ensure_csrf_cookie)
     @method_decorator(csrf_protect)
     def get(self, request, *args, **kwargs):
         """
-        The view is protected with csrf because its cookie value is required for the AJAX 
+        The view is protected with csrf because its cookie value is required for the AJAX
         POST request when user clicks on the sign-in button
         """
-        
+
         #For added security to make sure that the request's session is intact between
         #the GET (showing the sign-in button" to the POST (submitting the sign-in)
         self.request.session['state'] = xsrfutil.generate_token(settings.SECRET_KEY, None)
@@ -107,12 +107,13 @@ class GoogleSingInView(TemplateView):
         """
         # retrive the one-time  Google generated code after user granted permission to the app.
         code = request.POST.get("code", None)
+        print("code:" + code)
         #print(request.session['test'])
         # Make sure the request session is still intact and hasn't been tempered with.
-        if not xsrfutil.validate_token(settings.SECRET_KEY, request.session['state'], None):
+        if not xsrfutil.validate_token(settings.SECRET_KEY, str(request.session['state']), None):
             return HttpResponseBadRequest()
 
-        # if there is no one-time Google generated code then return 
+        # if there is no one-time Google generated code then return
         if code is None:
             return HttpResponse ("No Code")
 
@@ -127,7 +128,7 @@ class GoogleSingInView(TemplateView):
             return HttpResponse("Failed to upgrade the authorization code. 401 %s" % e)
 
         commenter, created = Commenter.objects.get_or_create(email=credentials.id_token['email'], defaults={'plus_id': credentials.id_token['sub']})
-        
+
         request.session['cid'] = commenter.pk
 
         # retrieve the credentials object from the database based on the user's email
@@ -142,7 +143,7 @@ class GoogleSingInView(TemplateView):
             SERVICE = build('plus', 'v1')
             http = httplib2.Http()
             http = credentials.authorize(http)
-            
+
             google_request = SERVICE.people().get(userId='me')
             result = google_request.execute(http=http)
             try:
@@ -159,6 +160,6 @@ class GoogleSingInView(TemplateView):
                 commenter.save()
             except Commenter.DoesNotExist as e:
                 print(e)
-            
+
         #return HttpResponse(json.dumps(credentials.to_json()))
         return HttpResponse(json.dumps({"commenter_id": commenter.pk}))

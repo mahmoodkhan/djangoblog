@@ -30,8 +30,11 @@
                 //console.log( "Data Loaded: " + jQuery.parseJSON(data).commenter_id );
                 submitComment(commenter_id);
             })
-            .fail(function() {
+            .fail(function(d, f, g) {
                 console.log("Error in submitting code to Google");
+                console.log(JSON.stringify(d));
+                console.log(JSON.stringify(f));
+                console.log(JSON.stringify(g));
             });
         } else if (authResult['error']) {
             /*
