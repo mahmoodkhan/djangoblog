@@ -54,7 +54,7 @@
             'accesstype': 'offline',
             'approvalprompt': 'auto',
         };
-        
+
         $("#reset-id-reset").click(function(e) {
             $('#signinButton').attr('disabled', false);
         });
@@ -67,7 +67,7 @@
             //    return;
             //}
         //});
-        
+
         // Trigger Google+ login on form submission
         $("#comment_form").submit(function(e) {
             e.preventDefault();
@@ -75,13 +75,13 @@
             gapi.auth.signIn(additionalParams);
         });
     }
-    
+
     /* Submits user's comment to the server  */
     function submitComment(commenter_id){
         $.post("/create_comment/", {
-            csrfmiddlewaretoken: $("#comment_form").find("[name='csrfmiddlewaretoken']").val(), 
+            csrfmiddlewaretoken: $("#comment_form").find("[name='csrfmiddlewaretoken']").val(),
             commenter: commenter_id,
-            body: $("#comment_form").find("[name='body']").val(), 
+            body: $("#comment_form").find("[name='body']").val(),
             blogpost: {{ object.id }}
         })
         .done(function(data) {
@@ -94,7 +94,7 @@
             console.log("comment FAILED! " + e.message);
         });
     }
-    
+
 </script>
 
 {% endblock %}
@@ -117,17 +117,17 @@
                 </ul>
             </div>
         {% endif %}
-        
-        
-        
-        {% if object.annotation %}
+
+
+
+        {% if object.owner == user and object.annotation %}
             <hr />
             <h4>Author's Annotations</h4>
             <div class="well well-small">
                 {{ object.annotation | safe }}
             </div>
         {% endif %}
-        
+
         <h4>Comments </h4>
         <ul class="media-list">
         {% for c in comments %}
@@ -145,7 +145,7 @@
         {% endfor %}
         </ul>
     </div>
-    
+
     <div class = "row">
         <div class = "col-md-12">
             <div class="alert alert-success" style="display: none">
@@ -171,7 +171,7 @@
     </div>
 {% endblock %}
 
-{% block js_in_footer %} 
+{% block js_in_footer %}
     <!-- The Google Javascript library required for Google+ Sign-in button -->
     <script src="https://apis.google.com/js/client:platform.js" async defer></script>
 {% endblock %}
