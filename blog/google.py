@@ -14,11 +14,13 @@ from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
 from django.utils.decorators import method_decorator
 from django.conf import settings
 
-from oauth2client import xsrfutil
+#from oauth2client import xsrfutil
+from oauth2client.contrib import xsrfutil
 from oauth2client.client import AccessTokenRefreshError
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
-from oauth2client.django_orm import Storage
+#from oauth2client.django_orm import Storage
+from oauth2client.contrib.django_util import storage
 
 from apiclient.discovery import build
 

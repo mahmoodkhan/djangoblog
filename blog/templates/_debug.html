@@ -1,26 +1,28 @@
 {% if debug %}
+    <!--
+    For this to work:
+    1. Add 'django.template.context_processors.debug', to the TEMPLATES attribute in you settings.py
+    2. Have your current IP in your INTERNAL_IPS setting.
+    3. Use RequestContext when rendering the current template (if you're using a generic view, you're already using RequestContext).
+    -->
     <div id="debug">
-        <h2>Queries</h2>
         <p>
             {{ sql_queries|length }} Quer{{ sql_queries|pluralize:"y,ies" }}
             {% ifnotequal sql_queries|length 0 %}
                 (<span style="cursor: pointer;" onclick="var s=document.getElementById('debugQueryTable').style;s.display=s.display=='none'?'':'none';this.innerHTML=this.innerHTML=='Show'?'Hide':'Show';">Show</span>)
             {% endifnotequal %}
         </p>
-        <table id="debugQueryTable" style="display: none;">
-            <col width="1"></col>
-            <col></col>
-            <col width="1"></col>
+        <table id="debugQueryTable" style="display: none;" class="table table-striped table-bordered">
             <thead>
                 <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">SQL</th>
-                    <th scope="col">Time</th>
+                    <th>#</th>
+                    <th>SQL</th>
+                    <th>Time</th>
                 </tr>
             </thead>
             <tbody>
                 {% for query in sql_queries %}
-                    <tr class="{% cycle odd,even %}">
+                    <tr class="{% cycle 'odd' 'even' %}">
                         <td>{{ forloop.counter }}</td>
                         <td>{{ query.sql|escape }}</td>
                         <td>{{ query.time }}</td>

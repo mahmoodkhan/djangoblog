@@ -35,7 +35,7 @@
             </div><!-- .container-fluid collapse -->
         </div><!-- .navbar collapse -->
 
-        
+
         <div class="container-fluid">
             <div class="row">
                 <div class = "col-sm-9" style="border-right:0.5px solid #ccc">
@@ -43,7 +43,7 @@
 
                     <div class="page-header" align = "center">
                         <h4>
-                            {% block page_title %} {% endblock %} 
+                            {% block page_title %} {% endblock %}
                             <small><p>{% block description %} {% endblock %}</p></small>
                         </h4>
                     </div>
@@ -87,7 +87,7 @@
                     $(this).children('ul.tree').toggle(300);
                     $(this).children('span').eq(0).toggleClass("glyphicon glyphicon-plus glyphicon glyphicon-minus");
                 });
-                
+
                 /* Register onclick event for the "contact" link in order to trigger the modal*/
                 $("#contact_id").on("click", function() {
                     $('#modal_content').load("{% url 'contact' %}", function () {

@@ -20,13 +20,15 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 
-from oauth2client import xsrfutil
+from oauth2client.contrib import xsrfutil
+
+from ratelimit.mixins import RatelimitMixin
 
 from .models import *
 from .forms import *
 from .mixins import *
 
-from ratelimit.mixins import RatelimitMixin
+#from ratelimit.mixins import RatelimitMixin
 
 class HomeView(ListView):
     """
@@ -40,13 +42,12 @@ class HomeView(ListView):
 
     def get_queryset(self, **kwargs):
         where = {'private': False, 'published': True}
-        #print(self.kwargs)
         if self.kwargs:
             where.update(self.kwargs)
         return BlogPost.objects.filter(**where)[:50]
 
     def get_context_data(self, **kwargs):
-        messages.set_level(self.request, messages.DEBUG)
+        #messages.set_level(self.request, messages.DEBUG)
         #messages.success(self.request, self.request.GET['category'], None)
         #messages.debug(self.request, 'Debug world.')
         #messages.info(self.request, 'Info world.')
@@ -272,6 +273,8 @@ class ContactView(FormView):
 class AboutView(TemplateView):
     template_name='about.html'
 
+
+
 class LoginView(RatelimitMixin, FormView):
     """
     Provides a Login View so users can login
@@ -279,8 +282,9 @@ class LoginView(RatelimitMixin, FormView):
     template_name = 'login.html'
     form_class = LoginForm
     ratelimit_key = 'ip'
-    ratelimit_rate = '2/m'
+    ratelimit_rate = '10/m'
     ratelimit_block = True
+    ratelimit_method = ['GET', 'POST']
 
     def get(self, request, *args, **kwargs):
         """

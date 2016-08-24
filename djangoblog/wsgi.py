@@ -12,7 +12,7 @@ PROJECT_PATH = os.path.realpath(os.path.dirname(__file__))
 ROOT_PATH = os.path.join(PROJECT_PATH, '../')
 sys.path.append(ROOT_PATH)
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "djangoblog.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "djangoblog.settings-local")
 
 from django.core.wsgi import get_wsgi_application
 application = get_wsgi_application()

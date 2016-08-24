@@ -10,7 +10,8 @@ from django.conf import settings
 from django.contrib import admin
 from django.contrib.auth.models import User
 
-from oauth2client.django_orm import CredentialsField
+#from oauth2client.django_orm import CredentialsField
+from oauth2client.contrib.django_util.models import CredentialsField
 
 class Category(models.Model):
     name = models.CharField(max_length=64)
@@ -20,7 +21,10 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
-    
+
+    def __unicode__(self):
+        return self.name
+
     def get_absolute_url(self):
         """
         Used when we need to link to a specific category
@@ -33,10 +37,13 @@ class Tag(models.Model):
     owner = models.ForeignKey(User, related_name='tags')
     created = models.DateTimeField(auto_now=False, auto_now_add=True)
     updated = models.DateTimeField(auto_now=True, auto_now_add=False)
-    
+
     def __str__(self):
         return self.name
-    
+
+    def __unicode__(self):
+        return self.name
+
     def get_absolute_url(self):
         """
         Used when we need to link to a specific Tag.
@@ -82,15 +89,18 @@ class BlogPost(models.Model):
 
     def __str__(self):
         return ("%s (%s)" % (self.title, self.owner))
-    
+
+    def __unicode__(self):
+        return ("%s (%s)" % (self.title, self.owner))
+
     def get_absolute_url(self):
         """
         Used when we need to link to a specific blog post.
         """
         return reverse('detailpost', kwargs={'pk': self.pk}) #args=[str(self.id)])
-    
+
     def save(self, *args, **kwargs):
-        if self.pk is None:        
+        if self.pk is None:
             """ To automatically create the slug """
             #self.slug = '%i-%s' % (self.id, slugify(self.title))
             self.slug = slugify(self.title)
@@ -106,7 +116,7 @@ class Attachment(models.Model):
     blogpost = models.ForeignKey(BlogPost, related_name = 'attachments')
     created = models.DateTimeField(auto_now=False, auto_now_add=True, null=True, blank=True)
     updated = models.DateTimeField(auto_now=True, auto_now_add=False, null=True, blank=True)
-    
+
     def get_absolute_url(self):
         """
         Used when we need to link to a specific blog post.
@@ -133,6 +143,9 @@ class Commenter(models.Model):
     updated = models.DateTimeField(auto_now=True, auto_now_add=False)
 
     def __str__(self):
+        return ("Email: %s - Google+ ID: %s" % (self.email,  self.plus_id))
+
+    def __unicode__(self):
         return ("Email: %s - Google+ ID: %s" % (self.email,  self.plus_id))
 
     def get_absolute_url(self):
@@ -168,10 +181,13 @@ class Comment(models.Model):
 
     def __str__(self):
         return ("%s (%s)" % (self.body, self.commenter))
-    
+
+    def __unicode__(self):
+        return ("%s (%s)" % (self.body, self.commenter))
+
     def save(self, *args, **kwargs):
         """ After a comment has been posted. Send me an email so I know someone commented """
-        super(Comment, self).save(*args, **kwargs) # Call the "real" save() 
+        super(Comment, self).save(*args, **kwargs) # Call the "real" save()
         send_mail(
             subject= "NazoAna: got commented on " + str(self.blogpost.get_absolute_url()),
             message = self.body,

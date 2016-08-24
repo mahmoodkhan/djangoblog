@@ -1,4 +1,6 @@
-from django.conf.urls import patterns, include, url
+from django.conf.urls import include, url
+from django.conf.urls.static import static
+
 from django.conf import settings
 from django.contrib import admin
 from blog.views import *
@@ -28,9 +30,10 @@ admin.autodiscover()
 # \s [ \t\n\r\f\v] (whitespace)
 # \S [^ \t\n\r\f\v] (non-whitespace)
 
-urlpatterns = patterns('',
-    url(r'^ZmaTheWebsiteAdminPanelDaltaDai1484/', include(admin.site.urls)),
-    (r'^static/(?P<path>.*)$', 'django.views.static.serve',  {'document_root': settings.STATIC_ROOT}),
+urlpatterns = [
+    url(r'^ZmaAdmin1484/', include(admin.site.urls)),
+
+    #(r'^static/(?P<path>.*)$', 'django.views.static.serve',  {'document_root': settings.STATIC_ROOT}),
 
     url(r'^$', HomeView.as_view(), name='home'),
     url(r'^category/(?P<category>\d+)/$', HomeView.as_view(), name='home_category'),
@@ -38,6 +41,8 @@ urlpatterns = patterns('',
     url(r'^hidden/(?P<published>[a-z, A-Z]{4,5})/(?P<private>[a-z, A-Z]{4,5})/$', HiddenBlogPost.as_view(), name='hidden_view'),
 
     url(r'^login/$', LoginView.as_view(), name='login'),
+    #url(r'^login/$', my_view, name='login'),
+
     url(r'^logout/$', LogoutView.as_view(), name='logout'),
 
     url(r'^about/$', AboutView.as_view(), name='about'),
@@ -64,4 +69,10 @@ urlpatterns = patterns('',
     #Instead of using haystack.urls I use my own search view so that I can override the
     #"extra_context method and provide additional data
     url(r'^search/$', SearchView.as_view(), name='search'),
-)
+]
+
+
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+
