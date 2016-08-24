@@ -6,7 +6,7 @@
 *.sql
 settings.py
 media
-local_settings.py
+settings-local.py
 db.sqlite3
 .DS_Store
 blog/client_secrets.json
