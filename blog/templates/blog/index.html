@@ -9,7 +9,7 @@
     Recent Blog Posts
 {% endblock %}
 {% block description %}
-    This a reverse chronological order of the top 10 posts
+    This is a reverse chronological order of the top 10 posts
 {% endblock %}
 
 {% block content %}
@@ -20,6 +20,7 @@
                     <div class="panel-heading">
                         <h4 class="panel-title">
                             {{ blogpost.title }}
+                            <small><a class="pull-right" href="{% url 'updatepost' blogpost.id %}"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></small>
                         </h4>
                         <small>published on {{ blogpost.pub_date }}</small>
                     </div>
@@ -53,5 +54,5 @@
             </span>
         </div>
     {% endif %}
-    
+
 {% endblock %}

@@ -52,11 +52,9 @@ urlpatterns = [
     url(r'^archive/monthly/(?P<year>\d{4})/(?P<month>[a-z, A-Z]{3})/$', BlogPostMonthArchiveView.as_view(), name="monthly"),
     url(r'^archive/yearly/(?P<year>\d{4})/$', BlogPostYearArchiveView.as_view(), name="yearly"),
 
-    url(r'^newpost/$', BlogPostCreateView.as_view(), name='newblogpost'),
-
-    # to view a blog post by pk in the url
-    url(r'^updatepost/(?P<pk>\d+)/$', BlogPostUpdateView.as_view(), name='updatepost'),
-    url(r'^detailpost/(?P<pk>\d+)/$', BlogPostDetail.as_view(), name='detailpost'),
+    url(r'^add/$', BlogPostCreateView.as_view(), name='newblogpost'),
+    url(r'^update/(?P<pk>\d+)/$', BlogPostUpdateView.as_view(), name='updatepost'),
+    url(r'^detail/(?P<pk>\d+)/$', BlogPostDetail.as_view(), name='detailpost'),
 
     url(r'^create_comment/$', CreateCommentView.as_view(), name='create_comment'),
     # To view a blog-post by slug in the url

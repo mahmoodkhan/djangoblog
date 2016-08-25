@@ -15,12 +15,12 @@ from captcha.fields import ReCaptchaField
 from .models import *
 
 """
-This is a formset that will be passed to the template together with the 
+This is a formset that will be passed to the template together with the
 BlogPostForm so that a user can upload multiple files to blogpost.
 """
-AttachmentFormset = inlineformset_factory(BlogPost, 
-    Attachment, 
-    can_delete=True, 
+AttachmentFormset = inlineformset_factory(BlogPost,
+    Attachment,
+    can_delete=True,
     #exclude=('created', 'updated',),
     fields=('attachment', 'blogpost',),
     extra=2)
@@ -50,8 +50,8 @@ class BlogPostForm(forms.ModelForm):
     """
     class Meta:
         model = BlogPost
-        exclude = ['slug', 'owner', 'lastaccessed', 'updated', ]
-    
+        exclude = ['slug', 'owner', 'pub_date', 'votes_up', 'votes_down', 'lastaccessed', 'updated', ]
+
     def __init__(self, *args, **kwargs):
         self.helper = FormHelper()
         self.helper.form_class = 'form-horizontal'
@@ -100,8 +100,8 @@ class ContactForm(forms.Form):
     email = forms.EmailField(required=True)
     subject = forms.CharField(max_length=64, required=True)
     message = forms.CharField(required=True, widget=forms.Textarea)
-    captcha = ReCaptchaField(attrs={'theme' : 'clean'}) 
-    
+    captcha = ReCaptchaField(attrs={'theme' : 'clean'})
+
     def __init__(self, *args, **kwargs):
         self.helper = FormHelper()
         self.helper.form_class = 'form-horizontal'
@@ -115,11 +115,11 @@ class ContactForm(forms.Form):
         super(ContactForm, self).__init__(*args, **kwargs)
 
 class CommenterForm(forms.ModelForm):
-    
+
     class Meta:
         model = Commenter
         exclude = ['image_url', 'credential',]
-    
+
     def __init__(self, *args, **kwargs):
         id = kwargs.pop('id')
         super(CommenterForm, self).__init__(*args, **kwargs)
@@ -138,7 +138,7 @@ class CommenterForm(forms.ModelForm):
 class LoginForm(AuthenticationForm):
     """
     A login form that inherits from Django's builtin AuthenticationForm, which has
-    several utility methods and has the fields already defined. So I don't need to 
+    several utility methods and has the fields already defined. So I don't need to
     redefine them here; instead, I simply customize those fields using crispy-forms
     """
     def __init__(self, *args, **kwargs):
@@ -159,9 +159,9 @@ class LoginForm(AuthenticationForm):
             )
         )
         super(LoginForm, self).__init__(*args, **kwargs)
-    
+
     def confirm_login_allowed(self, user):
-        """ 
+        """
         Because this form inherits from django's built-in AuthenticationForm
         this method is available to to be overwrriten as shown here to restrict
         access to who can actually login.

@@ -67,8 +67,8 @@ class CreateCommentView(AjaxableResponseMixin, CreateView):
     def post(self, request, *args, **kwargs):
 
         # Make sure the request session is still intact and hasn't been tempered with.
-        if not xsrfutil.validate_token(settings.SECRET_KEY, request.session['state'], None):
-            return HttpResponseBadRequest()
+        #if not xsrfutil.validate_token(settings.SECRET_KEY, request.session['state'], None):
+        #    return HttpResponseBadRequest()
 
         if request.POST.get("commenter") is None:
             return HttpResponseBadRequest()
@@ -237,6 +237,7 @@ class SearchView(ListView):
 
     def get_queryset(self):
         search = self.request.GET.get('search', None)
+        print(search)
         # Had to do the following
         # 1. create fulltext index summary_index on feedback_feedback(summary);
         # 2. create fulltext index description_index on feedback_feedback(description)

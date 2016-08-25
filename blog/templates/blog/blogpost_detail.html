@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load tz %}
 {% load staticfiles %}
 {% load crispy_forms_tags %}
 {% load myfilters %}
@@ -79,7 +80,7 @@
     /* Submits user's comment to the server  */
     function submitComment(commenter_id){
         $.post("/create_comment/", {
-            csrfmiddlewaretoken: $("#comment_form").find("[name='csrfmiddlewaretoken']").val(),
+            //csrfmiddlewaretoken: $("#comment_form").find("[name='csrfmiddlewaretoken']").val(),
             commenter: commenter_id,
             body: $("#comment_form").find("[name='body']").val(),
             blogpost: {{ object.id }}
@@ -100,7 +101,7 @@
 {% endblock %}
 
 {% block description %}
-    Published on {{ object.pub_date}} and last updated on {{ object.updated }}
+    Published on {{ object.pub_date|localtime}} and last updated on {{ object.updated|localtime }}
 {% endblock %}
 
 {% block content %}

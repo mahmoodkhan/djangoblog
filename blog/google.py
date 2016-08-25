@@ -20,7 +20,8 @@ from oauth2client.client import AccessTokenRefreshError
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
 #from oauth2client.django_orm import Storage
-from oauth2client.contrib.django_util import storage
+#from oauth2client.contrib.django_util import storage
+from oauth2client.contrib.django_util.storage import (DjangoORMStorage as Storage)
 
 from apiclient.discovery import build
 
@@ -60,8 +61,8 @@ class ShowGoogleUsers(ListView):
         context = super(ShowGoogleUsers, self).get_context_data(**kwargs)
         try:
             commenter = Commenter.objects.get(email='mkhan1484@gmail.com')
-            storage = Storage(GoogleCredentialsModel, 'commenter', commenter, 'credential')
-            credentials = storage.get()
+            gstorage = Storage(GoogleCredentialsModel, 'commenter', commenter, 'credential')
+            credentials = gstorage.get()
             if credentials is None:
                 context['me'] = "No credentials found!"
             else:
@@ -134,11 +135,11 @@ class GoogleSingInView(TemplateView):
         request.session['cid'] = commenter.pk
 
         # retrieve the credentials object from the database based on the user's email
-        storage = Storage(GoogleCredentialsModel, 'commenter', commenter, 'credential')
+        gstorage = Storage(GoogleCredentialsModel, 'commenter', commenter, 'credential')
 
         # if the credentials object does not exist or is invalid then store it
-        if storage.get() is None or credentials.invalid == True:
-            storage.put(credentials)
+        if gstorage.get() is None or credentials.invalid == True:
+            gstorage.put(credentials)
 
         # if the commenter did not exist before, then save his/her basic profile
         if created:

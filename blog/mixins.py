@@ -5,6 +5,7 @@ from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.generic import View
 from django.utils.decorators import method_decorator
+from django.utils import timezone
 from django.db import models
 
 from django.contrib.auth.decorators import login_required
@@ -24,7 +25,7 @@ class BlogPostMixin(View):
     """
     A mixin that renders BlogPost form on GET request and processes it on POST request.
     """
-    
+
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
         """ this is fired up first regardless of what http method is used """
@@ -32,9 +33,9 @@ class BlogPostMixin(View):
 
     def get(self, request, *args, **kwargs):
         """
-        Handles GET requests and instantiates either a blank form when called from a view 
+        Handles GET requests and instantiates either a blank form when called from a view
         that subclasses CreateView (in which case self.object = None should be set in its get method)
-        Or it instantiates an edit form that has the BlogPost and AttachmentFormset data loaded 
+        Or it instantiates an edit form that has the BlogPost and AttachmentFormset data loaded
         if it is called from a view that subclasses UpdateView (in which ase the the self.object = self.get_object() should be
         set in its get method)
         """
@@ -55,6 +56,8 @@ class BlogPostMixin(View):
         if form.is_valid() and attachments_formset.is_valid():
             form.instance.owner = self.request.user
             blogpost = form.save(commit=False)
+            if blogpost.published:
+                blogpost.pub_date = timezone.now()
             blogpost.save()
             attachments_formset.save()
             return self.form_valid(form)
